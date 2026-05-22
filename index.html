@@ -3,21 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Premium Finance Suite</title>
+    <title>Nexus Premium Finance Suite | Global Dashboard</title>
+    
+    <meta name="description" content="Optimize asset metrics with the Nexus high-performance global calculation engine. Featuring glassmorphic dashboards, live currency modules, real-time analytics, and investment optimization models.">
+    <meta name="keywords" content="EMI Calculator, SIP Calculator, GST Calculator, Finance Dashboard, Tax Planning, Forex Engine, Fixed Deposit, Wealth Management">
+    <meta name="robots" content="index, follow">
+    
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        body {
+            background-color: #030303;
+            color: #f4f4f5;
+            overflow-x: hidden;
+        }
+
+        /* Premium Glassmorphic Styles */
+        .glass-panel {
+            background: rgba(15, 15, 23, 0.45);
+            backdrop-filter: blur(16px) saturate(120%);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .glass-nav {
+            background: rgba(3, 3, 3, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-b: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* Customized High-Performance Range Sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.08);
+            height: 6px;
+            border-radius: 9999px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+            transition: transform 0.15s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Scroll Reveal and Custom Smooth Animation System */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-element.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
-<body class="bg-zinc-950 text-white font-sans antialiased">
-    <div id="root"></div>
+<body class="antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div id="app-root"></div>
 
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const rootContainer = document.getElementById('root');
+            const root = document.getElementById('app-root');
             
-            // App Routing and Currency States
+            // App Layout Architecture Router State
             let currentPage = 'home'; 
             let currentCurrency = 'INR';
-            let globalChartInstance = null; // Keeps track of chart refreshes
+            let globalChartInstance = null;
             
             const currencyConfigs = {
                 INR: { symbol: '₹', locale: 'en-IN', rateVsUSD: 83.50 },
@@ -31,230 +98,417 @@
                 return config.symbol + Math.round(amount).toLocaleString(config.locale);
             }
 
-            // Global Master Router Layout
-            function renderLayout(pageContentHTML) {
-                const config = currencyConfigs[currentCurrency];
-                rootContainer.innerHTML = `
-                    <div class="min-h-screen bg-zinc-950 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.15)_0%,transparent_50%)] flex flex-col">
-                        <nav class="max-w-7xl w-full mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center border-b border-zinc-900 gap-4">
-                            <div class="font-black text-2xl tracking-wider text-indigo-400 cursor-pointer" id="navLogo">NEXUS.FINANCE</div>
-                            
-                            <div class="flex flex-wrap justify-center gap-1 sm:gap-2 text-sm bg-zinc-900/60 p-1 rounded-xl border border-zinc-800">
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'home' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('home')">Home</button>
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'emi' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('emi')">EMI</button>
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'sip' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('sip')">SIP</button>
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'gst' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('gst')">GST</button>
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'converter' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('converter')">Forex</button>
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'eligibility' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('eligibility')">Eligibility</button>
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'fdrd' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('fdrd')">FD/RD</button>
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'tax' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('tax')">Tax</button>
-                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'hike' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('hike')">Hike</button>
+            // Global Master Router Shell Template Injector
+            function renderBaseLayout(innerContentHTML) {
+                root.innerHTML = `
+                    <div class="fixed top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+                    <div class="fixed bottom-12 right-1/4 w-[400px] h-[400px] bg-emerald-600/5 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+
+                    <header class="sticky top-0 w-full glass-nav z-50 transition-all duration-300">
+                        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                            <div class="flex items-center gap-3 font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent cursor-pointer" id="logoClick">
+                                <span class="p-2 bg-indigo-600/20 border border-indigo-500/30 rounded-xl text-indigo-400 text-sm">N𝝬</span> NEXUS.FINANCE
                             </div>
+                            
+                            <nav class="hidden xl:flex items-center gap-1 bg-zinc-900/40 p-1 rounded-xl border border-white/5 backdrop-blur-md">
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'home' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('home')">HOME</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'emi' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('emi')">EMI LOAN</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'sip' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('sip')">SIP WEALTH</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'gst' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('gst')">GST MATRIX</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'converter' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('converter')">FOREX</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'eligibility' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('eligibility')">DEBT CAP</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'fdrd' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('fdrd')">FD/RD TERM</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'tax' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('tax')">FISCAL BRACKET</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'hike' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('hike')">SALARY HIKE</button>
+                            </nav>
 
-                            <select id="currencySelector" class="bg-zinc-900 text-xs font-mono rounded-lg border border-zinc-800 px-3 py-1.5 focus:outline-none focus:border-indigo-500 cursor-pointer">
-                                <option value="INR" ${currentCurrency === 'INR' ? 'selected' : ''}>INR (₹)</option>
-                                <option value="USD" ${currentCurrency === 'USD' ? 'selected' : ''}>USD ($)</option>
-                                <option value="EUR" ${currentCurrency === 'EUR' ? 'selected' : ''}>EUR (€)</option>
-                                <option value="GBP" ${currentCurrency === 'GBP' ? 'selected' : ''}>GBP (£)</option>
-                            </select>
-                        </nav>
+                            <div class="flex items-center gap-3">
+                                <select id="currSelect" class="bg-zinc-900 border border-white/10 rounded-xl text-xs font-mono px-3 py-2 focus:outline-none focus:border-indigo-500 transition cursor-pointer">
+                                    <option value="INR" ${currentCurrency === 'INR' ? 'selected' : ''}>INR (₹)</option>
+                                    <option value="USD" ${currentCurrency === 'USD' ? 'selected' : ''}>USD ($)</option>
+                                    <option value="EUR" ${currentCurrency === 'EUR' ? 'selected' : ''}>EUR (€)</option>
+                                    <option value="GBP" ${currentCurrency === 'GBP' ? 'selected' : ''}>GBP (£)</option>
+                                </select>
+                                <button class="xl:hidden bg-zinc-900 border border-white/10 p-2 rounded-xl text-sm" id="mobileMenuToggle">☰</button>
+                            </div>
+                        </div>
+                    </header>
 
-                        <main class="flex-grow max-w-7xl w-full mx-auto px-6 py-12">
-                            ${pageContentHTML}
-                        </main>
-                        
-                        <footer class="border-t border-zinc-900 py-6 text-center text-xs text-zinc-600 font-mono">
-                            &copy; 2026 Nexus Financial Suite Corporation. Hosted Globally via Secure Server Cloud Distribution.
-                        </footer>
+                    <div id="mobileMenuPanel" class="hidden fixed top-20 left-0 w-full bg-zinc-950/95 backdrop-blur-xl border-b border-white/5 z-40 p-6 space-y-3 font-semibold text-sm">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('home')">HOME</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('emi')">EMI LOAN</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('sip')">SIP WEALTH</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('gst')">GST MATRIX</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('converter')">FOREX</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('eligibility')">DEBT CAP</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('fdrd')">FD/RD TERM</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('tax')">FISCAL BRACKET</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5 col-span-2 text-center bg-indigo-600" onclick="window.route('hike')">SALARY HIKE</button>
+                        </div>
                     </div>
+
+                    <main class="flex-grow max-w-7xl w-full mx-auto px-6 py-8">
+                        ${innerContentHTML}
+                    </main>
+
+                    <div class="fixed bottom-6 right-6 z-40">
+                        <button class="bg-indigo-600 hover:bg-indigo-500 hover:scale-110 active:scale-95 text-white p-4 rounded-full shadow-xl shadow-indigo-600/30 transition-all duration-200 group relative cursor-pointer" onclick="window.route('home')">
+                            <span class="absolute right-14 top-3 bg-zinc-900 border border-white/10 text-[10px] uppercase tracking-widest font-mono font-bold px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none whitespace-nowrap">Return Home Hub</span>
+                            🎛️
+                        </button>
+                    </div>
+
+                    <footer class="border-t border-white/5 py-8 text-center text-xs text-zinc-500 font-mono tracking-wider">
+                        &copy; 2026 NEXUS FINANCIAL SOFTWARE SUITE APPARATUS. POWERED BY STATIC HTML5 FAST RUNTIME ENGINES.
+                    </footer>
                 `;
 
-                // Re-bind core layout events
-                document.getElementById('navLogo').onclick = () => window.navigateRoute('home');
-                document.getElementById('currencySelector').onchange = (e) => {
+                // Handle Component Click Handlers
+                document.getElementById('logoClick').onclick = () => window.route('home');
+                document.getElementById('currSelect').onchange = (e) => {
                     currentCurrency = e.target.value;
-                    window.navigateRoute(currentPage);
+                    window.route(currentPage);
                 };
+                
+                const mToggle = document.getElementById('mobileMenuToggle');
+                const mPanel = document.getElementById('mobileMenuPanel');
+                mToggle.onclick = () => {
+                    mPanel.classList.toggle('hidden');
+                };
+
+                // Trigger Scroll Reveal Framework Engine Engine
+                setTimeout(initScrollReveal, 40);
             }
 
-            // Route Switching Manager
-            window.navigateRoute = function(route) {
-                currentPage = route;
+            // Route Router Transition Interface
+            window.route = function(targetPage) {
+                currentPage = targetPage;
                 if (globalChartInstance) {
                     globalChartInstance.destroy();
                     globalChartInstance = null;
                 }
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
-                if (route === 'home') {
-                    renderHome();
-                } else if (route === 'emi') {
-                    renderEMI();
-                } else if (route === 'sip') {
-                    renderSIP();
-                } else if (route === 'gst') {
-                    renderGST();
-                } else if (route === 'converter') {
-                    renderConverter();
-                } else if (route === 'eligibility') {
-                    renderEligibility();
-                } else if (route === 'fdrd') {
-                    renderFDRD();
-                } else if (route === 'tax') {
-                    renderTax();
-                } else if (route === 'hike') {
-                    renderHike();
-                }
+                if (targetPage === 'home') renderHomePage();
+                else if (targetPage === 'emi') renderEMIPanel();
+                else if (targetPage === 'sip') renderSIPPanel();
+                else if (targetPage === 'gst') renderGSTPanel();
+                else if (targetPage === 'converter') renderConverterPanel();
+                else if (targetPage === 'eligibility') renderEligibilityPanel();
+                else if (targetPage === 'fdrd') renderFDRDPanel();
+                else if (targetPage === 'tax') renderTaxPanel();
+                else if (targetPage === 'hike') renderHikePanel();
             };
 
-            // 0. HOME HUB LANDING PAGE PAGE INFRASTRUCTURE
-            function renderHome() {
-                const html = `
-                    <div class="text-center max-w-3xl mx-auto space-y-6 py-8">
-                        <div class="inline-block bg-indigo-500/10 text-indigo-400 text-xs font-mono font-bold tracking-widest px-4 py-1.5 rounded-full border border-indigo-500/20 uppercase">Institutional Grade Computation Engine</div>
-                        <h1 class="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">Empower Your Wealth Decisions</h1>
-                        <p class="text-zinc-400 text-base md:text-lg leading-relaxed">Welcome to Nexus Finance. Access our comprehensive financial simulation tools, complete with advanced algorithms and real-time visualization modeling.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-                        <div class="bg-zinc-900/30 hover:bg-zinc-900/60 p-6 rounded-2xl border border-zinc-800 transition group cursor-pointer" onclick="window.navigateRoute('emi')">
-                            <div class="text-indigo-400 font-bold mb-2 text-sm font-mono">01 / EMI LOANS</div>
-                            <h3 class="text-lg font-bold group-hover:text-indigo-400 transition">Mortgage & Loan Simulation</h3>
-                            <p class="text-xs text-zinc-500 mt-2">Simulate real estate, automotive, and capital loans with structural visualizations.</p>
-                        </div>
-                        <div class="bg-zinc-900/30 hover:bg-zinc-900/60 p-6 rounded-2xl border border-zinc-800 transition group cursor-pointer" onclick="window.navigateRoute('sip')">
-                            <div class="text-emerald-400 font-bold mb-2 text-sm font-mono">02 / SIP INVESTMENTS</div>
-                            <h3 class="text-lg font-bold group-hover:text-emerald-400 transition">Compound Wealth Modeling</h3>
-                            <p class="text-xs text-zinc-500 mt-2">Project systematically managed mutual funds and stock growth trajectories.</p>
-                        </div>
-                        <div class="bg-zinc-900/30 hover:bg-zinc-900/60 p-6 rounded-2xl border border-zinc-800 transition group cursor-pointer" onclick="window.navigateRoute('gst')">
-                            <div class="text-amber-400 font-bold mb-2 text-sm font-mono">03 / TAXES & GST</div>
-                            <h3 class="text-lg font-bold group-hover:text-amber-400 transition">Slab & Tax Optimization</h3>
-                            <p class="text-xs text-zinc-500 mt-2">Instantly calculate net consumer consumption values with standard tax matrices.</p>
-                        </div>
-                        <div class="bg-zinc-900/30 hover:bg-zinc-900/60 p-6 rounded-2xl border border-zinc-800 transition group cursor-pointer" onclick="window.navigateRoute('converter')">
-                            <div class="text-cyan-400 font-bold mb-2 text-sm font-mono">04 / FOREX EXCHANGE</div>
-                            <h3 class="text-lg font-bold group-hover:text-cyan-400 transition">Cross-Border FX Engines</h3>
-                            <p class="text-xs text-zinc-500 mt-2">Convert currencies across global economic corridors instantly.</p>
-                        </div>
-                    </div>
-                `;
-                renderLayout(html);
+            // Scroll Reveal Action Controller
+            function initScrollReveal() {
+                const elements = document.querySelectorAll('.reveal-element');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, { threshold: 0.05 });
+                
+                elements.forEach(el => observer.observe(el));
             }
 
-            // Helper function to render charts cleanly
-            function initDonutChart(principal, interest, labels = ['Principal Amount', 'Total Interest']) {
+            // High-Fidelity Chart Rendering Wrapper 
+            function mountChartCanvas(principal, yieldVal, principalLabel = "Principal Base", yieldLabel = "Yield Return Pool") {
                 setTimeout(() => {
-                    const ctx = document.getElementById('chartCanvas');
+                    const ctx = document.getElementById('dashboardChart');
                     if (!ctx) return;
                     globalChartInstance = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
-                            labels: labels,
+                            labels: [principalLabel, yieldLabel],
                             datasets: [{
-                                data: [principal, interest],
+                                data: [principal, yieldVal],
                                 backgroundColor: ['#6366f1', '#10b981'],
-                                borderWidth: 0
+                                hoverBackgroundColor: ['#4f46e5', '#059669'],
+                                borderWidth: 0,
+                                hoverOffset: 4
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            plugins: { legend: { display: false } }
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            cutout: '75%'
                         }
                     });
-                }, 50);
+                }, 60);
             }
 
-            // 1. EMI SIMULATION CALCULATOR PAGE
-            function renderEMI() {
+            // Native Micro-Interaction Animated Counter Mechanics
+            function animateNumericValue(elementId, endValue, prefix = '') {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+                
+                let start = 0;
+                const duration = 800; 
+                const startTime = performance.now();
+                
+                function updateCounter(currentTime) {
+                    const elapsedTime = currentTime - startTime;
+                    if (elapsedTime >= duration) {
+                        el.textContent = prefix + endValue.toLocaleString();
+                        return;
+                    }
+                    const progress = elapsedTime / duration;
+                    const easeOutQuad = progress * (2 - progress); // Standard ease optimization curvature
+                    const currentVal = Math.floor(start + (endValue - start) * easeOutQuad);
+                    el.textContent = prefix + currentVal.toLocaleString();
+                    requestAnimationFrame(updateCounter);
+                }
+                requestAnimationFrame(updateCounter);
+            }
+
+            // ==========================================
+            // PAGE RENDERING MODULES
+            // ==========================================
+
+            // 0. LANDING HERO PAGE WITH ANUMATED METRICS
+            function renderHomePage() {
                 const html = `
-                    <h2 class="text-2xl font-black mb-8 text-indigo-400">Loan EMI Computation</h2>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Principal Balance: <span id="v1" class="text-white font-mono font-bold"></span></label>
-                                <input id="s1" type="range" min="10000" max="10000000" step="10000" value="2500000" class="w-full accent-indigo-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Annual Interest Rate: <span id="v2" class="text-white font-mono font-bold"></span></label>
-                                <input id="s2" type="range" min="1" max="25" step="0.1" value="9" class="w-full accent-indigo-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Duration (Years): <span id="v3" class="text-white font-mono font-bold"></span></label>
-                                <input id="s3" type="range" min="1" max="30" step="1" value="15" class="w-full accent-indigo-500">
-                            </div>
+                    <div class="text-center max-w-4xl mx-auto space-y-6 pt-12 pb-16 reveal-element">
+                        <div class="inline-flex items-center gap-2 bg-indigo-500/10 text-indigo-400 text-xs font-mono font-bold tracking-widest px-4 py-2 rounded-full border border-indigo-500/20 uppercase">
+                            <span>⚡</span> Institutional Level Financial Optimization Engine
                         </div>
-                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between items-center text-center">
-                            <div>
-                                <p class="text-xs text-zinc-500 uppercase tracking-wider">Estimated Monthly EMI</p>
-                                <p id="outEmi" class="text-3xl font-black text-indigo-400 font-mono mt-2"></p>
+                        <h1 class="text-4xl sm:text-6xl font-black tracking-tight leading-tight bg-gradient-to-b from-white via-zinc-200 to-zinc-600 bg-clip-text text-transparent">
+                            Computational Strategy <br>For Accelerated Wealth Decisions
+                        </h1>
+                        <p class="text-zinc-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                            Simulate asset trajectories, tax models, and mortgage scenarios with elite sub-millisecond mathematical rendering and visual analytics.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-20 reveal-element">
+                        <div class="glass-panel p-5 rounded-2xl text-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                            <p class="text-2xl font-extrabold text-white font-mono" id="c1">0</p>
+                            <p class="text-[10px] font-mono text-zinc-500 tracking-wider uppercase mt-1">Calculators Active</p>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl text-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                            <p class="text-2xl font-extrabold text-emerald-400 font-mono" id="c2">0</p>
+                            <p class="text-[10px] font-mono text-zinc-500 tracking-wider uppercase mt-1">Daily Assertions</p>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl text-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                            <p class="text-2xl font-extrabold text-white font-mono" id="c3">0</p>
+                            <p class="text-[10px] font-mono text-zinc-500 tracking-wider uppercase mt-1">Asset Currencies</p>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl text-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                            <p class="text-2xl font-extrabold text-indigo-400 font-mono" id="c4">0</p>
+                            <p class="text-[10px] font-mono text-zinc-500 tracking-wider uppercase mt-1">Compute Latency</p>
+                        </div>
+                    </div>
+
+                    <div class="max-w-6xl mx-auto space-y-4 reveal-element">
+                        <div class="flex justify-between items-center px-2">
+                            <h2 class="text-sm font-bold tracking-widest font-mono text-zinc-400 uppercase">01 / Operational Modules</h2>
+                            <span class="w-12 h-px bg-zinc-800"></span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-indigo-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('emi')">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">📊</div>
+                                <h3 class="text-lg font-bold group-hover:text-indigo-400 transition">Mortgage & Loan Simulation</h3>
+                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Calculate multi-tiered interest amortizations, debt metrics, and monthly structural repayment targets instantly.</p>
                             </div>
-                            <div class="w-40 h-40 relative my-4"><canvas id="chartCanvas"></canvas></div>
-                            <div class="w-full text-xs text-zinc-400 space-y-1 font-mono">
-                                <div class="flex justify-between"><span>Principal Base:</span><span id="outP"></span></div>
-                                <div class="flex justify-between"><span>Total Interest:</span><span id="outI"></span></div>
+
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-emerald-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('sip')">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">📈</div>
+                                <h3 class="text-lg font-bold group-hover:text-emerald-400 transition">SIP Systematic Wealth</h3>
+                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Project componding growth velocity pipelines for mutual asset holdings and recurring market investment pools.</p>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-amber-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('gst')">
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">🧾</div>
+                                <h3 class="text-lg font-bold group-hover:text-amber-400 transition">GST Consumption Matrices</h3>
+                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Run precise tax slab algorithms for exclusive or inclusive product value computations across all standard limits.</p>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-cyan-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('converter')">
+                                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-cyan-600 group-hover:text-white transition-all duration-300">💱</div>
+                                <h3 class="text-lg font-bold group-hover:text-cyan-400 transition">Live Cross-Border Forex</h3>
+                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Translate value parameters instantly across global currencies using specific cross-corridor exchange indexes.</p>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-violet-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('eligibility')">
+                                <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-violet-600 group-hover:text-white transition-all duration-300">⚖️</div>
+                                <h3 class="text-lg font-bold group-hover:text-violet-400 transition">Debt-to-Income Capability</h3>
+                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Benchmark your exact net institutional borrowing capacity using standard risk underwriting limits.</p>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-fuchsia-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('fdrd')">
+                                <div class="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-fuchsia-600 group-hover:text-white transition-all duration-300">⏳</div>
+                                <h3 class="text-lg font-bold group-hover:text-fuchsia-400 transition">Term Deposits & Annuities</h3>
+                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Calculate exact compound yields for lump-sum fixed configurations or recurring monthly term accounts.</p>
                             </div>
                         </div>
                     </div>
                 `;
-                renderLayout(html);
+                renderBaseLayout(html);
+
+                // Run Counter Animations Upon Dynamic View Injection Mount
+                setTimeout(() => {
+                    animateNumericValue('c1', 8);
+                    animateNumericValue('c2', 24850);
+                    animateNumericValue('c3', 4);
+                    animateNumericValue('c4', 0.2, '');
+                }, 50);
+            }
+
+            // 1. DASHBOARD STYLE PANEL: EMI CALCULATOR
+            function renderEMIPanel() {
+                const html = `
+                    <div class="max-w-6xl mx-auto space-y-6 reveal-element">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                            <div>
+                                <h1 class="text-2xl font-black text-white">Mortgage & Loan EMI Terminal</h1>
+                                <p class="text-xs text-zinc-400 mt-1">Configure interest matrices to determine monthly structural amortizations.</p>
+                            </div>
+                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 glass-panel p-6 rounded-3xl space-y-6 flex flex-col justify-center">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase">Principal Loan Base</label>
+                                        <span id="v1" class="text-indigo-400 font-extrabold font-mono text-sm"></span>
+                                    </div>
+                                    <input id="s1" type="range" min="50000" max="25000000" step="50000" value="5000000" class="w-full">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase">Annualized Interest Percentage</label>
+                                        <span id="v2" class="text-emerald-400 font-extrabold font-mono text-sm"></span>
+                                    </div>
+                                    <input id="s2" type="range" min="1" max="24" step="0.1" value="8.5" class="w-full">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase">Repayment Duration Horizon</label>
+                                        <span id="v3" class="text-violet-400 font-extrabold font-mono text-sm"></span>
+                                    </div>
+                                    <input id="s3" type="range" min="1" max="30" step="1" value="20" class="w-full">
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-3xl flex flex-col items-center justify-between min-h-[340px]">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-bold tracking-widest font-mono text-zinc-500 uppercase">Target Monthly Installment</p>
+                                    <p id="outEmi" class="text-3xl font-black text-indigo-400 font-mono mt-1"></p>
+                                </div>
+
+                                <div class="w-40 h-40 relative my-4">
+                                    <canvas id="dashboardChart"></canvas>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span class="text-[9px] font-mono tracking-widest text-zinc-500 uppercase">Ratio</span>
+                                        <span class="text-xs font-bold text-white mt-0.5">Asset/Fee</span>
+                                    </div>
+                                </div>
+
+                                <div class="w-full bg-zinc-950/40 border border-white/5 p-4 rounded-2xl space-y-2 text-xs font-mono text-zinc-400">
+                                    <div class="flex justify-between"><span>Principal Borrowed:</span><span id="outP" class="text-white font-bold"></span></div>
+                                    <div class="flex justify-between"><span>Cumulative Interest:</span><span id="outI" class="text-emerald-400 font-bold"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                renderBaseLayout(html);
 
                 const s1 = document.getElementById('s1'); const s2 = document.getElementById('s2'); const s3 = document.getElementById('s3');
-                function calc() {
-                    const p = Number(s1.value); const r = Number(s2.value) / 12 / 100; const n = Number(s3.value) * 12;
+                function process() {
+                    const p = Number(s1.value); const r = (Number(s2.value) / 12) / 100; const n = Number(s3.value) * 12;
                     document.getElementById('v1').textContent = formatMoney(p);
                     document.getElementById('v2').textContent = s2.value + '%';
                     document.getElementById('v3').textContent = s3.value + ' Years';
 
                     const emi = r > 0 ? (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : p / n;
-                    const totPay = emi * n; const totInt = totPay - p;
+                    const grossRepay = emi * n; const grossInt = grossRepay - p;
 
                     document.getElementById('outEmi').textContent = formatMoney(emi);
                     document.getElementById('outP').textContent = formatMoney(p);
-                    document.getElementById('outI').textContent = formatMoney(totInt);
+                    document.getElementById('outI').textContent = formatMoney(grossInt);
 
-                    if(globalChartInstance) { globalChartInstance.data.datasets[0].data = [p, totInt]; globalChartInstance.update(); }
-                    else { initDonutChart(p, totInt); }
+                    if (globalChartInstance) {
+                        globalChartInstance.data.datasets[0].data = [p, grossInt];
+                        globalChartInstance.update();
+                    } else {
+                        mountChartCanvas(p, grossInt);
+                    }
                 }
-                [s1, s2, s3].forEach(s => s.addEventListener('input', calc)); calc();
+                [s1, s2, s3].forEach(s => s.addEventListener('input', process)); process();
             }
 
-            // 2. SIP INVESTMENT CALCULATOR PAGE
-            function renderSIP() {
+            // 2. DASHBOARD STYLE PANEL: SIP INVESTMENT CALCULATOR
+            function renderSIPPanel() {
                 const html = `
-                    <h2 class="text-2xl font-black mb-8 text-emerald-400">SIP Wealth Projection Model</h2>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                    <div class="max-w-6xl mx-auto space-y-6 reveal-element">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
                             <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Monthly Committed Capital: <span id="v1" class="text-white font-mono font-bold"></span></label>
-                                <input id="s1" type="range" min="500" max="500000" step="500" value="10000" class="w-full accent-emerald-500">
+                                <h1 class="text-2xl font-black text-white">SIP Mutual Fund Wealth Modeler</h1>
+                                <p class="text-xs text-zinc-400 mt-1">Project capitalization curves across extended index cycles.</p>
                             </div>
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Expected Annual Returns (%): <span id="v2" class="text-white font-mono font-bold"></span></label>
-                                <input id="s2" type="range" min="2" max="30" step="0.5" value="12" class="w-full accent-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Accumulation Period (Years): <span id="v3" class="text-white font-mono font-bold"></span></label>
-                                <input id="s3" type="range" min="1" max="40" step="1" value="10" class="w-full accent-emerald-500">
-                            </div>
+                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
                         </div>
-                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between items-center text-center">
-                            <div>
-                                <p class="text-xs text-zinc-500 uppercase tracking-wider">Projected Future Asset Pool</p>
-                                <p id="outTot" class="text-3xl font-black text-emerald-400 font-mono mt-2"></p>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 glass-panel p-6 rounded-3xl space-y-6 flex flex-col justify-center">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase">Monthly Cash Commitment</label>
+                                        <span id="v1" class="text-emerald-400 font-extrabold font-mono text-sm"></span>
+                                    </div>
+                                    <input id="s1" type="range" min="500" max="250000" step="500" value="15000" class="w-full">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase">Estimated Compound Return Rate</label>
+                                        <span id="v2" class="text-indigo-400 font-extrabold font-mono text-sm"></span>
+                                    </div>
+                                    <input id="s2" type="range" min="2" max="26" step="0.5" value="13.5" class="w-full">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase">Accumulation Horizon Time</label>
+                                        <span id="v3" class="text-violet-400 font-extrabold font-mono text-sm"></span>
+                                    </div>
+                                    <input id="s3" type="range" min="1" max="40" step="1" value="15" class="w-full">
+                                </div>
                             </div>
-                            <div class="w-40 h-40 relative my-4"><canvas id="chartCanvas"></canvas></div>
-                            <div class="w-full text-xs text-zinc-400 space-y-1 font-mono">
-                                <div class="flex justify-between"><span>Invested Principal:</span><span id="outP"></span></div>
-                                <div class="flex justify-between"><span>Accrued Yield Value:</span><span id="outI"></span></div>
+
+                            <div class="glass-panel p-6 rounded-3xl flex flex-col items-center justify-between min-h-[340px]">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-bold tracking-widest font-mono text-zinc-500 uppercase">Estimated Future Net Asset Value</p>
+                                    <p id="outTot" class="text-3xl font-black text-emerald-400 font-mono mt-1"></p>
+                                </div>
+
+                                <div class="w-40 h-40 relative my-4"><canvas id="dashboardChart"></canvas></div>
+
+                                <div class="w-full bg-zinc-950/40 border border-white/5 p-4 rounded-2xl space-y-2 text-xs font-mono text-zinc-400">
+                                    <div class="flex justify-between"><span>Principal Invested:</span><span id="outP" class="text-white font-bold"></span></div>
+                                    <div class="flex justify-between"><span>Compound Capital Yield:</span><span id="outI" class="text-indigo-400 font-bold"></span></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
-                renderLayout(html);
+                renderBaseLayout(html);
 
                 const s1 = document.getElementById('s1'); const s2 = document.getElementById('s2'); const s3 = document.getElementById('s3');
-                function calc() {
+                function process() {
                     const m = Number(s1.value); const i = (Number(s2.value) / 100) / 12; const n = Number(s3.value) * 12;
                     document.getElementById('v1').textContent = formatMoney(m);
                     document.getElementById('v2').textContent = s2.value + '%';
@@ -268,50 +522,64 @@
                     document.getElementById('outP').textContent = formatMoney(principal);
                     document.getElementById('outI').textContent = formatMoney(yields);
 
-                    if(globalChartInstance) { globalChartInstance.data.datasets[0].data = [principal, yields]; globalChartInstance.update(); }
-                    else { initDonutChart(principal, yields, ['Invested Principal', 'Estimated Yield Pool']); }
+                    if (globalChartInstance) {
+                        globalChartInstance.data.datasets[0].data = [principal, yields];
+                        globalChartInstance.update();
+                    } else {
+                        mountChartCanvas(principal, yields, "Invested Principal", "Accrued Yield Wealth");
+                    }
                 }
-                [s1, s2, s3].forEach(s => s.addEventListener('input', calc)); calc();
+                [s1, s2, s3].forEach(s => s.addEventListener('input', process)); process();
             }
 
-            // 3. GST TAX MATRICES CALCULATOR PAGE
-            function renderGST() {
+            // 3. DASHBOARD STYLE PANEL: GST MATRIX CALCULATOR
+            function renderGSTPanel() {
                 const html = `
-                    <h2 class="text-2xl font-black mb-8 text-amber-400">Consumption Value Added & GST Matrix</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                    <div class="max-w-4xl mx-auto space-y-6 reveal-element">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                             <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Base Transacted Amount</label>
-                                <input id="baseAmt" type="number" value="50000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-amber-500">
+                                <h1 class="text-2xl font-black text-white">GST Calculation Platform</h1>
+                                <p class="text-xs text-zinc-400 mt-1">Audit net and gross tax levies across primary corporate schedules.</p>
                             </div>
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Tax Rate Standard Slab</label>
-                                <select id="gstRate" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-amber-500">
-                                    <option value="5">5% Standard Base</option>
-                                    <option value="12">12% Utilities & Goods</option>
-                                    <option value="18" selected>18% Premium Luxury Base</option>
-                                    <option value="28">28% Demerit Luxury Surcharges</option>
-                                </select>
-                            </div>
-                            <div class="flex gap-4 bg-zinc-950 p-2 rounded-xl border border-zinc-800">
-                                <button id="modeInc" class="flex-1 py-2 rounded-lg font-bold transition text-sm cursor-pointer bg-amber-500 text-black">Exclusive (+ GST)</button>
-                                <button id="modeDec" class="flex-1 py-2 rounded-lg font-bold transition text-sm cursor-pointer text-zinc-400 hover:text-white">Inclusive (- GST)</button>
-                            </div>
+                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
                         </div>
-                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Raw Valuation Base:</span><span id="resBase" class="text-white"></span></div>
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Calculated Levy Pool:</span><span id="resTax" class="text-amber-400 font-bold"></span></div>
-                            <div class="flex justify-between pt-2 text-lg font-black"><span>Gross Transaction Total:</span><span id="resGross" class="text-emerald-400"></span></div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="glass-panel p-6 rounded-3xl space-y-5 flex flex-col justify-center">
+                                <div>
+                                    <label class="block text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase mb-2">Base Transacted Currency Volume</label>
+                                    <input id="baseAmt" type="number" value="125000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-amber-500 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase mb-2">Tax Rate Slabs</label>
+                                    <select id="gstRate" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-amber-500 cursor-pointer">
+                                        <option value="5">5% Standard Essentials</option>
+                                        <option value="12">12% Intermediary Products</option>
+                                        <option value="18" selected>18% Standard Services</option>
+                                        <option value="28">28% Demerit / Special Luxury</option>
+                                    </select>
+                                </div>
+                                <div class="flex p-1 bg-zinc-950 rounded-xl border border-white/5 text-xs font-bold">
+                                    <button id="mInc" class="flex-1 py-2.5 rounded-lg transition cursor-pointer bg-amber-500 text-black">Exclusive (+GST)</button>
+                                    <button id="mDec" class="flex-1 py-2.5 rounded-lg transition cursor-pointer text-zinc-400 hover:text-white">Inclusive (-GST)</button>
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-center space-y-4 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>Net Base Resource Allocation:</span><span id="resBase" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>Aggregated Fiscal Surcharge Due:</span><span id="resTax" class="text-amber-400 font-bold"></span></div>
+                                <div class="flex justify-between pt-2 text-base font-black"><span>Gross Ledger Settlement:</span><span id="resGross" class="text-emerald-400"></span></div>
+                            </div>
                         </div>
                     </div>
                 `;
-                renderLayout(html);
+                renderBaseLayout(html);
 
                 let mode = 'exclusive';
                 const baseAmt = document.getElementById('baseAmt'); const gstRate = document.getElementById('gstRate');
-                const btnInc = document.getElementById('modeInc'); const btnDec = document.getElementById('modeDec');
+                const mInc = document.getElementById('mInc'); const mDec = document.getElementById('mDec');
 
-                function calc() {
+                function process() {
                     const raw = Number(baseAmt.value) || 0; const r = Number(gstRate.value);
                     let base = 0; let tax = 0; let gross = 0;
 
@@ -326,285 +594,341 @@
                     document.getElementById('resGross').textContent = formatMoney(gross);
                 }
 
-                btnInc.onclick = () => { mode = 'exclusive'; btnInc.className = 'flex-1 py-2 rounded-lg font-bold transition text-sm bg-amber-500 text-black'; btnDec.className = 'flex-1 py-2 rounded-lg font-bold transition text-sm text-zinc-400 hover:text-white'; calc(); };
-                btnDec.onclick = () => { mode = 'inclusive'; btnDec.className = 'flex-1 py-2 rounded-lg font-bold transition text-sm bg-amber-500 text-black'; btnInc.className = 'flex-1 py-2 rounded-lg font-bold transition text-sm text-zinc-400 hover:text-white'; calc(); };
-                
-                [baseAmt, gstRate].forEach(el => el.addEventListener('input', calc)); calc();
+                mInc.onclick = () => { mode = 'exclusive'; mInc.className = 'flex-1 py-2.5 rounded-lg font-bold bg-amber-500 text-black'; mDec.className = 'flex-1 py-2.5 rounded-lg font-bold text-zinc-400 hover:text-white'; process(); };
+                mDec.onclick = () => { mode = 'inclusive'; mDec.className = 'flex-1 py-2.5 rounded-lg font-bold bg-amber-500 text-black'; mInc.className = 'flex-1 py-2.5 rounded-lg font-bold text-zinc-400 hover:text-white'; process(); };
+
+                [baseAmt, gstRate].forEach(el => el.addEventListener('input', process)); process();
             }
 
-            // 4. LIVE CURRENCY TRANSLATION CONVERTER ENGINE
-            function renderConverter() {
+            // 4. DASHBOARD STYLE PANEL: LIVE CURRENCY CONVERTER
+            function renderConverterPanel() {
                 const html = `
-                    <h2 class="text-2xl font-black mb-8 text-cyan-400">Economic Cross-Border FX Engine</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                    <div class="max-w-4xl mx-auto space-y-6 reveal-element">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                             <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Base Volumetric Value</label>
-                                <input id="fxInput" type="number" value="1000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-cyan-400">
+                                <h1 class="text-2xl font-black text-white">FX Cross-Border Settlement Grid</h1>
+                                <p class="text-xs text-zinc-400 mt-1">Simulate instant conversions over dynamic algorithmic forex corridors.</p>
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm text-zinc-400 mb-2">Source FX</label>
-                                    <select id="fxSrc" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono"></select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-zinc-400 mb-2">Target FX Target</label>
-                                    <select id="fxTarget" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono"></select>
-                                </div>
-                            </div>
+                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
                         </div>
-                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center items-center text-center">
-                            <p class="text-xs text-zinc-500 uppercase tracking-wider">Converted Forex Settlement Value</p>
-                            <p id="fxOutput" class="text-4xl font-black text-cyan-400 font-mono mt-2"></p>
-                            <p id="fxSpread" class="text-xs text-zinc-500 font-mono mt-2"></p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="glass-panel p-6 rounded-3xl space-y-5 flex flex-col justify-center">
+                                <div>
+                                    <label class="block text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase mb-2">Liquid Capital Volume</label>
+                                    <input id="fxInput" type="number" value="5000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-cyan-400 transition">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+                                    <div>
+                                        <label class="block text-zinc-500 mb-1">Source Account</label>
+                                        <select id="fxSrc" class="w-full bg-zinc-900 border border-white/10 rounded-xl p-3 text-white"></select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-zinc-500 mb-1">Target Settlement</label>
+                                        <select id="fxTarget" class="w-full bg-zinc-900 border border-white/10 rounded-xl p-3 text-white"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-center items-center text-center">
+                                <p class="text-[10px] font-bold tracking-widest font-mono text-zinc-500 uppercase">Projected Net FX Conversion Value</p>
+                                <p id="fxOutput" class="text-3xl font-black text-cyan-400 font-mono mt-1"></p>
+                                <p id="fxSpread" class="text-[10px] font-mono text-zinc-500 mt-2 bg-white/5 px-3 py-1 rounded-full border border-white/5"></p>
+                            </div>
                         </div>
                     </div>
                 `;
-                renderLayout(html);
+                renderBaseLayout(html);
 
+                const fxInput = document.getElementById('fxInput');
                 const srcSel = document.getElementById('fxSrc'); const targetSel = document.getElementById('fxTarget');
+                
                 Object.keys(currencyConfigs).forEach(k => {
                     srcSel.innerHTML += `<option value="${k}">${k}</option>`;
                     targetSel.innerHTML += `<option value="${k}" ${k === 'USD' ? 'selected' : ''}>${k}</option>`;
                 });
 
-                function calc() {
-                    const amt = Number(document.getElementById('fxInput').value) || 0;
+                function process() {
+                    const amt = Number(fxInput.value) || 0;
                     const srcK = srcSel.value; const tgtK = targetSel.value;
                     
-                    const amtInUSD = amt / currencyConfigs[srcK].rateVsUSD;
-                    const targetAmt = amtInUSD * currencyConfigs[tgtK].rateVsUSD;
+                    const inUSD = amt / currencyConfigs[srcK].rateVsUSD;
+                    const finalVal = inUSD * currencyConfigs[tgtK].rateVsUSD;
 
-                    const tgtCfg = currencyConfigs[tgtK];
-                    document.getElementById('fxOutput').textContent = tgtCfg.symbol + targetAmt.toLocaleString(tgtCfg.locale, {maximumFractionDigits:2});
+                    const configTarget = currencyConfigs[tgtK];
+                    document.getElementById('fxOutput').textContent = configTarget.symbol + finalVal.toLocaleString(configTarget.locale, { maximumFractionDigits: 2 });
                     document.getElementById('fxSpread').textContent = `1 ${srcK} = ${(currencyConfigs[tgtK].rateVsUSD / currencyConfigs[srcK].rateVsUSD).toFixed(4)} ${tgtK}`;
                 }
 
-                [document.getElementById('fxInput'), srcSel, targetSel].forEach(el => el.addEventListener('change', calc));
-                [document.getElementById('fxInput'), srcSel, targetSel].forEach(el => el.addEventListener('input', calc)); calc();
+                [fxInput, srcSel, targetSel].forEach(el => {
+                    el.addEventListener('input', process);
+                    el.addEventListener('change', process);
+                });
+                process();
             }
 
-            // 5. LOAN ELIGIBILITY CALCULATION ENGINE
-            function renderEligibility() {
+            // 5. DASHBOARD STYLE PANEL: LOAN ELIGIBILITY CALCULATOR
+            function renderEligibilityPanel() {
                 const html = `
-                    <h2 class="text-2xl font-black mb-8 text-violet-400">Debt Capacity Verification Framework</h2>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm text-zinc-400 mb-2">Monthly Gross Earnings</label>
-                                    <input id="inc" type="number" value="120000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-zinc-400 mb-2">Existing Monthly Obligations</label>
-                                    <input id="oblig" type="number" value="20000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
-                                </div>
+                    <div class="max-w-4xl mx-auto space-y-6 reveal-element">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                            <div>
+                                <h1 class="text-2xl font-black text-white">Debt Capital Capacity Audit</h1>
+                                <p class="text-xs text-zinc-400 mt-1">Calculates optimal capital risk thresholds using institutional FOIR baselines.</p>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm text-zinc-400 mb-2">Interest Rate Offered (% P.A.)</label>
-                                    <input id="rate" type="number" value="8.75" step="0.25" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-zinc-400 mb-2">Intended Tenure (Years)</label>
-                                    <input id="tenure" type="number" value="20" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
-                                </div>
-                            </div>
+                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
                         </div>
-                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Maximum Capped Monthly FOIR Limit (50%):</span><span id="foir" class="text-zinc-300"></span></div>
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Available Multi-Tranche Net EMI Buffer:</span><span id="buffer" class="text-emerald-400 font-bold"></span></div>
-                            <div class="flex justify-between pt-2 text-lg font-black"><span>Maximum Principal Loan Capacity:</span><span id="maxLoan" class="text-indigo-400"></span></div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="glass-panel p-6 rounded-3xl space-y-4 flex flex-col justify-center">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Monthly Yield Earnings</label>
+                                        <input id="inc" type="number" value="150000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Current Active Debt EMI</label>
+                                        <input id="oblig" type="number" value="25000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono text-xs">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Interest Rate Offered (%)</label>
+                                        <input id="rate" type="number" value="8.5" step="0.25" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Target Period (Years)</label>
+                                        <input id="tenure" type="number" value="20" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono text-xs">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-center space-y-4 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>FOIR Cap Allotment Ceiling (50%):</span><span id="foir" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>Net Usable Monthly Premium Margin:</span><span id="buffer" class="text-emerald-400 font-bold"></span></div>
+                                <div class="flex justify-between pt-2 text-base font-black"><span>Max Theoretical Loan Capacity:</span><span id="maxLoan" class="text-indigo-400"></span></div>
+                            </div>
                         </div>
                     </div>
                 `;
-                renderLayout(html);
+                renderBaseLayout(html);
 
                 const inc = document.getElementById('inc'); const oblig = document.getElementById('oblig');
                 const rate = document.getElementById('rate'); const tenure = document.getElementById('tenure');
 
-                function calc() {
+                function process() {
                     const gross = Number(inc.value) || 0; const debt = Number(oblig.value) || 0;
                     const r = (Number(rate.value) / 100) / 12; const n = (Number(tenure.value) || 1) * 12;
 
-                    const maxEMIAllowed = (gross * 0.50) - debt;
-                    document.getElementById('foir').textContent = formatMoney(gross * 0.50);
+                    const foirMax = gross * 0.50;
+                    const maxEMIAllowed = foirMax - debt;
+
+                    document.getElementById('foir').textContent = formatMoney(foirMax);
                     document.getElementById('buffer').textContent = formatMoney(Math.max(0, maxEMIAllowed));
 
-                    let maxLoan = 0;
+                    let totalCap = 0;
                     if (maxEMIAllowed > 0 && r > 0) {
-                        maxLoan = maxEMIAllowed * ((Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n)));
+                        totalCap = maxEMIAllowed * ((Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n)));
                     } else if (maxEMIAllowed > 0) {
-                        maxLoan = maxEMIAllowed * n;
+                        totalCap = maxEMIAllowed * n;
                     }
 
-                    document.getElementById('maxLoan').textContent = formatMoney(Math.max(0, maxLoan));
+                    document.getElementById('maxLoan').textContent = formatMoney(Math.max(0, totalCap));
                 }
 
-                [inc, oblig, rate, tenure].forEach(el => el.addEventListener('input', calc)); calc();
+                [inc, oblig, rate, tenure].forEach(el => el.addEventListener('input', process)); process();
             }
 
-            // 6. FD / RD FIXED DEPOSITS ACCRUED INTEREST ENGINE
-            function renderFDRD() {
+            // 6. DASHBOARD STYLE PANEL: FD/RD CALCULATOR
+            function renderFDRDPanel() {
                 const html = `
-                    <h2 class="text-2xl font-black mb-8 text-fuchsia-400">Term Investment Liquidity Model</h2>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
-                            <div class="flex gap-4 bg-zinc-950 p-1.5 rounded-xl border border-zinc-800">
-                                <button id="typeFD" class="flex-1 py-2 rounded-lg font-bold text-sm cursor-pointer bg-fuchsia-500 text-black">Fixed Deposit (FD)</button>
-                                <button id="typeRD" class="flex-1 py-2 rounded-lg font-bold text-sm cursor-pointer text-zinc-400 hover:text-white">Recurring Systematic Deposit (RD)</button>
-                            </div>
+                    <div class="max-w-5xl mx-auto space-y-6 reveal-element">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                             <div>
-                                <label id="lblAmt" class="block text-sm text-zinc-400 mb-2"></label>
-                                <input id="amt" type="number" value="100000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                <h1 class="text-2xl font-black text-white">Term Annuity Verification Center</h1>
+                                <p class="text-xs text-zinc-400 mt-1">Audit fixed capital assets versus recurring multi-tier savings accounts.</p>
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm text-zinc-400 mb-2">Annual Yield Rate (%)</label>
-                                    <input id="rate" type="number" value="7.1" step="0.05" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-zinc-400 mb-2">Time Horizon (Years)</label>
-                                    <input id="tenure" type="number" value="5" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
-                                </div>
-                            </div>
+                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
                         </div>
-                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Total Principal Invested:</span><span id="pOut"></span></div>
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Total Interest Earned:</span><span id="intOut" class="text-fuchsia-400 font-bold"></span></div>
-                            <div class="flex justify-between pt-2 text-lg font-black"><span>Maturity Yield Value:</span><span id="matOut" class="text-emerald-400"></span></div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 glass-panel p-6 rounded-3xl space-y-5 flex flex-col justify-center">
+                                <div class="flex p-1 bg-zinc-950 rounded-xl border border-white/5 text-xs font-bold">
+                                    <button id="typeFD" class="flex-1 py-2 rounded-lg transition cursor-pointer bg-fuchsia-500 text-black">Fixed Deposit (FD)</button>
+                                    <button id="typeRD" class="flex-1 py-2 rounded-lg transition cursor-pointer text-zinc-400 hover:text-white">Recurring Deposit (RD)</button>
+                                </div>
+                                <div>
+                                    <label id="lblAmt" class="block text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase mb-2"></label>
+                                    <input id="amt" type="number" value="250000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-fuchsia-500">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Annual Yield Rate (%)</label>
+                                        <input id="rate" type="number" value="7.25" step="0.05" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Time Horizon (Years)</label>
+                                        <input id="tenure" type="number" value="5" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono text-xs">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-center space-y-4 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>Aggregated Assets Vested:</span><span id="pOut" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>Statutory Yield Dividends:</span><span id="intOut" class="text-fuchsia-400 font-bold"></span></div>
+                                <div class="flex justify-between pt-2 text-base font-black"><span>Gross Maturity Valuation:</span><span id="matOut" class="text-emerald-400"></span></div>
+                            </div>
                         </div>
                     </div>
                 `;
-                renderLayout(html);
+                renderBaseLayout(html);
 
                 let mode = 'FD';
                 const amt = document.getElementById('amt'); const rate = document.getElementById('rate');
                 const tenure = document.getElementById('tenure'); const btnFD = document.getElementById('typeFD'); const btnRD = document.getElementById('typeRD');
 
-                function calc() {
+                function process() {
                     const v = Number(amt.value) || 0; const r = Number(rate.value) / 100; const t = Number(tenure.value) || 0;
-                    document.getElementById('lblAmt').textContent = mode === 'FD' ? 'Lump Sum Principal Base' : 'Monthly Recurring Installment Deposit';
+                    document.getElementById('lblAmt').textContent = mode === 'FD' ? 'Lump Sum Principal Base Asset' : 'Monthly Systematic Installment Allocation';
 
                     let principal = 0; let maturity = 0;
 
                     if (mode === 'FD') {
                         principal = v;
-                        // Standard quarterly compounding formula
                         maturity = principal * Math.pow(1 + (r / 4), 4 * t);
                     } else {
-                        const months = t * 12; principal = v * months;
-                        // RD compounding tracking
-                        let total = 0;
-                        for (let i = 1; i <= months; i++) {
-                            total += v * Math.pow(1 + (r / 4), 4 * ((months - i + 1) / 12));
+                        const totalMonths = t * 12; principal = v * totalMonths;
+                        let runningSum = 0;
+                        for (let j = 1; j <= totalMonths; j++) {
+                            runningSum += v * Math.pow(1 + (r / 4), 4 * ((totalMonths - j + 1) / 12));
                         }
-                        maturity = total;
+                        maturity = runningSum;
                     }
 
-                    const interest = maturity - principal;
+                    const diffInterest = maturity - principal;
                     document.getElementById('pOut').textContent = formatMoney(principal);
-                    document.getElementById('intOut').textContent = formatMoney(interest);
+                    document.getElementById('intOut').textContent = formatMoney(diffInterest);
                     document.getElementById('matOut').textContent = formatMoney(maturity);
                 }
 
-                btnFD.onclick = () => { mode = 'FD'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold text-sm bg-fuchsia-500 text-black'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold text-sm text-zinc-400 hover:text-white'; calc(); };
-                btnRD.onclick = () => { mode = 'RD'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold text-sm bg-fuchsia-500 text-black'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold text-sm text-zinc-400 hover:text-white'; calc(); };
+                btnFD.onclick = () => { mode = 'FD'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold bg-fuchsia-500 text-black'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold text-zinc-400 hover:text-white'; process(); };
+                btnRD.onclick = () => { mode = 'RD'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold bg-fuchsia-500 text-black'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold text-zinc-400 hover:text-white'; process(); };
 
-                [amt, rate, tenure].forEach(el => el.addEventListener('input', calc)); calc();
+                [amt, rate, tenure].forEach(el => el.addEventListener('input', process)); process();
             }
 
-            // 7. MULTI-JURISDICTIONAL FISCAL SLAB TAX CALCULATOR
-            function renderTax() {
+            // 7. DASHBOARD STYLE PANEL: TAX CALCULATOR
+            function renderTaxPanel() {
                 const html = `
-                    <h2 class="text-2xl font-black mb-8 text-rose-400">Fiscal Revenue & Bracket Assessment</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                    <div class="max-w-4xl mx-auto space-y-6 reveal-element">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                             <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Total Gross Assessable Income (Annual)</label>
-                                <input id="grossInc" type="number" value="1500000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                <h1 class="text-2xl font-black text-white">Statutory Income Progressive Tax Terminal</h1>
+                                <p class="text-xs text-zinc-400 mt-1">Estimates core progressive marginal bracket liabilities.</p>
                             </div>
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Allowable Statutory Deductions / Exemptions</label>
-                                <input id="deduct" type="number" value="150000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
-                            </div>
+                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
                         </div>
-                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Adjusted Net Taxable Income:</span><span id="taxNet"></span></div>
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Calculated Liability Surcharge:</span><span id="taxDue" class="text-rose-400 font-bold"></span></div>
-                            <div class="flex justify-between pt-2 text-lg font-black"><span>Effective Net Take-Home Pay:</span><span id="takeHome" class="text-emerald-400"></span></div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="glass-panel p-6 rounded-3xl space-y-4 flex flex-col justify-center">
+                                <div>
+                                    <label class="block text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase mb-2">Total Gross Assessable Revenue (Annual)</label>
+                                    <input id="grossInc" type="number" value="1800000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-rose-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase mb-2">Statutory Deductions / Exemptions Allowed</label>
+                                    <input id="deduct" type="number" value="200000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-rose-500">
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-center space-y-4 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>Adjusted Net Taxable Bracket:</span><span id="taxNet" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>Calculated Liability Surcharge:</span><span id="taxDue" class="text-rose-400 font-bold"></span></div>
+                                <div class="flex justify-between pt-2 text-base font-black"><span>Effective Liquid Take-Home Pay:</span><span id="takeHome" class="text-emerald-400"></span></div>
+                            </div>
                         </div>
                     </div>
                 `;
-                renderLayout(html);
+                renderBaseLayout(html);
 
                 const grossInc = document.getElementById('grossInc'); const deduct = document.getElementById('deduct');
 
-                function calc() {
-                    const inc = Number(grossInc.value) || 0; const ded = Number(deduct.value) || 0;
-                    const net = Math.max(0, inc - ded);
+                function process() {
+                    const totalGross = Number(grossInc.value) || 0; const exemptions = Number(deduct.value) || 0;
+                    const netIncome = Math.max(0, totalGross - exemptions);
 
-                    let tax = 0;
-                    // Standard progressive calculation bracket configuration model
+                    let computedTax = 0;
                     if (currentCurrency === 'INR') {
-                        if (net > 1500000) tax += (net - 1500000) * 0.30 + 150000;
-                        else if (net > 1200000) tax += (net - 1200000) * 0.20 + 90000;
-                        else if (net > 900000) tax += (net - 900000) * 0.15 + 45000;
-                        else if (net > 600000) tax += (net - 600000) * 0.10 + 15000;
-                        else if (net > 300000) tax += (net - 300000) * 0.05;
+                        // Classical India Progressive Tax Slab Schedule Logic
+                        if (netIncome > 1500000) computedTax += (netIncome - 1500000) * 0.30 + 150000;
+                        else if (netIncome > 1200000) computedTax += (netIncome - 1200000) * 0.20 + 90000;
+                        else if (netIncome > 900000) computedTax += (netIncome - 900000) * 0.15 + 45000;
+                        else if (netIncome > 600000) computedTax += (netIncome - 600000) * 0.10 + 15000;
+                        else if (netIncome > 300000) computedTax += (netIncome - 300000) * 0.05;
                     } else {
-                        // Global simplified multi-brackets baseline 
-                        if (net > 100000) tax += (net - 100000) * 0.35 + 15000;
-                        else if (net > 50000) tax += (net - 50000) * 0.22 + 4000;
-                        else if (net > 12000) tax += (net - 12000) * 0.10;
+                        // Global Multi-Bracket Flat Scaled Baseline
+                        if (netIncome > 120000) computedTax += (netIncome - 120000) * 0.33 + 16000;
+                        else if (netIncome > 60000) computedTax += (netIncome - 60000) * 0.20 + 4000;
+                        else if (netIncome > 15000) computedTax += (netIncome - 15000) * 0.10;
                     }
 
-                    document.getElementById('taxNet').textContent = formatMoney(net);
-                    document.getElementById('taxDue').textContent = formatMoney(tax);
-                    document.getElementById('takeHome').textContent = formatMoney(inc - tax);
+                    document.getElementById('taxNet').textContent = formatMoney(netIncome);
+                    document.getElementById('taxDue').textContent = formatMoney(computedTax);
+                    document.getElementById('takeHome').textContent = formatMoney(totalGross - computedTax);
                 }
 
-                [grossInc, deduct].forEach(el => el.addEventListener('input', calc)); calc();
+                [grossInc, deduct].forEach(el => el.addEventListener('input', process)); process();
             }
 
-            // 8. CORPORATE REVENUE GROWTH & SALARY HIKE MODE
-            function renderHike() {
+            // 8. DASHBOARD STYLE PANEL: SALARY HIKE CALCULATOR
+            function renderHikePanel() {
                 const html = `
-                    <h2 class="text-2xl font-black mb-8 text-teal-400">Revenue Growth & Salary Hike Calculator</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                    <div class="max-w-4xl mx-auto space-y-6 reveal-element">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                             <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Current Salary Baseline Balance</label>
-                                <input id="currSal" type="number" value="700000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                <h1 class="text-2xl font-black text-white">Revenue Growth & Compensation Optimizer</h1>
+                                <p class="text-xs text-zinc-400 mt-1">Audit precise corporate compensation surges and annualized growth deltas.</p>
                             </div>
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">New Proposed Salary Target</label>
-                                <input id="newSal" type="number" value="980000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
-                            </div>
+                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
                         </div>
-                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
-                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Compounded Net Raise Value:</span><span id="hikeAmt" class="text-indigo-400"></span></div>
-                            <div class="flex justify-between pt-2 text-lg font-black"><span>Aggregated Percentage Boost:</span><span id="hikePct" class="text-teal-400"></span></div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="glass-panel p-6 rounded-3xl space-y-4 flex flex-col justify-center">
+                                <div>
+                                    <label class="block text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase mb-2">Current Base Compensation</label>
+                                    <input id="currSal" type="number" value="800000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-teal-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase mb-2">Proposed Evaluation Target</label>
+                                    <input id="newSal" type="number" value="1150000" class="w-full bg-zinc-900/60 border border-white/10 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-teal-500">
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-center space-y-4 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between border-b border-white/5 pb-3"><span>Net Absolute Annual Delta:</span><span id="hikeAmt" class="text-indigo-400 font-bold text-sm"></span></div>
+                                <div class="flex justify-between pt-2 text-base font-black"><span>Compounded Surge Velocity:</span><span id="hikePct" class="text-teal-400"></span></div>
+                            </div>
                         </div>
                     </div>
                 `;
-                renderLayout(html);
+                renderBaseLayout(html);
 
                 const currSal = document.getElementById('currSal'); const newSal = document.getElementById('newSal');
 
-                function calc() {
-                    const c = Number(currSal.value) || 0; const n = Number(newSal.value) || 0;
-                    const diff = n - c; const pct = c > 0 ? ((diff / c) * 100).toFixed(1) : '0.0';
+                function process() {
+                    const currentVal = Number(currSal.value) || 0; const proposedVal = Number(newSal.value) || 0;
+                    const deltaValue = proposedVal - currentVal; 
+                    const grossPercentage = currentVal > 0 ? ((deltaValue / currentVal) * 100).toFixed(1) : '0.0';
 
-                    document.getElementById('hikeAmt').textContent = formatMoney(diff);
-                    document.getElementById('hikePct').textContent = `${pct}%`;
+                    document.getElementById('hikeAmt').textContent = formatMoney(deltaValue);
+                    document.getElementById('hikePct').textContent = `${grossPercentage}%`;
                 }
 
-                [currSal, newSal].forEach(el => el.addEventListener('input', calc)); calc();
+                [currSal, newSal].forEach(el => el.addEventListener('input', process)); process();
             }
 
-            // Route Initialization Trigger
-            window.navigateRoute('home');
+            // Route Core Boot Trigger Execution Loop
+            window.route('home');
         });
     </script>
 </body>

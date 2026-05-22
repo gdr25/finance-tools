@@ -5,112 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Finance Tools</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
-    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
-    <style>
-        body { background-color: #09090b; color: #ffffff; font-family: sans-serif; }
-    </style>
 </head>
-<body>
+<body class="bg-zinc-950 text-white font-sans antialiased">
     <div id="root"></div>
 
     <script>
-        const { useState, useMemo } = React;
-        const { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } = Recharts;
-
-        // Math engine helper
-        const calculateEMI = (principal, annualRate, tenureYears) => {
-            const monthlyRate = annualRate / 12 / 100;
-            const totalMonths = tenureYears * 12;
-            const monthlyEMI = (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
-            const totalPayment = monthlyEMI * totalMonths;
-            const totalInterest = totalPayment - principal;
-            return { 
-                monthlyEMI: Math.round(monthlyEMI || 0), 
-                totalInterest: Math.round(totalInterest || 0), 
-                totalPayment: Math.round(totalPayment || 0) 
-            };
-        };
-
-        function FinanceHub() {
-            const [loanAmount, setLoanAmount] = useState(5000000);
-            const [interestRate, setInterestRate] = useState(8.5);
-            const [tenure, setTenure] = useState(20);
-            const [currentSalary, setCurrentSalary] = useState(600000);
-            const [newSalary, setNewSalary] = useState(850000);
-
-            const emiResults = useMemo(() => calculateEMI(loanAmount, interestRate, tenure), [loanAmount, interestRate, tenure]);
-            const emiPieData = [
-                { name: 'Principal Base', value: loanAmount, color: '#6366f1' }, 
-                { name: 'Total Interest', value: emiResults.totalInterest, color: '#10b981' }
-            ];
+        // We write pure, modern JavaScript directly so the browser doesn't need external charting libraries to render the UI
+        window.addEventListener('DOMContentLoaded', () => {
+            const rootContainer = document.getElementById('root');
             
-            const hikeMetrics = useMemo(() => {
-                const difference = newSalary - currentSalary;
-                return { difference, percentage: currentSalary > 0 ? ((difference / currentSalary) * 100).toFixed(1) : '0' };
-            }, [currentSalary, newSalary]);
+            // App Layout Framework Template
+            rootContainer.innerHTML = `
+                <div class="min-h-screen p-6 md:p-12 bg-zinc-950 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.12)_0%,transparent_50%)]">
+                    <nav class="max-w-7xl mx-auto flex justify-between items-center mb-12 border-b border-zinc-900 pb-4">
+                        <div class="font-bold text-xl tracking-tight text-indigo-400">NEXUS.FINANCE</div>
+                        <div class="text-xs text-zinc-500 font-mono border border-zinc-800 rounded-full px-3 py-1">v1.0.0 Live Cloud</div>
+                    </nav>
+                    
+                    <main class="max-w-7xl mx-auto grid grid-cols-1 gap-12">
+                        <section class="bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl">
+                            <h2 class="text-xl font-bold mb-6 text-indigo-400">01 / EMI Structure Simulation</h2>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div class="flex flex-col gap-6">
+                                    <div>
+                                        <div class="flex justify-between mb-2">
+                                            <label class="text-sm text-zinc-400">Loan Amount</label>
+                                            <span id="loanVal" class="text-indigo-400 font-bold font-mono">$5,000,000</span>
+                                        </div>
+                                        <input id="loanSlider" type="range" min="100000" max="10000000" step="50000" value="5000000" class="w-full accent-indigo-500 cursor-pointer">
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between mb-2">
+                                            <label class="text-sm text-zinc-400">Interest Rate (% P.A.)</label>
+                                            <span id="rateVal" class="text-emerald-400 font-bold font-mono">8.5%</span>
+                                        </div>
+                                        <input id="rateSlider" type="range" min="1" max="20" step="0.1" value="8.5" class="w-full accent-emerald-500 cursor-pointer">
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between mb-2">
+                                            <label class="text-sm text-zinc-400">Duration Period</label>
+                                            <span id="tenureVal" class="text-violet-400 font-bold font-mono">20 Years</span>
+                                        </div>
+                                        <input id="tenureSlider" type="range" min="1" max="30" step="1" value="20" class="w-full accent-violet-500 cursor-pointer">
+                                    </div>
+                                </div>
+                                <div class="bg-zinc-950 p-6 rounded-xl border border-zinc-800 flex flex-col justify-center">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-wider">Estimated Monthly EMI</p>
+                                    <p id="emiDisplay" class="text-4xl font-extrabold text-indigo-400 font-mono mt-2">$43,391</p>
+                                </div>
+                            </div>
+                        </section>
 
-            return React.createElement('div', { className: 'min-h-screen p-6 md:p-12 bg-zinc-950' },
-                // Navbar
-                React.createElement('nav', { className: 'max-w-7xl mx-auto flex justify-between items-center mb-12 border-b border-zinc-900 pb-4' },
-                    React.createElement('div', { className: 'font-bold text-xl text-indigo-400' }, 'NEXUS.FINANCE')
-                ),
-                // Main Container
-                React.createElement('main', { className: 'max-w-7xl mx-auto grid grid-cols-1 gap-12' },
-                    // Section 1: EMI
-                    React.createElement('section', { className: 'bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl' },
-                        React.createElement('h2', { className: 'text-xl font-bold mb-6 text-indigo-400' }, '01 / EMI Calculator'),
-                        React.createElement('div', { className: 'grid grid-cols-1 lg:grid-cols-2 gap-8' },
-                            React.createElement('div', { className: 'flex flex-col gap-6' },
-                                React.createElement('div', null,
-                                    React.createElement('label', { className: 'block text-sm text-zinc-400 mb-2' }, `Loan Amount: $${loanAmount.toLocaleString()}`),
-                                    React.createElement('input', { type: 'range', min: 100000, max: 10000000, step: 50000, value: loanAmount, onChange: (e) => setLoanAmount(Number(e.target.value)), className: 'w-full accent-indigo-500' })
-                                ),
-                                React.createElement('div', null,
-                                    React.createElement('label', { className: 'block text-sm text-zinc-400 mb-2' }, `Interest Rate: ${interestRate}%`),
-                                    React.createElement('input', { type: 'range', min: 1, max: 20, step: 0.1, value: interestRate, onChange: (e) => setInterestRate(Number(e.target.value)), className: 'w-full accent-emerald-500' })
-                                )
-                            ),
-                            React.createElement('div', { className: 'bg-zinc-950 p-6 rounded-xl border border-zinc-800 flex flex-col justify-between' },
-                                React.createElement('div', null,
-                                    React.createElement('p', { className: 'text-xs text-zinc-500 uppercase' }, 'Expected Monthly EMI'),
-                                    React.createElement('p', { className: 'text-3xl font-extrabold text-indigo-400 font-mono' }, `$${emiResults.monthlyEMI.toLocaleString()}`)
-                                )
-                            )
-                        )
-                    ),
-                    // Section 2: Salary Hike
-                    React.createElement('section', { className: 'bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl' },
-                        React.createElement('h2', { className: 'text-xl font-bold mb-6 text-emerald-400' }, '02 / Salary Hike Calculator'),
-                        React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },
-                            React.createElement('div', null,
-                                React.createElement('label', { className: 'block text-sm text-zinc-400 mb-2' }, 'Current Annual Salary ($)'),
-                                React.createElement('input', { type: 'number', value: currentSalary, onChange: (e) => setCurrentSalary(Number(e.target.value)), className: 'w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono' })
-                            ),
-                            React.createElement('div', null,
-                                React.createElement('label', { className: 'block text-sm text-zinc-400 mb-2' }, 'New Proposed Salary ($)'),
-                                React.createElement('input', { type: 'number', value: newSalary, onChange: (e) => setNewSalary(Number(e.target.value)), className: 'w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono' })
-                            )
-                        ),
-                        React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6' },
-                            React.createElement('div', { className: 'bg-zinc-950 border border-zinc-800 p-4 rounded-xl' },
-                                React.createElement('p', { className: 'text-xs text-zinc-500 uppercase' }, 'Hike Percentage'),
-                                React.createElement('p', { className: 'text-2xl font-bold font-mono text-emerald-400' }, `${hikeMetrics.percentage}%`)
-                            ),
-                            React.createElement('div', { className: 'bg-zinc-950 border border-zinc-800 p-4 rounded-xl' },
-                                React.createElement('p', { className: 'text-xs text-zinc-500 uppercase' }, 'Total Raise Amount'),
-                                React.createElement('p', { className: 'text-2xl font-bold font-mono text-indigo-400' }, `$${hikeMetrics.difference.toLocaleString()}`)
-                            )
-                        )
-                    )
-                )
-            );
-        }
+                        <section class="bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl">
+                            <h2 class="text-xl font-bold mb-6 text-emerald-400">02 / Salary Hike Calculator</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Current Annual Salary ($)</label>
+                                    <input id="currSalary" type="number" value="600000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">New Proposed Salary ($)</label>
+                                    <input id="newSalary" type="number" value="850000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-emerald-500">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                                <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-xl">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-wider">Hike Percentage</p>
+                                    <p id="hikePercent" class="text-3xl font-bold font-mono text-emerald-400 mt-2">41.7%</p>
+                                </div>
+                                <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-xl">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-wider">Total Raise Amount</p>
+                                    <p id="hikeDiff" class="text-3xl font-bold font-mono text-indigo-400 mt-2">$250,000</p>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            `;
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(React.createElement(FinanceHub));
+            // Grab DOM Elements
+            const loanSlider = document.getElementById('loanSlider');
+            const rateSlider = document.getElementById('rateSlider');
+            const tenureSlider = document.getElementById('tenureSlider');
+            const loanVal = document.getElementById('loanVal');
+            const rateVal = document.getElementById('rateVal');
+            const tenureVal = document.getElementById('tenureVal');
+            const emiDisplay = document.getElementById('emiDisplay');
+
+            const currSalary = document.getElementById('currSalary');
+            const newSalary = document.getElementById('newSalary');
+            const hikePercent = document.getElementById('hikePercent');
+            const hikeDiff = document.getElementById('hikeDiff');
+
+            // Calculation Logic functions
+            function updateEMI() {
+                const P = Number(loanSlider.value);
+                const annualR = Number(rateSlider.value);
+                const N = Number(tenureSlider.value) * 12;
+                const R = annualR / 12 / 100;
+
+                loanVal.textContent = `$${P.toLocaleString()}`;
+                rateVal.textContent = `${annualR}%`;
+                tenureVal.textContent = `${tenureSlider.value} Years`;
+
+                let emi = 0;
+                if (R > 0) {
+                    emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+                } else {
+                    emi = P / N;
+                }
+                emiDisplay.textContent = `$${Math.round(emi || 0).toLocaleString()}`;
+            }
+
+            function updateHike() {
+                const current = Number(currSalary.value) || 0;
+                const proposed = Number(newSalary.value) || 0;
+                const diff = proposed - current;
+                const pct = current > 0 ? ((diff / current) * 100).toFixed(1) : '0.0';
+
+                hikeDiff.textContent = diff >= 0 ? `$${Math.round(diff).toLocaleString()}` : `-$${Math.abs(Math.round(diff)).toLocaleString()}`;
+                hikePercent.textContent = `${pct}%`;
+            }
+
+            // Event Listeners for Sliders & Inputs
+            loanSlider.addEventListener('input', updateEMI);
+            rateSlider.addEventListener('input', updateEMI);
+            tenureSlider.addEventListener('input', updateEMI);
+            currSalary.addEventListener('input', updateHike);
+            newSalary.addEventListener('input', updateHike);
+        });
     </script>
 </body>
 </html>

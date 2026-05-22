@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Finance Tools</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+    <style>
+        body { background-color: #09090b; color: #ffffff; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        const { useState, useMemo } = React;
+        const { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } = Recharts;
+
+        // Math engine helper
+        const calculateEMI = (principal, annualRate, tenureYears) => {
+            const monthlyRate = annualRate / 12 / 100;
+            const totalMonths = tenureYears * 12;
+            const monthlyEMI = (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
+            const totalPayment = monthlyEMI * totalMonths;
+            const totalInterest = totalPayment - principal;
+            return { 
+                monthlyEMI: Math.round(monthlyEMI || 0), 
+                totalInterest: Math.round(totalInterest || 0), 
+                totalPayment: Math.round(totalPayment || 0) 
+            };
+        };
+
+        function FinanceHub() {
+            const [loanAmount, setLoanAmount] = useState(5000000);
+            const [interestRate, setInterestRate] = useState(8.5);
+            const [tenure, setTenure] = useState(20);
+            const [currentSalary, setCurrentSalary] = useState(600000);
+            const [newSalary, setNewSalary] = useState(850000);
+
+            const emiResults = useMemo(() => calculateEMI(loanAmount, interestRate, tenure), [loanAmount, interestRate, tenure]);
+            const emiPieData = [
+                { name: 'Principal Base', value: loanAmount, color: '#6366f1' }, 
+                { name: 'Total Interest', value: emiResults.totalInterest, color: '#10b981' }
+            ];
+            
+            const hikeMetrics = useMemo(() => {
+                const difference = newSalary - currentSalary;
+                return { difference, percentage: currentSalary > 0 ? ((difference / currentSalary) * 100).toFixed(1) : '0' };
+            }, [currentSalary, newSalary]);
+
+            return React.createElement('div', { className: 'min-h-screen p-6 md:p-12 bg-zinc-950' },
+                // Navbar
+                React.createElement('nav', { className: 'max-w-7xl mx-auto flex justify-between items-center mb-12 border-b border-zinc-900 pb-4' },
+                    React.createElement('div', { className: 'font-bold text-xl text-indigo-400' }, 'NEXUS.FINANCE')
+                ),
+                // Main Container
+                React.createElement('main', { className: 'max-w-7xl mx-auto grid grid-cols-1 gap-12' },
+                    // Section 1: EMI
+                    React.createElement('section', { className: 'bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl' },
+                        React.createElement('h2', { className: 'text-xl font-bold mb-6 text-indigo-400' }, '01 / EMI Calculator'),
+                        React.createElement('div', { className: 'grid grid-cols-1 lg:grid-cols-2 gap-8' },
+                            React.createElement('div', { className: 'flex flex-col gap-6' },
+                                React.createElement('div', null,
+                                    React.createElement('label', { className: 'block text-sm text-zinc-400 mb-2' }, `Loan Amount: $${loanAmount.toLocaleString()}`),
+                                    React.createElement('input', { type: 'range', min: 100000, max: 10000000, step: 50000, value: loanAmount, onChange: (e) => setLoanAmount(Number(e.target.value)), className: 'w-full accent-indigo-500' })
+                                ),
+                                React.createElement('div', null,
+                                    React.createElement('label', { className: 'block text-sm text-zinc-400 mb-2' }, `Interest Rate: ${interestRate}%`),
+                                    React.createElement('input', { type: 'range', min: 1, max: 20, step: 0.1, value: interestRate, onChange: (e) => setInterestRate(Number(e.target.value)), className: 'w-full accent-emerald-500' })
+                                )
+                            ),
+                            React.createElement('div', { className: 'bg-zinc-950 p-6 rounded-xl border border-zinc-800 flex flex-col justify-between' },
+                                React.createElement('div', null,
+                                    React.createElement('p', { className: 'text-xs text-zinc-500 uppercase' }, 'Expected Monthly EMI'),
+                                    React.createElement('p', { className: 'text-3xl font-extrabold text-indigo-400 font-mono' }, `$${emiResults.monthlyEMI.toLocaleString()}`)
+                                )
+                            )
+                        )
+                    ),
+                    // Section 2: Salary Hike
+                    React.createElement('section', { className: 'bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl' },
+                        React.createElement('h2', { className: 'text-xl font-bold mb-6 text-emerald-400' }, '02 / Salary Hike Calculator'),
+                        React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },
+                            React.createElement('div', null,
+                                React.createElement('label', { className: 'block text-sm text-zinc-400 mb-2' }, 'Current Annual Salary ($)'),
+                                React.createElement('input', { type: 'number', value: currentSalary, onChange: (e) => setCurrentSalary(Number(e.target.value)), className: 'w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono' })
+                            ),
+                            React.createElement('div', null,
+                                React.createElement('label', { className: 'block text-sm text-zinc-400 mb-2' }, 'New Proposed Salary ($)'),
+                                React.createElement('input', { type: 'number', value: newSalary, onChange: (e) => setNewSalary(Number(e.target.value)), className: 'w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono' })
+                            )
+                        ),
+                        React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6' },
+                            React.createElement('div', { className: 'bg-zinc-950 border border-zinc-800 p-4 rounded-xl' },
+                                React.createElement('p', { className: 'text-xs text-zinc-500 uppercase' }, 'Hike Percentage'),
+                                React.createElement('p', { className: 'text-2xl font-bold font-mono text-emerald-400' }, `${hikeMetrics.percentage}%`)
+                            ),
+                            React.createElement('div', { className: 'bg-zinc-950 border border-zinc-800 p-4 rounded-xl' },
+                                React.createElement('p', { className: 'text-xs text-zinc-500 uppercase' }, 'Total Raise Amount'),
+                                React.createElement('p', { className: 'text-2xl font-bold font-mono text-indigo-400' }, `$${hikeMetrics.difference.toLocaleString()}`)
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(FinanceHub));
+    </script>
+</body>
+</html>

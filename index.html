@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Finance Tools - Global Edition</title>
+    <title>Nexus Premium Finance Suite</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-zinc-950 text-white font-sans antialiased">
     <div id="root"></div>
@@ -13,176 +14,597 @@
         window.addEventListener('DOMContentLoaded', () => {
             const rootContainer = document.getElementById('root');
             
-            // Global State Configuration
-            let currentCurrency = 'INR'; // Default to Indian Rupee (₹)
+            // App Routing and Currency States
+            let currentPage = 'home'; 
+            let currentCurrency = 'INR';
+            let globalChartInstance = null; // Keeps track of chart refreshes
             
             const currencyConfigs = {
-                USD: { symbol: '$', locale: 'en-US', defaultLoan: 500000, maxLoan: 2000000, stepLoan: 10000, defaultSalary: 80000, defaultNewSalary: 110000 },
-                INR: { symbol: '₹', locale: 'en-IN', defaultLoan: 5000000, maxLoan: 20000000, stepLoan: 50000, defaultSalary: 600000, defaultNewSalary: 850000 },
-                EUR: { symbol: '€', locale: 'de-DE', defaultLoan: 400000, maxLoan: 1500000, stepLoan: 10000, defaultSalary: 55000, defaultNewSalary: 75000 },
-                GBP: { symbol: '£', locale: 'en-GB', defaultLoan: 400000, maxLoan: 1500000, stepLoan: 10000, defaultSalary: 50000, defaultNewSalary: 70000 }
+                INR: { symbol: '₹', locale: 'en-IN', rateVsUSD: 83.50 },
+                USD: { symbol: '$', locale: 'en-US', rateVsUSD: 1.00 },
+                EUR: { symbol: '€', locale: 'de-DE', rateVsUSD: 0.92 },
+                GBP: { symbol: '£', locale: 'en-GB', rateVsUSD: 0.79 }
             };
 
-            function formatMoney(amount, currencyCode) {
-                const config = currencyConfigs[currencyCode];
+            function formatMoney(amount) {
+                const config = currencyConfigs[currentCurrency];
                 return config.symbol + Math.round(amount).toLocaleString(config.locale);
             }
 
-            // Core Layout Render
-            function renderApp() {
+            // Global Master Router Layout
+            function renderLayout(pageContentHTML) {
+                const config = currencyConfigs[currentCurrency];
                 rootContainer.innerHTML = `
-                    <div class="min-h-screen p-6 md:p-12 bg-zinc-950 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.12)_0%,transparent_50%)]">
-                        
-                        <nav class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center mb-12 border-b border-zinc-900 pb-6 gap-4">
-                            <div class="font-bold text-xl tracking-tight text-indigo-400">NEXUS.FINANCE</div>
+                    <div class="min-h-screen bg-zinc-950 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.15)_0%,transparent_50%)] flex flex-col">
+                        <nav class="max-w-7xl w-full mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center border-b border-zinc-900 gap-4">
+                            <div class="font-black text-2xl tracking-wider text-indigo-400 cursor-pointer" id="navLogo">NEXUS.FINANCE</div>
                             
-                            <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 p-1.5 rounded-xl">
-                                <span class="text-xs text-zinc-400 font-medium px-2">Select Currency:</span>
-                                <select id="currencySelector" class="bg-zinc-950 text-white font-mono text-sm rounded-lg border border-zinc-800 px-3 py-1 focus:outline-none focus:border-indigo-500 cursor-pointer">
-                                    <option value="INR" ${currentCurrency === 'INR' ? 'selected' : ''}>INR (₹) Rupee</option>
-                                    <option value="USD" ${currentCurrency === 'USD' ? 'selected' : ''}>USD ($) Dollar</option>
-                                    <option value="EUR" ${currentCurrency === 'EUR' ? 'selected' : ''}>EUR (€) Euro</option>
-                                    <option value="GBP" ${currentCurrency === 'GBP' ? 'selected' : ''}>GBP (£) Pound</option>
-                                </select>
+                            <div class="flex flex-wrap justify-center gap-1 sm:gap-2 text-sm bg-zinc-900/60 p-1 rounded-xl border border-zinc-800">
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'home' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('home')">Home</button>
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'emi' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('emi')">EMI</button>
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'sip' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('sip')">SIP</button>
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'gst' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('gst')">GST</button>
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'converter' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('converter')">Forex</button>
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'eligibility' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('eligibility')">Eligibility</button>
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'fdrd' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('fdrd')">FD/RD</button>
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'tax' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('tax')">Tax</button>
+                                <button class="px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${currentPage === 'hike' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.navigateRoute('hike')">Hike</button>
                             </div>
-                        </nav>
-                        
-                        <main class="max-w-7xl mx-auto grid grid-cols-1 gap-12">
-                            <section class="bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl">
-                                <h2 class="text-xl font-bold mb-6 text-indigo-400">01 / Universal EMI Structure Simulation</h2>
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                    <div class="flex flex-col gap-6">
-                                        <div>
-                                            <div class="flex justify-between mb-2">
-                                                <label class="text-sm text-zinc-400">Loan Amount</label>
-                                                <span id="loanVal" class="text-indigo-400 font-bold font-mono"></span>
-                                            </div>
-                                            <input id="loanSlider" type="range" class="w-full accent-indigo-500 cursor-pointer">
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between mb-2">
-                                                <label class="text-sm text-zinc-400">Annual Interest Rate (% P.A.)</label>
-                                                <span id="rateVal" class="text-emerald-400 font-bold font-mono">8.5%</span>
-                                            </div>
-                                            <input id="rateSlider" type="range" min="1" max="20" step="0.1" value="8.5" class="w-full accent-emerald-500 cursor-pointer">
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between mb-2">
-                                                <label class="text-sm text-zinc-400">Duration Period</label>
-                                                <span id="tenureVal" class="text-violet-400 font-bold font-mono">20 Years</span>
-                                            </div>
-                                            <input id="tenureSlider" type="range" min="1" max="30" step="1" value="20" class="w-full accent-violet-500 cursor-pointer">
-                                        </div>
-                                    </div>
-                                    <div class="bg-zinc-950 p-6 rounded-xl border border-zinc-800 flex flex-col justify-center items-center sm:items-start">
-                                        <p class="text-xs text-zinc-500 uppercase tracking-wider">Estimated Monthly EMI</p>
-                                        <p id="emiDisplay" class="text-4xl font-extrabold text-indigo-400 font-mono mt-2"></p>
-                                    </div>
-                                </div>
-                            </section>
 
-                            <section class="bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl">
-                                <h2 class="text-xl font-bold mb-6 text-emerald-400">02 / Revenue Growth & Hike Optimizer</h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label id="currSalaryLabel" class="block text-sm text-zinc-400 mb-2"></label>
-                                        <input id="currSalary" type="number" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-indigo-500">
-                                    </div>
-                                    <div>
-                                        <label id="newSalaryLabel" class="block text-sm text-zinc-400 mb-2"></label>
-                                        <input id="newSalary" type="number" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-emerald-500">
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                                    <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-xl">
-                                        <p class="text-xs text-zinc-500 uppercase tracking-wider">Net Surge Percentage</p>
-                                        <p id="hikePercent" class="text-3xl font-bold font-mono text-emerald-400 mt-2">0.0%</p>
-                                    </div>
-                                    <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-xl">
-                                        <p class="text-xs text-zinc-500 uppercase tracking-wider">Annual Delta Gain</p>
-                                        <p id="hikeDiff" class="text-3xl font-bold font-mono text-indigo-400 mt-2"></p>
-                                    </div>
-                                </div>
-                            </section>
+                            <select id="currencySelector" class="bg-zinc-900 text-xs font-mono rounded-lg border border-zinc-800 px-3 py-1.5 focus:outline-none focus:border-indigo-500 cursor-pointer">
+                                <option value="INR" ${currentCurrency === 'INR' ? 'selected' : ''}>INR (₹)</option>
+                                <option value="USD" ${currentCurrency === 'USD' ? 'selected' : ''}>USD ($)</option>
+                                <option value="EUR" ${currentCurrency === 'EUR' ? 'selected' : ''}>EUR (€)</option>
+                                <option value="GBP" ${currentCurrency === 'GBP' ? 'selected' : ''}>GBP (£)</option>
+                            </select>
+                        </nav>
+
+                        <main class="flex-grow max-w-7xl w-full mx-auto px-6 py-12">
+                            ${pageContentHTML}
                         </main>
+                        
+                        <footer class="border-t border-zinc-900 py-6 text-center text-xs text-zinc-600 font-mono">
+                            &copy; 2026 Nexus Financial Suite Corporation. Hosted Globally via Secure Server Cloud Distribution.
+                        </footer>
                     </div>
                 `;
 
-                setupEventListeners();
-                resetSlidersForCurrency();
-            }
-
-            function resetSlidersForCurrency() {
-                const config = currencyConfigs[currentCurrency];
-                
-                const loanSlider = document.getElementById('loanSlider');
-                loanSlider.min = config.stepLoan;
-                loanSlider.max = config.maxLoan;
-                loanSlider.step = config.stepLoan;
-                loanSlider.value = config.defaultLoan;
-
-                document.getElementById('currSalary').value = config.defaultSalary;
-                document.getElementById('newSalary').value = config.defaultNewSalary;
-
-                document.getElementById('currSalaryLabel').textContent = `Current Annual Base (${config.symbol})`;
-                document.getElementById('newSalaryLabel').textContent = `New Proposed Annual Base (${config.symbol})`;
-
-                calculateMetrics();
-            }
-
-            function calculateMetrics() {
-                const config = currencyConfigs[currentCurrency];
-                
-                // EMI Math Calculations
-                const loanSlider = document.getElementById('loanSlider');
-                const rateSlider = document.getElementById('rateSlider');
-                const tenureSlider = document.getElementById('tenureSlider');
-
-                const P = Number(loanSlider.value);
-                const annualR = Number(rateSlider.value);
-                const N = Number(tenureSlider.value) * 12;
-                const R = annualR / 12 / 100;
-
-                document.getElementById('loanVal').textContent = formatMoney(P, currentCurrency);
-                document.getElementById('rateVal').textContent = `${annualR}%`;
-                document.getElementById('tenureVal').textContent = `${tenureSlider.value} Years`;
-
-                let emi = R > 0 ? (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1) : P / N;
-                document.getElementById('emiDisplay').textContent = formatMoney(emi || 0, currentCurrency);
-
-                // Salary Hike Calculations
-                const current = Number(document.getElementById('currSalary').value) || 0;
-                const proposed = Number(document.getElementById('newSalary').value) || 0;
-                const diff = proposed - current;
-                const pct = current > 0 ? ((diff / current) * 100).toFixed(1) : '0.0';
-
-                document.getElementById('hikePercent').textContent = `${pct}%`;
-                
-                const hikeDiffEl = document.getElementById('hikeDiff');
-                if (diff >= 0) {
-                    hikeDiffEl.textContent = formatMoney(diff, currentCurrency);
-                    hikeDiffEl.className = "text-3xl font-bold font-mono text-indigo-400 mt-2";
-                } else {
-                    hikeDiffEl.textContent = "-" + formatMoney(Math.abs(diff), currentCurrency);
-                    hikeDiffEl.className = "text-3xl font-bold font-mono text-rose-500 mt-2";
-                }
-            }
-
-            function setupEventListeners() {
-                document.getElementById('currencySelector').addEventListener('change', (e) => {
+                // Re-bind core layout events
+                document.getElementById('navLogo').onclick = () => window.navigateRoute('home');
+                document.getElementById('currencySelector').onchange = (e) => {
                     currentCurrency = e.target.value;
-                    resetSlidersForCurrency();
+                    window.navigateRoute(currentPage);
+                };
+            }
+
+            // Route Switching Manager
+            window.navigateRoute = function(route) {
+                currentPage = route;
+                if (globalChartInstance) {
+                    globalChartInstance.destroy();
+                    globalChartInstance = null;
+                }
+
+                if (route === 'home') {
+                    renderHome();
+                } else if (route === 'emi') {
+                    renderEMI();
+                } else if (route === 'sip') {
+                    renderSIP();
+                } else if (route === 'gst') {
+                    renderGST();
+                } else if (route === 'converter') {
+                    renderConverter();
+                } else if (route === 'eligibility') {
+                    renderEligibility();
+                } else if (route === 'fdrd') {
+                    renderFDRD();
+                } else if (route === 'tax') {
+                    renderTax();
+                } else if (route === 'hike') {
+                    renderHike();
+                }
+            };
+
+            // 0. HOME HUB LANDING PAGE PAGE INFRASTRUCTURE
+            function renderHome() {
+                const html = `
+                    <div class="text-center max-w-3xl mx-auto space-y-6 py-8">
+                        <div class="inline-block bg-indigo-500/10 text-indigo-400 text-xs font-mono font-bold tracking-widest px-4 py-1.5 rounded-full border border-indigo-500/20 uppercase">Institutional Grade Computation Engine</div>
+                        <h1 class="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">Empower Your Wealth Decisions</h1>
+                        <p class="text-zinc-400 text-base md:text-lg leading-relaxed">Welcome to Nexus Finance. Access our comprehensive financial simulation tools, complete with advanced algorithms and real-time visualization modeling.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+                        <div class="bg-zinc-900/30 hover:bg-zinc-900/60 p-6 rounded-2xl border border-zinc-800 transition group cursor-pointer" onclick="window.navigateRoute('emi')">
+                            <div class="text-indigo-400 font-bold mb-2 text-sm font-mono">01 / EMI LOANS</div>
+                            <h3 class="text-lg font-bold group-hover:text-indigo-400 transition">Mortgage & Loan Simulation</h3>
+                            <p class="text-xs text-zinc-500 mt-2">Simulate real estate, automotive, and capital loans with structural visualizations.</p>
+                        </div>
+                        <div class="bg-zinc-900/30 hover:bg-zinc-900/60 p-6 rounded-2xl border border-zinc-800 transition group cursor-pointer" onclick="window.navigateRoute('sip')">
+                            <div class="text-emerald-400 font-bold mb-2 text-sm font-mono">02 / SIP INVESTMENTS</div>
+                            <h3 class="text-lg font-bold group-hover:text-emerald-400 transition">Compound Wealth Modeling</h3>
+                            <p class="text-xs text-zinc-500 mt-2">Project systematically managed mutual funds and stock growth trajectories.</p>
+                        </div>
+                        <div class="bg-zinc-900/30 hover:bg-zinc-900/60 p-6 rounded-2xl border border-zinc-800 transition group cursor-pointer" onclick="window.navigateRoute('gst')">
+                            <div class="text-amber-400 font-bold mb-2 text-sm font-mono">03 / TAXES & GST</div>
+                            <h3 class="text-lg font-bold group-hover:text-amber-400 transition">Slab & Tax Optimization</h3>
+                            <p class="text-xs text-zinc-500 mt-2">Instantly calculate net consumer consumption values with standard tax matrices.</p>
+                        </div>
+                        <div class="bg-zinc-900/30 hover:bg-zinc-900/60 p-6 rounded-2xl border border-zinc-800 transition group cursor-pointer" onclick="window.navigateRoute('converter')">
+                            <div class="text-cyan-400 font-bold mb-2 text-sm font-mono">04 / FOREX EXCHANGE</div>
+                            <h3 class="text-lg font-bold group-hover:text-cyan-400 transition">Cross-Border FX Engines</h3>
+                            <p class="text-xs text-zinc-500 mt-2">Convert currencies across global economic corridors instantly.</p>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+            }
+
+            // Helper function to render charts cleanly
+            function initDonutChart(principal, interest, labels = ['Principal Amount', 'Total Interest']) {
+                setTimeout(() => {
+                    const ctx = document.getElementById('chartCanvas');
+                    if (!ctx) return;
+                    globalChartInstance = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: [principal, interest],
+                                backgroundColor: ['#6366f1', '#10b981'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                }, 50);
+            }
+
+            // 1. EMI SIMULATION CALCULATOR PAGE
+            function renderEMI() {
+                const html = `
+                    <h2 class="text-2xl font-black mb-8 text-indigo-400">Loan EMI Computation</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Principal Balance: <span id="v1" class="text-white font-mono font-bold"></span></label>
+                                <input id="s1" type="range" min="10000" max="10000000" step="10000" value="2500000" class="w-full accent-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Annual Interest Rate: <span id="v2" class="text-white font-mono font-bold"></span></label>
+                                <input id="s2" type="range" min="1" max="25" step="0.1" value="9" class="w-full accent-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Duration (Years): <span id="v3" class="text-white font-mono font-bold"></span></label>
+                                <input id="s3" type="range" min="1" max="30" step="1" value="15" class="w-full accent-indigo-500">
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between items-center text-center">
+                            <div>
+                                <p class="text-xs text-zinc-500 uppercase tracking-wider">Estimated Monthly EMI</p>
+                                <p id="outEmi" class="text-3xl font-black text-indigo-400 font-mono mt-2"></p>
+                            </div>
+                            <div class="w-40 h-40 relative my-4"><canvas id="chartCanvas"></canvas></div>
+                            <div class="w-full text-xs text-zinc-400 space-y-1 font-mono">
+                                <div class="flex justify-between"><span>Principal Base:</span><span id="outP"></span></div>
+                                <div class="flex justify-between"><span>Total Interest:</span><span id="outI"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+
+                const s1 = document.getElementById('s1'); const s2 = document.getElementById('s2'); const s3 = document.getElementById('s3');
+                function calc() {
+                    const p = Number(s1.value); const r = Number(s2.value) / 12 / 100; const n = Number(s3.value) * 12;
+                    document.getElementById('v1').textContent = formatMoney(p);
+                    document.getElementById('v2').textContent = s2.value + '%';
+                    document.getElementById('v3').textContent = s3.value + ' Years';
+
+                    const emi = r > 0 ? (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : p / n;
+                    const totPay = emi * n; const totInt = totPay - p;
+
+                    document.getElementById('outEmi').textContent = formatMoney(emi);
+                    document.getElementById('outP').textContent = formatMoney(p);
+                    document.getElementById('outI').textContent = formatMoney(totInt);
+
+                    if(globalChartInstance) { globalChartInstance.data.datasets[0].data = [p, totInt]; globalChartInstance.update(); }
+                    else { initDonutChart(p, totInt); }
+                }
+                [s1, s2, s3].forEach(s => s.addEventListener('input', calc)); calc();
+            }
+
+            // 2. SIP INVESTMENT CALCULATOR PAGE
+            function renderSIP() {
+                const html = `
+                    <h2 class="text-2xl font-black mb-8 text-emerald-400">SIP Wealth Projection Model</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Monthly Committed Capital: <span id="v1" class="text-white font-mono font-bold"></span></label>
+                                <input id="s1" type="range" min="500" max="500000" step="500" value="10000" class="w-full accent-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Expected Annual Returns (%): <span id="v2" class="text-white font-mono font-bold"></span></label>
+                                <input id="s2" type="range" min="2" max="30" step="0.5" value="12" class="w-full accent-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Accumulation Period (Years): <span id="v3" class="text-white font-mono font-bold"></span></label>
+                                <input id="s3" type="range" min="1" max="40" step="1" value="10" class="w-full accent-emerald-500">
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between items-center text-center">
+                            <div>
+                                <p class="text-xs text-zinc-500 uppercase tracking-wider">Projected Future Asset Pool</p>
+                                <p id="outTot" class="text-3xl font-black text-emerald-400 font-mono mt-2"></p>
+                            </div>
+                            <div class="w-40 h-40 relative my-4"><canvas id="chartCanvas"></canvas></div>
+                            <div class="w-full text-xs text-zinc-400 space-y-1 font-mono">
+                                <div class="flex justify-between"><span>Invested Principal:</span><span id="outP"></span></div>
+                                <div class="flex justify-between"><span>Accrued Yield Value:</span><span id="outI"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+
+                const s1 = document.getElementById('s1'); const s2 = document.getElementById('s2'); const s3 = document.getElementById('s3');
+                function calc() {
+                    const m = Number(s1.value); const i = (Number(s2.value) / 100) / 12; const n = Number(s3.value) * 12;
+                    document.getElementById('v1').textContent = formatMoney(m);
+                    document.getElementById('v2').textContent = s2.value + '%';
+                    document.getElementById('v3').textContent = s3.value + ' Years';
+
+                    const principal = m * n;
+                    const futureValue = i > 0 ? m * ((Math.pow(1 + i, n) - 1) / i) * (1 + i) : principal;
+                    const yields = futureValue - principal;
+
+                    document.getElementById('outTot').textContent = formatMoney(futureValue);
+                    document.getElementById('outP').textContent = formatMoney(principal);
+                    document.getElementById('outI').textContent = formatMoney(yields);
+
+                    if(globalChartInstance) { globalChartInstance.data.datasets[0].data = [principal, yields]; globalChartInstance.update(); }
+                    else { initDonutChart(principal, yields, ['Invested Principal', 'Estimated Yield Pool']); }
+                }
+                [s1, s2, s3].forEach(s => s.addEventListener('input', calc)); calc();
+            }
+
+            // 3. GST TAX MATRICES CALCULATOR PAGE
+            function renderGST() {
+                const html = `
+                    <h2 class="text-2xl font-black mb-8 text-amber-400">Consumption Value Added & GST Matrix</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Base Transacted Amount</label>
+                                <input id="baseAmt" type="number" value="50000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Tax Rate Standard Slab</label>
+                                <select id="gstRate" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-amber-500">
+                                    <option value="5">5% Standard Base</option>
+                                    <option value="12">12% Utilities & Goods</option>
+                                    <option value="18" selected>18% Premium Luxury Base</option>
+                                    <option value="28">28% Demerit Luxury Surcharges</option>
+                                </select>
+                            </div>
+                            <div class="flex gap-4 bg-zinc-950 p-2 rounded-xl border border-zinc-800">
+                                <button id="modeInc" class="flex-1 py-2 rounded-lg font-bold transition text-sm cursor-pointer bg-amber-500 text-black">Exclusive (+ GST)</button>
+                                <button id="modeDec" class="flex-1 py-2 rounded-lg font-bold transition text-sm cursor-pointer text-zinc-400 hover:text-white">Inclusive (- GST)</button>
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Raw Valuation Base:</span><span id="resBase" class="text-white"></span></div>
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Calculated Levy Pool:</span><span id="resTax" class="text-amber-400 font-bold"></span></div>
+                            <div class="flex justify-between pt-2 text-lg font-black"><span>Gross Transaction Total:</span><span id="resGross" class="text-emerald-400"></span></div>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+
+                let mode = 'exclusive';
+                const baseAmt = document.getElementById('baseAmt'); const gstRate = document.getElementById('gstRate');
+                const btnInc = document.getElementById('modeInc'); const btnDec = document.getElementById('modeDec');
+
+                function calc() {
+                    const raw = Number(baseAmt.value) || 0; const r = Number(gstRate.value);
+                    let base = 0; let tax = 0; let gross = 0;
+
+                    if (mode === 'exclusive') {
+                        base = raw; tax = base * (r / 100); gross = base + tax;
+                    } else {
+                        gross = raw; base = gross / (1 + (r / 100)); tax = gross - base;
+                    }
+
+                    document.getElementById('resBase').textContent = formatMoney(base);
+                    document.getElementById('resTax').textContent = formatMoney(tax);
+                    document.getElementById('resGross').textContent = formatMoney(gross);
+                }
+
+                btnInc.onclick = () => { mode = 'exclusive'; btnInc.className = 'flex-1 py-2 rounded-lg font-bold transition text-sm bg-amber-500 text-black'; btnDec.className = 'flex-1 py-2 rounded-lg font-bold transition text-sm text-zinc-400 hover:text-white'; calc(); };
+                btnDec.onclick = () => { mode = 'inclusive'; btnDec.className = 'flex-1 py-2 rounded-lg font-bold transition text-sm bg-amber-500 text-black'; btnInc.className = 'flex-1 py-2 rounded-lg font-bold transition text-sm text-zinc-400 hover:text-white'; calc(); };
+                
+                [baseAmt, gstRate].forEach(el => el.addEventListener('input', calc)); calc();
+            }
+
+            // 4. LIVE CURRENCY TRANSLATION CONVERTER ENGINE
+            function renderConverter() {
+                const html = `
+                    <h2 class="text-2xl font-black mb-8 text-cyan-400">Economic Cross-Border FX Engine</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Base Volumetric Value</label>
+                                <input id="fxInput" type="number" value="1000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono focus:outline-none focus:border-cyan-400">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Source FX</label>
+                                    <select id="fxSrc" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono"></select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Target FX Target</label>
+                                    <select id="fxTarget" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center items-center text-center">
+                            <p class="text-xs text-zinc-500 uppercase tracking-wider">Converted Forex Settlement Value</p>
+                            <p id="fxOutput" class="text-4xl font-black text-cyan-400 font-mono mt-2"></p>
+                            <p id="fxSpread" class="text-xs text-zinc-500 font-mono mt-2"></p>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+
+                const srcSel = document.getElementById('fxSrc'); const targetSel = document.getElementById('fxTarget');
+                Object.keys(currencyConfigs).forEach(k => {
+                    srcSel.innerHTML += `<option value="${k}">${k}</option>`;
+                    targetSel.innerHTML += `<option value="${k}" ${k === 'USD' ? 'selected' : ''}>${k}</option>`;
                 });
 
-                document.getElementById('loanSlider').addEventListener('input', calculateMetrics);
-                document.getElementById('rateSlider').addEventListener('input', calculateMetrics);
-                document.getElementById('tenureSlider').addEventListener('input', calculateMetrics);
-                document.getElementById('currSalary').addEventListener('input', calculateMetrics);
-                document.getElementById('newSalary').addEventListener('input', calculateMetrics);
+                function calc() {
+                    const amt = Number(document.getElementById('fxInput').value) || 0;
+                    const srcK = srcSel.value; const tgtK = targetSel.value;
+                    
+                    const amtInUSD = amt / currencyConfigs[srcK].rateVsUSD;
+                    const targetAmt = amtInUSD * currencyConfigs[tgtK].rateVsUSD;
+
+                    const tgtCfg = currencyConfigs[tgtK];
+                    document.getElementById('fxOutput').textContent = tgtCfg.symbol + targetAmt.toLocaleString(tgtCfg.locale, {maximumFractionDigits:2});
+                    document.getElementById('fxSpread').textContent = `1 ${srcK} = ${(currencyConfigs[tgtK].rateVsUSD / currencyConfigs[srcK].rateVsUSD).toFixed(4)} ${tgtK}`;
+                }
+
+                [document.getElementById('fxInput'), srcSel, targetSel].forEach(el => el.addEventListener('change', calc));
+                [document.getElementById('fxInput'), srcSel, targetSel].forEach(el => el.addEventListener('input', calc)); calc();
             }
 
-            // Initial Core Run
-            renderApp();
+            // 5. LOAN ELIGIBILITY CALCULATION ENGINE
+            function renderEligibility() {
+                const html = `
+                    <h2 class="text-2xl font-black mb-8 text-violet-400">Debt Capacity Verification Framework</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Monthly Gross Earnings</label>
+                                    <input id="inc" type="number" value="120000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Existing Monthly Obligations</label>
+                                    <input id="oblig" type="number" value="20000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Interest Rate Offered (% P.A.)</label>
+                                    <input id="rate" type="number" value="8.75" step="0.25" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Intended Tenure (Years)</label>
+                                    <input id="tenure" type="number" value="20" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Maximum Capped Monthly FOIR Limit (50%):</span><span id="foir" class="text-zinc-300"></span></div>
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Available Multi-Tranche Net EMI Buffer:</span><span id="buffer" class="text-emerald-400 font-bold"></span></div>
+                            <div class="flex justify-between pt-2 text-lg font-black"><span>Maximum Principal Loan Capacity:</span><span id="maxLoan" class="text-indigo-400"></span></div>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+
+                const inc = document.getElementById('inc'); const oblig = document.getElementById('oblig');
+                const rate = document.getElementById('rate'); const tenure = document.getElementById('tenure');
+
+                function calc() {
+                    const gross = Number(inc.value) || 0; const debt = Number(oblig.value) || 0;
+                    const r = (Number(rate.value) / 100) / 12; const n = (Number(tenure.value) || 1) * 12;
+
+                    const maxEMIAllowed = (gross * 0.50) - debt;
+                    document.getElementById('foir').textContent = formatMoney(gross * 0.50);
+                    document.getElementById('buffer').textContent = formatMoney(Math.max(0, maxEMIAllowed));
+
+                    let maxLoan = 0;
+                    if (maxEMIAllowed > 0 && r > 0) {
+                        maxLoan = maxEMIAllowed * ((Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n)));
+                    } else if (maxEMIAllowed > 0) {
+                        maxLoan = maxEMIAllowed * n;
+                    }
+
+                    document.getElementById('maxLoan').textContent = formatMoney(Math.max(0, maxLoan));
+                }
+
+                [inc, oblig, rate, tenure].forEach(el => el.addEventListener('input', calc)); calc();
+            }
+
+            // 6. FD / RD FIXED DEPOSITS ACCRUED INTEREST ENGINE
+            function renderFDRD() {
+                const html = `
+                    <h2 class="text-2xl font-black mb-8 text-fuchsia-400">Term Investment Liquidity Model</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                            <div class="flex gap-4 bg-zinc-950 p-1.5 rounded-xl border border-zinc-800">
+                                <button id="typeFD" class="flex-1 py-2 rounded-lg font-bold text-sm cursor-pointer bg-fuchsia-500 text-black">Fixed Deposit (FD)</button>
+                                <button id="typeRD" class="flex-1 py-2 rounded-lg font-bold text-sm cursor-pointer text-zinc-400 hover:text-white">Recurring Systematic Deposit (RD)</button>
+                            </div>
+                            <div>
+                                <label id="lblAmt" class="block text-sm text-zinc-400 mb-2"></label>
+                                <input id="amt" type="number" value="100000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Annual Yield Rate (%)</label>
+                                    <input id="rate" type="number" value="7.1" step="0.05" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-zinc-400 mb-2">Time Horizon (Years)</label>
+                                    <input id="tenure" type="number" value="5" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Total Principal Invested:</span><span id="pOut"></span></div>
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Total Interest Earned:</span><span id="intOut" class="text-fuchsia-400 font-bold"></span></div>
+                            <div class="flex justify-between pt-2 text-lg font-black"><span>Maturity Yield Value:</span><span id="matOut" class="text-emerald-400"></span></div>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+
+                let mode = 'FD';
+                const amt = document.getElementById('amt'); const rate = document.getElementById('rate');
+                const tenure = document.getElementById('tenure'); const btnFD = document.getElementById('typeFD'); const btnRD = document.getElementById('typeRD');
+
+                function calc() {
+                    const v = Number(amt.value) || 0; const r = Number(rate.value) / 100; const t = Number(tenure.value) || 0;
+                    document.getElementById('lblAmt').textContent = mode === 'FD' ? 'Lump Sum Principal Base' : 'Monthly Recurring Installment Deposit';
+
+                    let principal = 0; let maturity = 0;
+
+                    if (mode === 'FD') {
+                        principal = v;
+                        // Standard quarterly compounding formula
+                        maturity = principal * Math.pow(1 + (r / 4), 4 * t);
+                    } else {
+                        const months = t * 12; principal = v * months;
+                        // RD compounding tracking
+                        let total = 0;
+                        for (let i = 1; i <= months; i++) {
+                            total += v * Math.pow(1 + (r / 4), 4 * ((months - i + 1) / 12));
+                        }
+                        maturity = total;
+                    }
+
+                    const interest = maturity - principal;
+                    document.getElementById('pOut').textContent = formatMoney(principal);
+                    document.getElementById('intOut').textContent = formatMoney(interest);
+                    document.getElementById('matOut').textContent = formatMoney(maturity);
+                }
+
+                btnFD.onclick = () => { mode = 'FD'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold text-sm bg-fuchsia-500 text-black'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold text-sm text-zinc-400 hover:text-white'; calc(); };
+                btnRD.onclick = () => { mode = 'RD'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold text-sm bg-fuchsia-500 text-black'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold text-sm text-zinc-400 hover:text-white'; calc(); };
+
+                [amt, rate, tenure].forEach(el => el.addEventListener('input', calc)); calc();
+            }
+
+            // 7. MULTI-JURISDICTIONAL FISCAL SLAB TAX CALCULATOR
+            function renderTax() {
+                const html = `
+                    <h2 class="text-2xl font-black mb-8 text-rose-400">Fiscal Revenue & Bracket Assessment</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Total Gross Assessable Income (Annual)</label>
+                                <input id="grossInc" type="number" value="1500000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Allowable Statutory Deductions / Exemptions</label>
+                                <input id="deduct" type="number" value="150000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Adjusted Net Taxable Income:</span><span id="taxNet"></span></div>
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Calculated Liability Surcharge:</span><span id="taxDue" class="text-rose-400 font-bold"></span></div>
+                            <div class="flex justify-between pt-2 text-lg font-black"><span>Effective Net Take-Home Pay:</span><span id="takeHome" class="text-emerald-400"></span></div>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+
+                const grossInc = document.getElementById('grossInc'); const deduct = document.getElementById('deduct');
+
+                function calc() {
+                    const inc = Number(grossInc.value) || 0; const ded = Number(deduct.value) || 0;
+                    const net = Math.max(0, inc - ded);
+
+                    let tax = 0;
+                    // Standard progressive calculation bracket configuration model
+                    if (currentCurrency === 'INR') {
+                        if (net > 1500000) tax += (net - 1500000) * 0.30 + 150000;
+                        else if (net > 1200000) tax += (net - 1200000) * 0.20 + 90000;
+                        else if (net > 900000) tax += (net - 900000) * 0.15 + 45000;
+                        else if (net > 600000) tax += (net - 600000) * 0.10 + 15000;
+                        else if (net > 300000) tax += (net - 300000) * 0.05;
+                    } else {
+                        // Global simplified multi-brackets baseline 
+                        if (net > 100000) tax += (net - 100000) * 0.35 + 15000;
+                        else if (net > 50000) tax += (net - 50000) * 0.22 + 4000;
+                        else if (net > 12000) tax += (net - 12000) * 0.10;
+                    }
+
+                    document.getElementById('taxNet').textContent = formatMoney(net);
+                    document.getElementById('taxDue').textContent = formatMoney(tax);
+                    document.getElementById('takeHome').textContent = formatMoney(inc - tax);
+                }
+
+                [grossInc, deduct].forEach(el => el.addEventListener('input', calc)); calc();
+            }
+
+            // 8. CORPORATE REVENUE GROWTH & SALARY HIKE MODE
+            function renderHike() {
+                const html = `
+                    <h2 class="text-2xl font-black mb-8 text-teal-400">Revenue Growth & Salary Hike Calculator</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6 bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Current Salary Baseline Balance</label>
+                                <input id="currSal" type="number" value="700000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">New Proposed Salary Target</label>
+                                <input id="newSal" type="number" value="980000" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-mono">
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/70 p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center space-y-4 font-mono text-sm">
+                            <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Compounded Net Raise Value:</span><span id="hikeAmt" class="text-indigo-400"></span></div>
+                            <div class="flex justify-between pt-2 text-lg font-black"><span>Aggregated Percentage Boost:</span><span id="hikePct" class="text-teal-400"></span></div>
+                        </div>
+                    </div>
+                `;
+                renderLayout(html);
+
+                const currSal = document.getElementById('currSal'); const newSal = document.getElementById('newSal');
+
+                function calc() {
+                    const c = Number(currSal.value) || 0; const n = Number(newSal.value) || 0;
+                    const diff = n - c; const pct = c > 0 ? ((diff / c) * 100).toFixed(1) : '0.0';
+
+                    document.getElementById('hikeAmt').textContent = formatMoney(diff);
+                    document.getElementById('hikePct').textContent = `${pct}%`;
+                }
+
+                [currSal, newSal].forEach(el => el.addEventListener('input', calc)); calc();
+            }
+
+            // Route Initialization Trigger
+            window.navigateRoute('home');
         });
     </script>
 </body>

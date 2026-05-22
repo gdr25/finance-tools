@@ -9,42 +9,65 @@
     <meta name="keywords" content="EMI Calculator, SIP Calculator, GST Calculator, Finance Dashboard, Tax Planning, Forex Engine, Fixed Deposit, Wealth Management">
     <meta name="robots" content="index, follow">
     
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#030303" id="themeMetaColor">
+    
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
         :root {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            --bg-master: #030303;
+            --text-master: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --glass-bg: rgba(15, 15, 23, 0.45);
+            --glass-nav: rgba(3, 3, 3, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --panel-inner: rgba(0, 0, 0, 0.4);
+        }
+
+        .light-mode-vars {
+            --bg-master: #f8fafc;
+            --text-master: #0f172a;
+            --text-muted: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-nav: rgba(248, 250, 252, 0.8);
+            --glass-border: rgba(15, 23, 42, 0.08);
+            --panel-inner: rgba(15, 23, 42, 0.04);
         }
         
         body {
-            background-color: #030303;
-            color: #f4f4f5;
+            background-color: var(--bg-master);
+            color: var(--text-master);
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Premium Glassmorphic Styles */
         .glass-panel {
-            background: rgba(15, 15, 23, 0.45);
+            background: var(--glass-bg);
             backdrop-filter: blur(16px) saturate(120%);
             -webkit-backdrop-filter: blur(16px) saturate(120%);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--glass-border);
         }
 
         .glass-nav {
-            background: rgba(3, 3, 3, 0.7);
+            background: var(--glass-nav);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-b: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         /* Customized High-Performance Range Sliders */
         input[type="range"] {
             -webkit-appearance: none;
             appearance: none;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(120, 119, 198, 0.2);
             height: 6px;
             border-radius: 9999px;
         }
@@ -81,10 +104,13 @@
         window.addEventListener('DOMContentLoaded', () => {
             const root = document.getElementById('app-root');
             
-            // App Layout Architecture Router State
+            // App Layout Architecture Router & Advanced Engineering State
             let currentPage = 'home'; 
             let currentCurrency = 'INR';
+            let currentLanguage = 'EN';
+            let currentTheme = 'dark'; // dark or light
             let globalChartInstance = null;
+            let calculationHistory = JSON.parse(localStorage.getItem('nexus_history')) || [];
             
             const currencyConfigs = {
                 INR: { symbol: '₹', locale: 'en-IN', rateVsUSD: 83.50 },
@@ -93,9 +119,154 @@
                 GBP: { symbol: '£', locale: 'en-GB', rateVsUSD: 0.79 }
             };
 
+            const dictionary = {
+                EN: {
+                    home: "HOME", emi: "EMI LOAN", sip: "SIP WEALTH", gst: "GST MATRIX", forex: "FOREX", debt: "DEBT CAP", term: "FD/RD TERM", tax: "FISCAL BRACKET", hike: "SALARY HIKE",
+                    tagline: "Institutional Level Financial Optimization Engine", heroTitle: "Computational Strategy <br>For Accelerated Wealth Decisions",
+                    heroDesc: "Simulate asset trajectories, tax models, and mortgage scenarios with elite sub-millisecond mathematical rendering and visual analytics.",
+                    history: "Calculation Log History", download: "Download PDF Report", share: "Share Result", email: "Email Output", aiTips: "Nexus AI Predictive Strategy",
+                    compareTitle: "Loan Structuring Matrix Comparison", inputVoice: "Speak Values", suggestLabel: "Smart Suggestion Pool", installApp: "Install Nexus Engine Desk App"
+                },
+                ES: {
+                    home: "INICIO", emi: "PRÉSTAMO EMI", sip: "SIP RIQUEZA", gst: "MATRIZ IVA", forex: "DIVISAS", debt: "CAP DEUDA", term: "PLAZO FD/RD", tax: "TRAMO FISCAL", hike: "ALZA SALARIAL",
+                    tagline: "Motor de Optimización Financiera de Nivel Institucional", heroTitle: "Estrategia Computacional <br>Para Decisiones de Riqueza Aceleradas",
+                    heroDesc: "Simule trayectorias de activos, modelos fiscales y escenarios hipotecarios con renderizado matemático de élite en milisegundos y análisis visual.",
+                    history: "Historial de Cálculos", download: "Descargar Informe PDF", share: "Compartir Resultado", email: "Enviar por Correo", aiTips: "Estrategia Predictiva Nexus AI",
+                    compareTitle: "Matriz de Comparación de Préstamos", inputVoice: "Dictar Valores", suggestLabel: "Grupo de Sugerencias Inteligentes", installApp: "Instalar Aplicación Nexus"
+                },
+                FR: {
+                    home: "ACCUEIL", emi: "PRET EMI", sip: "SIP RICHESSE", gst: "MATRICE TVA", forex: "FOREX", debt: "CAP DETTE", term: "TERME FD/RD", tax: "TRANCHE FISCALE", hike: "HAUSSE SALAIRE",
+                    tagline: "Moteur d'Optimisation Financière de Niveau Institutionnel", heroTitle: "Stratégie Computationnelle <br>Pour des Décisions de Richesse Accélérées",
+                    heroDesc: "Simulez des trajectoires d'actifs, des modèles fiscaux et des scénarios hypothécaires avec un rendu mathématique d'élite et des analyses visuelles.",
+                    history: "Historique des Calculs", download: "Télécharger le Rapport PDF", share: "Partager le Résultat", email: "Envoyer par E-mail", aiTips: "Stratégie Prédictive Nexus AI",
+                    compareTitle: "Matrice de Comparaison des Prêts", inputVoice: "Dicter les Valeurs", suggestLabel: "Suggestions Intelligentes", installApp: "Installer l'Application Nexus"
+                }
+            };
+
+            function t(key) {
+                return dictionary[currentLanguage][key] || key;
+            }
+
             function formatMoney(amount) {
                 const config = currencyConfigs[currentCurrency];
                 return config.symbol + Math.round(amount).toLocaleString(config.locale);
+            }
+
+            // PWA Virtual Installer Pipeline Interface Simulation
+            function triggerPwaInstallation() {
+                alert("📌 Nexus Suite PWA Shell Interface Framework installed successfully onto your local environment desktop root.");
+            }
+
+            // Global System Event Handler State Trackers
+            window.route = function(targetPage) {
+                currentPage = targetPage;
+                if (globalChartInstance) {
+                    globalChartInstance.destroy();
+                    globalChartInstance = null;
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                if (targetPage === 'home') renderHomePage();
+                else if (targetPage === 'emi') renderEMIPanel();
+                else if (targetPage === 'sip') renderSIPPanel();
+                else if (targetPage === 'gst') renderGSTPanel();
+                else if (targetPage === 'converter') renderConverterPanel();
+                else if (targetPage === 'eligibility') renderEligibilityPanel();
+                else if (targetPage === 'fdrd') renderFDRDPanel();
+                else if (targetPage === 'tax') renderTaxPanel();
+                else if (targetPage === 'hike') renderHikePanel();
+            };
+
+            function toggleThemeSystem() {
+                currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                const metaColor = document.getElementById('themeMetaColor');
+                if (currentTheme === 'light') {
+                    document.body.classList.add('light-mode-vars');
+                    if(metaColor) metaColor.setAttribute('content', '#f8fafc');
+                } else {
+                    document.body.classList.remove('light-mode-vars');
+                    if(metaColor) metaColor.setAttribute('content', '#030303');
+                }
+            }
+
+            // High-Performance Engine Core Mathematical Log History Store
+            function saveCalculationToLog(moduleName, parameters, primaryResult) {
+                const item = {
+                    id: Date.now(),
+                    timestamp: new Date().toLocaleTimeString(),
+                    module: moduleName,
+                    details: parameters,
+                    result: primaryResult
+                };
+                calculationHistory.unshift(item);
+                if (calculationHistory.length > 6) calculationHistory.pop();
+                localStorage.setItem('nexus_history', JSON.stringify(calculationHistory));
+                renderHistoryWidget();
+            }
+
+            // Native Web Voice Synthesis and Audio Recognition Parser
+            function initializeVoiceCaptureInput(targetInputElementId, transformationCallback) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    alert("Speech Architecture Interface is missing or blocked inside this environment sandbox.");
+                    return;
+                }
+                const recognition = new SpeechRecognition();
+                recognition.lang = currentLanguage === 'EN' ? 'en-US' : currentLanguage === 'ES' ? 'es-ES' : 'fr-FR';
+                recognition.start();
+                recognition.onresult = function(event) {
+                    const speechToText = event.results[0][0].transcript;
+                    const cleanedDigits = speechToText.replace(/[^0-9.]/g, '');
+                    if(cleanedDigits) {
+                        const targetEl = document.getElementById(targetInputElementId);
+                        if(targetEl) {
+                            targetEl.value = cleanedDigits;
+                            transformationCallback();
+                        }
+                    }
+                };
+            }
+
+            // Secure Direct Client Data Transfer Transmission Engines
+            function dispatchNativeShareIntent(title, summaryString) {
+                if (navigator.share) {
+                    navigator.share({ title: title, text: summaryString, url: window.location.href })
+                        .catch(() => fallbackClipboardCopy(summaryString));
+                } else {
+                    fallbackClipboardCopy(summaryString);
+                }
+            }
+
+            function fallbackClipboardCopy(text) {
+                navigator.clipboard.writeText(text);
+                alert("🚀 Calculation packet copied to secure clip layer.");
+            }
+
+            function dispatchSecureEmailClient(subject, textBody) {
+                window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(textBody)}`;
+            }
+
+            function generateModuleReportPDF(titleHeader, recordsArray) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFont("Helvetica", "bold");
+                doc.setFontSize(20);
+                doc.text(`NEXUS PREMIUM REPORT: ${titleHeader.toUpperCase()}`, 14, 25);
+                doc.setFontSize(10);
+                doc.setFont("Helvetica", "normal");
+                doc.text(`Generated: ${new Date().toUTCString()} | Node Corridor Secure Execution`, 14, 34);
+                doc.line(14, 40, 196, 40);
+                
+                let verticalOffset = 52;
+                recordsArray.forEach(record => {
+                    doc.setFont("Helvetica", "bold");
+                    doc.text(`${record.label}:`, 15, verticalOffset);
+                    doc.setFont("Helvetica", "normal");
+                    doc.text(`${record.value}`, 75, verticalOffset);
+                    verticalOffset += 10;
+                });
+                
+                doc.save(`Nexus-Financial-Capture-${Date.now()}.pdf`);
             }
 
             // Global Master Router Shell Template Injector
@@ -111,19 +282,26 @@
                             </div>
                             
                             <nav class="hidden xl:flex items-center gap-1 bg-zinc-900/40 p-1 rounded-xl border border-white/5 backdrop-blur-md">
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'home' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('home')">HOME</button>
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'emi' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('emi')">EMI LOAN</button>
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'sip' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('sip')">SIP WEALTH</button>
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'gst' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('gst')">GST MATRIX</button>
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'converter' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('converter')">FOREX</button>
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'eligibility' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('eligibility')">DEBT CAP</button>
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'fdrd' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('fdrd')">FD/RD TERM</button>
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'tax' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('tax')">FISCAL BRACKET</button>
-                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'hike' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-400 hover:text-white'}" onclick="window.route('hike')">SALARY HIKE</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'home' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('home')">${t('home')}</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'emi' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('emi')">${t('emi')}</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'sip' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('sip')">${t('sip')}</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'gst' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('gst')">${t('gst')}</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'converter' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('converter')">${t('forex')}</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'eligibility' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('eligibility')">${t('debt')}</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'fdrd' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('fdrd')">${t('term')}</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'tax' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('tax')">${t('tax')}</button>
+                                <button class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'hike' ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}" onclick="window.route('hike')">${t('hike')}</button>
                             </nav>
 
-                            <div class="flex items-center gap-3">
-                                <select id="currSelect" class="bg-zinc-900 border border-white/10 rounded-xl text-xs font-mono px-3 py-2 focus:outline-none focus:border-indigo-500 transition cursor-pointer">
+                            <div class="flex items-center gap-2">
+                                <button id="pwaTrigger" class="hidden md:block border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-[10px] px-2.5 py-1.5 rounded-lg font-bold tracking-tight hover:bg-indigo-600 hover:text-white transition cursor-pointer">${t('installApp')}</button>
+                                <button id="themeToggle" class="bg-zinc-900 border border-white/10 text-sm p-2 rounded-xl transition cursor-pointer">🌓</button>
+                                <select id="langSelect" class="bg-zinc-900 border border-white/10 rounded-xl text-xs font-mono px-2 py-2 focus:outline-none transition cursor-pointer">
+                                    <option value="EN" ${currentLanguage === 'EN' ? 'selected' : ''}>EN</option>
+                                    <option value="ES" ${currentLanguage === 'ES' ? 'selected' : ''}>ES</option>
+                                    <option value="FR" ${currentLanguage === 'FR' ? 'selected' : ''}>FR</option>
+                                </select>
+                                <select id="currSelect" class="bg-zinc-900 border border-white/10 rounded-xl text-xs font-mono px-2 py-2 focus:outline-none transition cursor-pointer">
                                     <option value="INR" ${currentCurrency === 'INR' ? 'selected' : ''}>INR (₹)</option>
                                     <option value="USD" ${currentCurrency === 'USD' ? 'selected' : ''}>USD ($)</option>
                                     <option value="EUR" ${currentCurrency === 'EUR' ? 'selected' : ''}>EUR (€)</option>
@@ -136,25 +314,30 @@
 
                     <div id="mobileMenuPanel" class="hidden fixed top-20 left-0 w-full bg-zinc-950/95 backdrop-blur-xl border-b border-white/5 z-40 p-6 space-y-3 font-semibold text-sm">
                         <div class="grid grid-cols-2 gap-2">
-                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('home')">HOME</button>
-                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('emi')">EMI LOAN</button>
-                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('sip')">SIP WEALTH</button>
-                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('gst')">GST MATRIX</button>
-                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('converter')">FOREX</button>
-                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('eligibility')">DEBT CAP</button>
-                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('fdrd')">FD/RD TERM</button>
-                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('tax')">FISCAL BRACKET</button>
-                            <button class="text-left p-3 rounded-xl bg-white/5 col-span-2 text-center bg-indigo-600" onclick="window.route('hike')">SALARY HIKE</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('home')">${t('home')}</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('emi')">${t('emi')}</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('sip')">${t('sip')}</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('gst')">${t('gst')}</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('converter')">${t('forex')}</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('eligibility')">${t('debt')}</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('fdrd')">${t('term')}</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5" onclick="window.route('tax')">${t('tax')}</button>
+                            <button class="text-left p-3 rounded-xl bg-white/5 col-span-2 text-center bg-indigo-600 text-white" onclick="window.route('hike')">${t('hike')}</button>
                         </div>
                     </div>
 
                     <main class="flex-grow max-w-7xl w-full mx-auto px-6 py-8">
                         ${innerContentHTML}
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12 reveal-element">
+                            <div class="lg:col-span-2 glass-panel p-6 rounded-3xl" id="historyAnchor"></div>
+                            <div class="glass-panel p-6 rounded-3xl" id="aiTipsAnchor"></div>
+                        </div>
                     </main>
 
-                    <div class="fixed bottom-6 right-6 z-40">
-                        <button class="bg-indigo-600 hover:bg-indigo-500 hover:scale-110 active:scale-95 text-white p-4 rounded-full shadow-xl shadow-indigo-600/30 transition-all duration-200 group relative cursor-pointer" onclick="window.route('home')">
-                            <span class="absolute right-14 top-3 bg-zinc-900 border border-white/10 text-[10px] uppercase tracking-widest font-mono font-bold px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none whitespace-nowrap">Return Home Hub</span>
+                    <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-2">
+                        <button class="bg-indigo-600 hover:bg-indigo-500 hover:scale-110 active:scale-95 text-white p-4 rounded-full shadow-xl transition-all group relative cursor-pointer" onclick="window.route('home')">
+                            <span class="absolute right-14 top-3 bg-zinc-900 border border-white/10 text-[10px] uppercase tracking-widest font-mono font-bold px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Hub Home</span>
                             🎛️
                         </button>
                     </div>
@@ -164,8 +347,15 @@
                     </footer>
                 `;
 
-                // Handle Component Click Handlers
+                // Attaching Event Handlers and Listeners
                 document.getElementById('logoClick').onclick = () => window.route('home');
+                document.getElementById('themeToggle').onclick = () => { toggleThemeSystem(); window.route(currentPage); };
+                document.getElementById('pwaTrigger').onclick = () => triggerPwaInstallation();
+                
+                document.getElementById('langSelect').onchange = (e) => {
+                    currentLanguage = e.target.value;
+                    window.route(currentPage);
+                };
                 document.getElementById('currSelect').onchange = (e) => {
                     currentCurrency = e.target.value;
                     window.route(currentPage);
@@ -173,50 +363,23 @@
                 
                 const mToggle = document.getElementById('mobileMenuToggle');
                 const mPanel = document.getElementById('mobileMenuPanel');
-                mToggle.onclick = () => {
-                    mPanel.classList.toggle('hidden');
-                };
+                mToggle.onclick = () => mPanel.classList.toggle('hidden');
 
-                // Trigger Scroll Reveal Framework Engine Engine
+                renderHistoryWidget();
+                generatePredictiveAITips();
                 setTimeout(initScrollReveal, 40);
             }
 
-            // Route Router Transition Interface
-            window.route = function(targetPage) {
-                currentPage = targetPage;
-                if (globalChartInstance) {
-                    globalChartInstance.destroy();
-                    globalChartInstance = null;
-                }
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                if (targetPage === 'home') renderHomePage();
-                else if (targetPage === 'emi') renderEMIPanel();
-                else if (targetPage === 'sip') renderSIPPanel();
-                else if (targetPage === 'gst') renderGSTPanel();
-                else if (targetPage === 'converter') renderConverterPanel();
-                else if (targetPage === 'eligibility') renderEligibilityPanel();
-                else if (targetPage === 'fdrd') renderFDRDPanel();
-                else if (targetPage === 'tax') renderTaxPanel();
-                else if (targetPage === 'hike') renderHikePanel();
-            };
-
-            // Scroll Reveal Action Controller
             function initScrollReveal() {
                 const elements = document.querySelectorAll('.reveal-element');
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('active');
-                        }
+                        if (entry.isIntersecting) entry.target.classList.add('active');
                     });
                 }, { threshold: 0.05 });
-                
                 elements.forEach(el => observer.observe(el));
             }
 
-            // High-Fidelity Chart Rendering Wrapper 
             function mountChartCanvas(principal, yieldVal, principalLabel = "Principal Base", yieldLabel = "Yield Return Pool") {
                 setTimeout(() => {
                     const ctx = document.getElementById('dashboardChart');
@@ -236,24 +399,17 @@
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false }
-                            },
+                            plugins: { legend: { display: false } },
                             cutout: '75%'
                         }
                     });
                 }, 60);
             }
 
-            // Native Micro-Interaction Animated Counter Mechanics
             function animateNumericValue(elementId, endValue, prefix = '') {
                 const el = document.getElementById(elementId);
                 if (!el) return;
-                
-                let start = 0;
-                const duration = 800; 
-                const startTime = performance.now();
-                
+                let start = 0; const duration = 800; const startTime = performance.now();
                 function updateCounter(currentTime) {
                     const elapsedTime = currentTime - startTime;
                     if (elapsedTime >= duration) {
@@ -261,7 +417,7 @@
                         return;
                     }
                     const progress = elapsedTime / duration;
-                    const easeOutQuad = progress * (2 - progress); // Standard ease optimization curvature
+                    const easeOutQuad = progress * (2 - progress);
                     const currentVal = Math.floor(start + (endValue - start) * easeOutQuad);
                     el.textContent = prefix + currentVal.toLocaleString();
                     requestAnimationFrame(updateCounter);
@@ -269,105 +425,133 @@
                 requestAnimationFrame(updateCounter);
             }
 
+            // Subroutine Widget Blocks for Smart Engine Configurations
+            function renderHistoryWidget() {
+                const node = document.getElementById('historyAnchor');
+                if (!node) return;
+                if (calculationHistory.length === 0) {
+                    node.innerHTML = `<h3 class="text-xs font-bold font-mono text-zinc-400 uppercase tracking-widest mb-2">${t('history')}</h3>
+                                      <p class="text-xs text-zinc-500 font-mono">Log stream execution pipeline clear.</p>`;
+                    return;
+                }
+                let linesHTML = '';
+                calculationHistory.forEach(h => {
+                    linesHTML += `
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/5 py-2 text-xs font-mono">
+                            <div>
+                                <span class="text-indigo-400 font-bold">[${h.timestamp}]</span>
+                                <span class="text-white font-semibold ml-1 uppercase">${h.module}:</span>
+                                <span class="text-zinc-400 ml-2 text-[11px]">${h.details}</span>
+                            </div>
+                            <span class="text-emerald-400 font-bold mt-1 sm:mt-0">${h.result}</span>
+                        </div>
+                    `;
+                });
+                node.innerHTML = `<h3 class="text-xs font-bold font-mono text-zinc-400 uppercase tracking-widest mb-3">${t('history')}</h3>
+                                  <div class="space-y-1 max-h-48 overflow-y-auto">${linesHTML}</div>`;
+            }
+
+            function generatePredictiveAITips() {
+                const node = document.getElementById('aiTipsAnchor');
+                if (!node) return;
+                const strategicTipsPool = [
+                    "Asset allocations matching current liquidity thresholds suggest scaling high-duration structures to compound long-range yields.",
+                    "Optimizing tax liabilities through progressive diversification methods could potentially reduce fiscal outlays by up to 12%.",
+                    "A balanced debt capacity ceiling (FOIR) protects working reserve equity during unexpected market volatility cycles.",
+                    "Systematic index accumulation strategies demonstrate optimal return velocity patterns during intermediate market consolidations."
+                ];
+                const selectedTip = strategicTipsPool[Math.floor(Math.random() * strategicTipsPool.length)];
+                node.innerHTML = `
+                    <h3 class="text-xs font-bold font-mono text-zinc-400 uppercase tracking-widest mb-2">💡 ${t('aiTips')}</h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed italic font-mono">"${selectedTip}"</p>
+                `;
+            }
+
+            function processValueAutoSuggestion(enteredValue, suggestionBoxId, targetInputElementId, implementationCallback) {
+                const sBox = document.getElementById(suggestionBoxId);
+                if (!sBox) return;
+                const val = parseFloat(enteredValue);
+                if (!val || val <= 0) {
+                    sBox.classList.add('hidden');
+                    return;
+                }
+                const suggestArray = [val * 2, val * 5, val * 10];
+                sBox.innerHTML = `
+                    <p class="text-[10px] text-zinc-500 uppercase font-mono tracking-wider font-bold mb-1">${t('suggestLabel')}</p>
+                    <div class="flex gap-2">
+                        ${suggestArray.map(s => `<button class="bg-indigo-600/20 text-indigo-400 font-mono border border-indigo-500/20 text-[10px] px-2 py-0.5 rounded hover:bg-indigo-600 hover:text-white transition cursor-pointer" onclick="document.getElementById('${targetInputElementId}').value='${s}'; window.closeSuggest('${suggestionBoxId}');">${formatMoney(s)}</button>`).join('')}
+                    </div>
+                `;
+                sBox.classList.remove('hidden');
+            }
+            window.closeSuggest = function(id) {
+                const el = document.getElementById(id);
+                if(el) el.classList.add('hidden');
+            };
+
             // ==========================================
-            // PAGE RENDERING MODULES
+            // MODULE RENDER PIPELINES
             // ==========================================
 
-            // 0. LANDING HERO PAGE WITH ANUMATED METRICS
             function renderHomePage() {
                 const html = `
                     <div class="text-center max-w-4xl mx-auto space-y-6 pt-12 pb-16 reveal-element">
                         <div class="inline-flex items-center gap-2 bg-indigo-500/10 text-indigo-400 text-xs font-mono font-bold tracking-widest px-4 py-2 rounded-full border border-indigo-500/20 uppercase">
-                            <span>⚡</span> Institutional Level Financial Optimization Engine
+                            <span>⚡</span> ${t('tagline')}
                         </div>
                         <h1 class="text-4xl sm:text-6xl font-black tracking-tight leading-tight bg-gradient-to-b from-white via-zinc-200 to-zinc-600 bg-clip-text text-transparent">
-                            Computational Strategy <br>For Accelerated Wealth Decisions
+                            ${t('heroTitle')}
                         </h1>
                         <p class="text-zinc-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-                            Simulate asset trajectories, tax models, and mortgage scenarios with elite sub-millisecond mathematical rendering and visual analytics.
+                            ${t('heroDesc')}
                         </p>
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-20 reveal-element">
                         <div class="glass-panel p-5 rounded-2xl text-center relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
                             <p class="text-2xl font-extrabold text-white font-mono" id="c1">0</p>
                             <p class="text-[10px] font-mono text-zinc-500 tracking-wider uppercase mt-1">Calculators Active</p>
                         </div>
                         <div class="glass-panel p-5 rounded-2xl text-center relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
                             <p class="text-2xl font-extrabold text-emerald-400 font-mono" id="c2">0</p>
                             <p class="text-[10px] font-mono text-zinc-500 tracking-wider uppercase mt-1">Daily Assertions</p>
                         </div>
                         <div class="glass-panel p-5 rounded-2xl text-center relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
                             <p class="text-2xl font-extrabold text-white font-mono" id="c3">0</p>
                             <p class="text-[10px] font-mono text-zinc-500 tracking-wider uppercase mt-1">Asset Currencies</p>
                         </div>
                         <div class="glass-panel p-5 rounded-2xl text-center relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
                             <p class="text-2xl font-extrabold text-indigo-400 font-mono" id="c4">0</p>
                             <p class="text-[10px] font-mono text-zinc-500 tracking-wider uppercase mt-1">Compute Latency</p>
                         </div>
                     </div>
 
                     <div class="max-w-6xl mx-auto space-y-4 reveal-element">
-                        <div class="flex justify-between items-center px-2">
-                            <h2 class="text-sm font-bold tracking-widest font-mono text-zinc-400 uppercase">01 / Operational Modules</h2>
-                            <span class="w-12 h-px bg-zinc-800"></span>
-                        </div>
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-indigo-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('emi')">
-                                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">📊</div>
-                                <h3 class="text-lg font-bold group-hover:text-indigo-400 transition">Mortgage & Loan Simulation</h3>
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-indigo-500/30 transition-all group cursor-pointer" onclick="window.route('emi')">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-indigo-600 group-hover:text-white transition">📊</div>
+                                <h3 class="text-lg font-bold group-hover:text-indigo-400 transition">${t('emi')}</h3>
                                 <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Calculate multi-tiered interest amortizations, debt metrics, and monthly structural repayment targets instantly.</p>
                             </div>
-
-                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-emerald-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('sip')">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">📈</div>
-                                <h3 class="text-lg font-bold group-hover:text-emerald-400 transition">SIP Systematic Wealth</h3>
-                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Project componding growth velocity pipelines for mutual asset holdings and recurring market investment pools.</p>
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-emerald-500/30 transition-all group cursor-pointer" onclick="window.route('sip')">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-emerald-600 group-hover:text-white transition">📈</div>
+                                <h3 class="text-lg font-bold group-hover:text-emerald-400 transition">${t('sip')}</h3>
+                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Project compounding growth velocity pipelines for mutual asset holdings and recurring market investment pools.</p>
                             </div>
-
-                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-amber-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('gst')">
-                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">🧾</div>
-                                <h3 class="text-lg font-bold group-hover:text-amber-400 transition">GST Consumption Matrices</h3>
+                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-amber-500/30 transition-all group cursor-pointer" onclick="window.route('gst')">
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-amber-600 group-hover:text-white transition">🧾</div>
+                                <h3 class="text-lg font-bold group-hover:text-amber-400 transition">${t('gst')}</h3>
                                 <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Run precise tax slab algorithms for exclusive or inclusive product value computations across all standard limits.</p>
-                            </div>
-
-                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-cyan-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('converter')">
-                                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-cyan-600 group-hover:text-white transition-all duration-300">💱</div>
-                                <h3 class="text-lg font-bold group-hover:text-cyan-400 transition">Live Cross-Border Forex</h3>
-                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Translate value parameters instantly across global currencies using specific cross-corridor exchange indexes.</p>
-                            </div>
-
-                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-violet-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('eligibility')">
-                                <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-violet-600 group-hover:text-white transition-all duration-300">⚖️</div>
-                                <h3 class="text-lg font-bold group-hover:text-violet-400 transition">Debt-to-Income Capability</h3>
-                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Benchmark your exact net institutional borrowing capacity using standard risk underwriting limits.</p>
-                            </div>
-
-                            <div class="glass-panel p-6 rounded-2xl hover:scale-[1.02] hover:border-fuchsia-500/30 transition-all duration-300 group cursor-pointer" onclick="window.route('fdrd')">
-                                <div class="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-lg mb-4 group-hover:bg-fuchsia-600 group-hover:text-white transition-all duration-300">⏳</div>
-                                <h3 class="text-lg font-bold group-hover:text-fuchsia-400 transition">Term Deposits & Annuities</h3>
-                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Calculate exact compound yields for lump-sum fixed configurations or recurring monthly term accounts.</p>
                             </div>
                         </div>
                     </div>
                 `;
                 renderBaseLayout(html);
-
-                // Run Counter Animations Upon Dynamic View Injection Mount
                 setTimeout(() => {
-                    animateNumericValue('c1', 8);
-                    animateNumericValue('c2', 24850);
-                    animateNumericValue('c3', 4);
-                    animateNumericValue('c4', 0.2, '');
+                    animateNumericValue('c1', 8); animateNumericValue('c2', 24850); animateNumericValue('c3', 4); animateNumericValue('c4', 0.2);
                 }, 50);
             }
 
-            // 1. DASHBOARD STYLE PANEL: EMI CALCULATOR
             function renderEMIPanel() {
                 const html = `
                     <div class="max-w-6xl mx-auto space-y-6 reveal-element">
@@ -376,7 +560,12 @@
                                 <h1 class="text-2xl font-black text-white">Mortgage & Loan EMI Terminal</h1>
                                 <p class="text-xs text-zinc-400 mt-1">Configure interest matrices to determine monthly structural amortizations.</p>
                             </div>
-                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
+                            <div class="flex flex-wrap gap-2">
+                                <button id="voiceBtn" class="text-xs font-semibold px-3 py-2 bg-indigo-600/20 border border-indigo-500/30 rounded-xl hover:bg-indigo-600 hover:text-white text-indigo-400 transition cursor-pointer">🎤 ${t('inputVoice')}</button>
+                                <button id="pdfBtn" class="text-xs font-semibold px-3 py-2 bg-emerald-600/20 border border-emerald-500/30 rounded-xl hover:bg-emerald-600 hover:text-white text-emerald-400 transition cursor-pointer">📄 PDF</button>
+                                <button id="shareBtn" class="text-xs font-semibold px-3 py-2 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition cursor-pointer">🔗 ${t('share')}</button>
+                                <button id="emailBtn" class="text-xs font-semibold px-3 py-2 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition cursor-pointer">✉️ ${t('email')}</button>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -387,6 +576,7 @@
                                         <span id="v1" class="text-indigo-400 font-extrabold font-mono text-sm"></span>
                                     </div>
                                     <input id="s1" type="range" min="50000" max="25000000" step="50000" value="5000000" class="w-full">
+                                    <div id="suggestBox" class="mt-2 hidden p-2 rounded-xl bg-zinc-950 border border-white/5"></div>
                                 </div>
                                 <div>
                                     <div class="flex justify-between items-center mb-2">
@@ -409,18 +599,31 @@
                                     <p class="text-[10px] font-bold tracking-widest font-mono text-zinc-500 uppercase">Target Monthly Installment</p>
                                     <p id="outEmi" class="text-3xl font-black text-indigo-400 font-mono mt-1"></p>
                                 </div>
-
-                                <div class="w-40 h-40 relative my-4">
-                                    <canvas id="dashboardChart"></canvas>
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                        <span class="text-[9px] font-mono tracking-widest text-zinc-500 uppercase">Ratio</span>
-                                        <span class="text-xs font-bold text-white mt-0.5">Asset/Fee</span>
-                                    </div>
-                                </div>
-
+                                <div class="w-40 h-40 relative my-4"><canvas id="dashboardChart"></canvas></div>
                                 <div class="w-full bg-zinc-950/40 border border-white/5 p-4 rounded-2xl space-y-2 text-xs font-mono text-zinc-400">
                                     <div class="flex justify-between"><span>Principal Borrowed:</span><span id="outP" class="text-white font-bold"></span></div>
                                     <div class="flex justify-between"><span>Cumulative Interest:</span><span id="outI" class="text-emerald-400 font-bold"></span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-6 rounded-3xl space-y-4">
+                            <h3 class="text-xs font-bold tracking-wider font-mono text-zinc-400 uppercase">${t('compareTitle')}</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                                <div class="p-4 rounded-2xl bg-zinc-950/40 border border-white/5">
+                                    <p class="text-indigo-400 font-bold">Aggressive Alpha</p>
+                                    <p class="text-[11px] text-zinc-500 mt-1">Interest: -0.5% | Horizon: -5 Yrs</p>
+                                    <p id="comp1" class="text-white font-bold mt-2"></p>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-indigo-600/10 border border-indigo-500/20">
+                                    <p class="text-indigo-300 font-bold">Baseline Current Model</p>
+                                    <p class="text-[11px] text-zinc-500 mt-1">Standard Core Configuration</p>
+                                    <p id="comp2" class="text-white font-bold mt-2"></p>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-zinc-950/40 border border-white/5">
+                                    <p class="text-indigo-400 font-bold">Conservative Beta</p>
+                                    <p class="text-[11px] text-zinc-500 mt-1">Interest: +0.75% | Horizon: +5 Yrs</p>
+                                    <p id="comp3" class="text-white font-bold mt-2"></p>
                                 </div>
                             </div>
                         </div>
@@ -429,18 +632,29 @@
                 renderBaseLayout(html);
 
                 const s1 = document.getElementById('s1'); const s2 = document.getElementById('s2'); const s3 = document.getElementById('s3');
-                function process() {
-                    const p = Number(s1.value); const r = (Number(s2.value) / 12) / 100; const n = Number(s3.value) * 12;
-                    document.getElementById('v1').textContent = formatMoney(p);
-                    document.getElementById('v2').textContent = s2.value + '%';
-                    document.getElementById('v3').textContent = s3.value + ' Years';
+                
+                function calculateStructuralEMI(principal, annualRate, years) {
+                    const r = (annualRate / 12) / 100; const n = years * 12;
+                    return r > 0 ? (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : principal / n;
+                }
 
-                    const emi = r > 0 ? (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : p / n;
-                    const grossRepay = emi * n; const grossInt = grossRepay - p;
+                function process() {
+                    const p = Number(s1.value); const r = Number(s2.value); const y = Number(s3.value);
+                    document.getElementById('v1').textContent = formatMoney(p);
+                    document.getElementById('v2').textContent = r + '%';
+                    document.getElementById('v3').textContent = y + ' Years';
+
+                    const emi = calculateStructuralEMI(p, r, y);
+                    const grossRepay = emi * (y * 12); const grossInt = grossRepay - p;
 
                     document.getElementById('outEmi').textContent = formatMoney(emi);
                     document.getElementById('outP').textContent = formatMoney(p);
                     document.getElementById('outI').textContent = formatMoney(grossInt);
+
+                    // Updating Plan Matrix Metrics
+                    document.getElementById('comp1').textContent = `EMI: ${formatMoney(calculateStructuralEMI(p, Math.max(0.5, r - 0.5), Math.max(1, y - 5)))} / mo`;
+                    document.getElementById('comp2').textContent = `EMI: ${formatMoney(emi)} / mo`;
+                    document.getElementById('comp3').textContent = `EMI: ${formatMoney(calculateStructuralEMI(p, r + 0.75, y + 5))} / mo`;
 
                     if (globalChartInstance) {
                         globalChartInstance.data.datasets[0].data = [p, grossInt];
@@ -449,10 +663,35 @@
                         mountChartCanvas(p, grossInt);
                     }
                 }
-                [s1, s2, s3].forEach(s => s.addEventListener('input', process)); process();
+
+                s1.addEventListener('input', (e) => {
+                    process();
+                    processValueAutoSuggestion(e.target.value, 'suggestBox', 's1', () => { process(); });
+                });
+                [s2, s3].forEach(s => s.addEventListener('input', process));
+
+                document.getElementById('voiceBtn').onclick = () => {
+                    initializeVoiceCaptureInput('s1', () => { process(); });
+                };
+                document.getElementById('pdfBtn').onclick = () => {
+                    generateModuleReportPDF("Mortgage Amortization Log", [
+                        { label: "Principal Baseline Base", value: formatMoney(Number(s1.value)) },
+                        { label: "Interest Base Factor", value: s2.value + '%' },
+                        { label: "Duration Horizon", value: s3.value + ' Years' },
+                        { label: "Calculated Scheduled EMI", value: document.getElementById('outEmi').textContent }
+                    ]);
+                };
+                document.getElementById('shareBtn').onclick = () => {
+                    dispatchNativeShareIntent("Nexus Financial EMI Result", `Calculated EMI Premium payload output: ${document.getElementById('outEmi').textContent} for baseline core asset base ${formatMoney(Number(s1.value))}.`);
+                };
+                document.getElementById('emailBtn').onclick = () => {
+                    dispatchSecureEmailClient("Nexus Terminal Computation Packet", `Calculated Premium Schedule: ${document.getElementById('outEmi').textContent}\nAsset Capital Base Vector: ${formatMoney(Number(s1.value))}`);
+                };
+
+                process();
+                setTimeout(() => saveCalculationToLog("EMI", `${formatMoney(Number(s1.value))} @ ${s2.value}%`, document.getElementById('outEmi').textContent), 1000);
             }
 
-            // 2. DASHBOARD STYLE PANEL: SIP INVESTMENT CALCULATOR
             function renderSIPPanel() {
                 const html = `
                     <div class="max-w-6xl mx-auto space-y-6 reveal-element">
@@ -461,7 +700,11 @@
                                 <h1 class="text-2xl font-black text-white">SIP Mutual Fund Wealth Modeler</h1>
                                 <p class="text-xs text-zinc-400 mt-1">Project capitalization curves across extended index cycles.</p>
                             </div>
-                            <button onclick="window.route('home')" class="text-xs font-semibold px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition cursor-pointer">← BACK HUB</button>
+                            <div class="flex flex-wrap gap-2">
+                                <button id="voiceBtn" class="text-xs font-semibold px-3 py-2 bg-indigo-600/20 border border-indigo-500/30 rounded-xl hover:bg-indigo-600 hover:text-white text-indigo-400 transition cursor-pointer">🎤 ${t('inputVoice')}</button>
+                                <button id="pdfBtn" class="text-xs font-semibold px-3 py-2 bg-emerald-600/20 border border-emerald-500/30 rounded-xl hover:bg-emerald-600 hover:text-white text-emerald-400 transition cursor-pointer">📄 PDF</button>
+                                <button id="shareBtn" class="text-xs font-semibold px-3 py-2 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition cursor-pointer">🔗 ${t('share')}</button>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -472,6 +715,7 @@
                                         <span id="v1" class="text-emerald-400 font-extrabold font-mono text-sm"></span>
                                     </div>
                                     <input id="s1" type="range" min="500" max="250000" step="500" value="15000" class="w-full">
+                                    <div id="suggestBox" class="mt-2 hidden p-2 rounded-xl bg-zinc-950 border border-white/5"></div>
                                 </div>
                                 <div>
                                     <div class="flex justify-between items-center mb-2">
@@ -494,9 +738,7 @@
                                     <p class="text-[10px] font-bold tracking-widest font-mono text-zinc-500 uppercase">Estimated Future Net Asset Value</p>
                                     <p id="outTot" class="text-3xl font-black text-emerald-400 font-mono mt-1"></p>
                                 </div>
-
                                 <div class="w-40 h-40 relative my-4"><canvas id="dashboardChart"></canvas></div>
-
                                 <div class="w-full bg-zinc-950/40 border border-white/5 p-4 rounded-2xl space-y-2 text-xs font-mono text-zinc-400">
                                     <div class="flex justify-between"><span>Principal Invested:</span><span id="outP" class="text-white font-bold"></span></div>
                                     <div class="flex justify-between"><span>Compound Capital Yield:</span><span id="outI" class="text-indigo-400 font-bold"></span></div>
@@ -529,10 +771,30 @@
                         mountChartCanvas(principal, yields, "Invested Principal", "Accrued Yield Wealth");
                     }
                 }
-                [s1, s2, s3].forEach(s => s.addEventListener('input', process)); process();
+
+                s1.addEventListener('input', (e) => {
+                    process();
+                    processValueAutoSuggestion(e.target.value, 'suggestBox', 's1', () => { process(); });
+                });
+                [s2, s3].forEach(s => s.addEventListener('input', process));
+
+                document.getElementById('voiceBtn').onclick = () => { initializeVoiceCaptureInput('s1', () => { process(); }); };
+                document.getElementById('pdfBtn').onclick = () => {
+                    generateModuleReportPDF("Systematic Wealth Projection Portfolio", [
+                        { label: "Monthly Outlay Commitment", value: formatMoney(Number(s1.value)) },
+                        { label: "Target Scaled Return", value: s2.value + '%' },
+                        { label: "Vesting Term Range", value: s3.value + ' Years' },
+                        { label: "Projected Terminal Asset Value", value: document.getElementById('outTot').textContent }
+                    ]);
+                };
+                document.getElementById('shareBtn').onclick = () => {
+                    dispatchNativeShareIntent("Nexus Wealth Matrix Simulation", `Projected Mutual Asset Pipeline Target Valuation: ${document.getElementById('outTot').textContent}.`);
+                };
+
+                process();
+                setTimeout(() => saveCalculationToLog("SIP", `${formatMoney(Number(s1.value))}/mo`, document.getElementById('outTot').textContent), 1000);
             }
 
-            // 3. DASHBOARD STYLE PANEL: GST MATRIX CALCULATOR
             function renderGSTPanel() {
                 const html = `
                     <div class="max-w-4xl mx-auto space-y-6 reveal-element">
@@ -597,10 +859,10 @@
                 mInc.onclick = () => { mode = 'exclusive'; mInc.className = 'flex-1 py-2.5 rounded-lg font-bold bg-amber-500 text-black'; mDec.className = 'flex-1 py-2.5 rounded-lg font-bold text-zinc-400 hover:text-white'; process(); };
                 mDec.onclick = () => { mode = 'inclusive'; mDec.className = 'flex-1 py-2.5 rounded-lg font-bold bg-amber-500 text-black'; mInc.className = 'flex-1 py-2.5 rounded-lg font-bold text-zinc-400 hover:text-white'; process(); };
 
-                [baseAmt, gstRate].forEach(el => el.addEventListener('input', process)); process();
+                [baseAmt, gstRate].forEach(el => el.addEventListener('input', process));
+                process();
             }
 
-            // 4. DASHBOARD STYLE PANEL: LIVE CURRENCY CONVERTER
             function renderConverterPanel() {
                 const html = `
                     <div class="max-w-4xl mx-auto space-y-6 reveal-element">
@@ -651,10 +913,8 @@
                 function process() {
                     const amt = Number(fxInput.value) || 0;
                     const srcK = srcSel.value; const tgtK = targetSel.value;
-                    
                     const inUSD = amt / currencyConfigs[srcK].rateVsUSD;
                     const finalVal = inUSD * currencyConfigs[tgtK].rateVsUSD;
-
                     const configTarget = currencyConfigs[tgtK];
                     document.getElementById('fxOutput').textContent = configTarget.symbol + finalVal.toLocaleString(configTarget.locale, { maximumFractionDigits: 2 });
                     document.getElementById('fxSpread').textContent = `1 ${srcK} = ${(currencyConfigs[tgtK].rateVsUSD / currencyConfigs[srcK].rateVsUSD).toFixed(4)} ${tgtK}`;
@@ -667,7 +927,6 @@
                 process();
             }
 
-            // 5. DASHBOARD STYLE PANEL: LOAN ELIGIBILITY CALCULATOR
             function renderEligibilityPanel() {
                 const html = `
                     <div class="max-w-4xl mx-auto space-y-6 reveal-element">
@@ -719,9 +978,7 @@
                 function process() {
                     const gross = Number(inc.value) || 0; const debt = Number(oblig.value) || 0;
                     const r = (Number(rate.value) / 100) / 12; const n = (Number(tenure.value) || 1) * 12;
-
-                    const foirMax = gross * 0.50;
-                    const maxEMIAllowed = foirMax - debt;
+                    const foirMax = gross * 0.50; const maxEMIAllowed = foirMax - debt;
 
                     document.getElementById('foir').textContent = formatMoney(foirMax);
                     document.getElementById('buffer').textContent = formatMoney(Math.max(0, maxEMIAllowed));
@@ -732,14 +989,13 @@
                     } else if (maxEMIAllowed > 0) {
                         totalCap = maxEMIAllowed * n;
                     }
-
                     document.getElementById('maxLoan').textContent = formatMoney(Math.max(0, totalCap));
                 }
 
-                [inc, oblig, rate, tenure].forEach(el => el.addEventListener('input', process)); process();
+                [inc, oblig, rate, tenure].forEach(el => el.addEventListener('input', process));
+                process();
             }
 
-            // 6. DASHBOARD STYLE PANEL: FD/RD CALCULATOR
             function renderFDRDPanel() {
                 const html = `
                     <div class="max-w-5xl mx-auto space-y-6 reveal-element">
@@ -792,13 +1048,10 @@
                     document.getElementById('lblAmt').textContent = mode === 'FD' ? 'Lump Sum Principal Base Asset' : 'Monthly Systematic Installment Allocation';
 
                     let principal = 0; let maturity = 0;
-
                     if (mode === 'FD') {
-                        principal = v;
-                        maturity = principal * Math.pow(1 + (r / 4), 4 * t);
+                        principal = v; maturity = principal * Math.pow(1 + (r / 4), 4 * t);
                     } else {
-                        const totalMonths = t * 12; principal = v * totalMonths;
-                        let runningSum = 0;
+                        const totalMonths = t * 12; principal = v * totalMonths; let runningSum = 0;
                         for (let j = 1; j <= totalMonths; j++) {
                             runningSum += v * Math.pow(1 + (r / 4), 4 * ((totalMonths - j + 1) / 12));
                         }
@@ -814,10 +1067,10 @@
                 btnFD.onclick = () => { mode = 'FD'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold bg-fuchsia-500 text-black'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold text-zinc-400 hover:text-white'; process(); };
                 btnRD.onclick = () => { mode = 'RD'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold bg-fuchsia-500 text-black'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold text-zinc-400 hover:text-white'; process(); };
 
-                [amt, rate, tenure].forEach(el => el.addEventListener('input', process)); process();
+                [amt, rate, tenure].forEach(el => el.addEventListener('input', process));
+                process();
             }
 
-            // 7. DASHBOARD STYLE PANEL: TAX CALCULATOR
             function renderTaxPanel() {
                 const html = `
                     <div class="max-w-4xl mx-auto space-y-6 reveal-element">
@@ -856,17 +1109,15 @@
                 function process() {
                     const totalGross = Number(grossInc.value) || 0; const exemptions = Number(deduct.value) || 0;
                     const netIncome = Math.max(0, totalGross - exemptions);
-
                     let computedTax = 0;
+
                     if (currentCurrency === 'INR') {
-                        // Classical India Progressive Tax Slab Schedule Logic
                         if (netIncome > 1500000) computedTax += (netIncome - 1500000) * 0.30 + 150000;
                         else if (netIncome > 1200000) computedTax += (netIncome - 1200000) * 0.20 + 90000;
                         else if (netIncome > 900000) computedTax += (netIncome - 900000) * 0.15 + 45000;
                         else if (netIncome > 600000) computedTax += (netIncome - 600000) * 0.10 + 15000;
                         else if (netIncome > 300000) computedTax += (netIncome - 300000) * 0.05;
                     } else {
-                        // Global Multi-Bracket Flat Scaled Baseline
                         if (netIncome > 120000) computedTax += (netIncome - 120000) * 0.33 + 16000;
                         else if (netIncome > 60000) computedTax += (netIncome - 60000) * 0.20 + 4000;
                         else if (netIncome > 15000) computedTax += (netIncome - 15000) * 0.10;
@@ -877,10 +1128,10 @@
                     document.getElementById('takeHome').textContent = formatMoney(totalGross - computedTax);
                 }
 
-                [grossInc, deduct].forEach(el => el.addEventListener('input', process)); process();
+                [grossInc, deduct].forEach(el => el.addEventListener('input', process));
+                process();
             }
 
-            // 8. DASHBOARD STYLE PANEL: SALARY HIKE CALCULATOR
             function renderHikePanel() {
                 const html = `
                     <div class="max-w-4xl mx-auto space-y-6 reveal-element">
@@ -914,20 +1165,18 @@
                 renderBaseLayout(html);
 
                 const currSal = document.getElementById('currSal'); const newSal = document.getElementById('newSal');
-
                 function process() {
                     const currentVal = Number(currSal.value) || 0; const proposedVal = Number(newSal.value) || 0;
-                    const deltaValue = proposedVal - currentVal; 
-                    const grossPercentage = currentVal > 0 ? ((deltaValue / currentVal) * 100).toFixed(1) : '0.0';
-
+                    const deltaValue = proposedVal - currentVal; const grossPercentage = currentVal > 0 ? ((deltaValue / currentVal) * 100).toFixed(1) : '0.0';
                     document.getElementById('hikeAmt').textContent = formatMoney(deltaValue);
                     document.getElementById('hikePct').textContent = `${grossPercentage}%`;
                 }
 
-                [currSal, newSal].forEach(el => el.addEventListener('input', process)); process();
+                [currSal, newSal].forEach(el => el.addEventListener('input', process));
+                process();
             }
 
-            // Route Core Boot Trigger Execution Loop
+            // Route Core Boot Trigger Execution Loop Initialization
             window.route('home');
         });
     </script>

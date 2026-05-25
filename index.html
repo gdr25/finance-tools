@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Premium Finance Suite | Global Dashboard</title>
+    <title>Calzio Premium Finance Suite | Global Dashboard</title>
     
-    <meta name="description" content="Optimize asset metrics with the Nexus high-performance global calculation engine. Featuring glassmorphic dashboards, live currency modules, real-time analytics, and investment optimization models.">
+    <meta name="description" content="Optimize asset metrics with the Calzio high-performance global calculation engine. Featuring glassmorphic dashboards, live currency modules, real-time analytics, and investment optimization models.">
     <meta name="keywords" content="EMI Calculator, SIP Calculator, GST Calculator, Finance Dashboard, Tax Planning, Forex Engine, Fixed Deposit, Wealth Management">
     <meta name="robots" content="index, follow">
     
@@ -45,12 +45,12 @@
             -webkit-appearance: none;
             appearance: none;
             background: rgba(255, 255, 255, 0.08);
-            height: 8px; /* Slightly thicker for better mobile accuracy */
+            height: 8px;
             border-radius: 9999px;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 22px; /* Enriched for improved touch-target standards */
+            width: 22px;
             height: 22px;
             border-radius: 50%;
             background: #6366f1;
@@ -107,7 +107,7 @@
                     <header class="sticky top-0 w-full glass-nav z-50 transition-all duration-300">
                         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
                             <div class="flex items-center gap-2 sm:gap-3 font-extrabold text-base sm:text-xl tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent cursor-pointer" id="logoClick">
-                                <span class="p-1.5 sm:p-2 bg-indigo-600/20 border border-indigo-500/30 rounded-xl text-indigo-400 text-xs sm:text-sm">N𝝬</span> NEXUS.FINANCE
+                                <span class="p-1.5 sm:p-2 bg-indigo-600/20 border border-indigo-500/30 rounded-xl text-indigo-400 text-xs sm:text-sm">C𝝬</span> CALZIO
                             </div>
                             
                             <nav class="hidden xl:flex items-center gap-1 bg-zinc-900/40 p-1 rounded-xl border border-white/5 backdrop-blur-md">
@@ -160,7 +160,7 @@
                     </div>
 
                     <footer class="border-t border-white/5 py-6 sm:py-8 px-4 text-center text-[10px] sm:text-xs text-zinc-500 font-mono tracking-wider">
-                        &copy; 2026 NEXUS FINANCIAL SOFTWARE SUITE APPARATUS. POWERED BY STATIC HTML5 FAST RUNTIME ENGINES.
+                        &copy; 2026 CALZIO FINANCIAL SOFTWARE SUITE APPARATUS. POWERED BY STATIC HTML5 FAST RUNTIME ENGINES.
                     </footer>
                 `;
 
@@ -270,7 +270,7 @@
                         return;
                     }
                     const progress = elapsedTime / duration;
-                    const easeOutQuad = progress * (2 - progress); // Standard ease optimization curvature
+                    const easeOutQuad = progress * (2 - progress);
                     const currentVal = Math.floor(start + (endValue - start) * easeOutQuad);
                     el.textContent = prefix + currentVal.toLocaleString();
                     requestAnimationFrame(updateCounter);

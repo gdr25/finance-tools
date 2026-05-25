@@ -14,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
         :root {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -161,7 +161,7 @@
                             </div>
                             
                             <div class="flex items-center gap-2">
-                                <button class="px-3 py-1.5 bg-zinc-800 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition cursor-pointer" onclick="window.navigateRoute('home')">🏠 DASHBOARD</button>
+                                <button class="px-3 py-1.5 bg-zinc-800 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-lg" onclick="window.navigateRoute('home')">🏠 DASHBOARD</button>
                                 <button id="themeToggle" class="p-2 border border-black/10 dark:border-white/10 rounded-xl text-sm w-9 h-9 flex items-center justify-center cursor-pointer hover:bg-zinc-500/10 transition">
                                     ${isDark ? '☀️' : '🌙'}
                                 </button>
@@ -254,7 +254,6 @@
                 }, 60);
             }
 
-            // Secure Speech Capture Loop Pipeline
             window.toggleVoiceInput = function(targetInputId) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if (!SpeechRecognition) return alert("Web Speech Engine not supported.");
@@ -329,17 +328,25 @@
                     <div class="mt-6 pt-4 border-t border-black/5 dark:border-white/5 space-y-4">
                         <div class="flex flex-wrap gap-2 items-center justify-between">
                             <div class="flex flex-wrap gap-1.5">
-                                <button onclick="window.exportOutputToPdf()" class="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold transition">📄 Export PDF</button>
-                                <button onclick="window.shareCoreAppResults()" class="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-800 text-xs font-bold rounded-xl transition">🔗 Copy Share Link</button>
-                                <button onclick="window.emailCoreAppResults()" class="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-800 text-xs font-bold rounded-xl transition">✉️ Email Analytics</button>
+                                <button onclick="window.exportOutputToPdf()" class="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold transition cursor-pointer">📄 Export PDF</button>
+                                <button onclick="window.shareCoreAppResults()" class="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-800 text-xs font-bold rounded-xl transition cursor-pointer">🔗 Copy Share Link</button>
+                                <button onclick="window.emailCoreAppResults()" class="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-800 text-xs font-bold rounded-xl transition cursor-pointer">✉️ Email Analytics</button>
                             </div>
                             <div class="flex gap-1 items-center bg-black/5 dark:bg-white/5 p-1 rounded-xl text-[10px] font-mono">
                                 <span class="px-1 text-zinc-400">Broadcast Network:</span>
-                                <button onclick="window.shareSocialAnchor('tw')" class="w-6 h-6 bg-indigo-500/10 rounded text-xs">𝕏</button>
-                                <button onclick="window.shareSocialAnchor('fb')" class="w-6 h-6 bg-indigo-500/10 rounded text-xs">FB</button>
+                                <button onclick="window.shareSocialAnchor('tw')" class="w-6 h-6 bg-indigo-500/10 rounded text-xs cursor-pointer">𝕏</button>
+                                <button onclick="window.shareSocialAnchor('fb')" class="w-6 h-6 bg-indigo-500/10 rounded text-xs cursor-pointer">FB</button>
                             </div>
                         </div>
                     </div>
+                `;
+            }
+
+            function injectBackButton() {
+                return `
+                    <button onclick="window.navigateRoute('home')" class="mb-4 px-3 py-1.5 bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 rounded-xl text-[10px] font-bold font-mono tracking-wider transition cursor-pointer inline-flex items-center gap-1.5">
+                        ⬅ BACK TO DASHBOARD
+                    </button>
                 `;
             }
 
@@ -364,14 +371,14 @@
                     <div class="max-w-6xl mx-auto space-y-4 mb-10 reveal-element">
                         <h2 class="text-xs font-bold tracking-widest font-mono text-zinc-400 uppercase">${t.modulesTitle}</h2>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
-                            <button onclick="window.navigateRoute('emi')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-indigo-500 transition">Mortgage EMI</button>
-                            <button onclick="window.navigateRoute('sip')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-emerald-500 transition">SIP Wealth</button>
-                            <button onclick="window.navigateRoute('gst')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-amber-500 transition">GST Surcharge</button>
-                            <button onclick="window.navigateRoute('converter')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-cyan-400 transition">Forex Grid</button>
-                            <button onclick="window.navigateRoute('eligibility')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-indigo-500 transition">Debt FOIR Cap</button>
-                            <button onclick="window.navigateRoute('fdrd')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-fuchsia-500 transition">Annuity FD/RD</button>
-                            <button onclick="window.navigateRoute('tax')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-rose-500 transition">Fiscal Bracket</button>
-                            <button onclick="window.navigateRoute('hike')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-teal-400 transition">Salary Increment</button>
+                            <button onclick="window.navigateRoute('emi')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-indigo-500 transition cursor-pointer">Mortgage EMI</button>
+                            <button onclick="window.navigateRoute('sip')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-emerald-500 transition cursor-pointer">SIP Wealth</button>
+                            <button onclick="window.navigateRoute('gst')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-amber-500 transition cursor-pointer">GST Surcharge</button>
+                            <button onclick="window.navigateRoute('converter')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-cyan-400 transition cursor-pointer">Forex Grid</button>
+                            <button onclick="window.navigateRoute('eligibility')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-indigo-500 transition cursor-pointer">Debt FOIR Cap</button>
+                            <button onclick="window.navigateRoute('fdrd')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-fuchsia-500 transition cursor-pointer">Annuity FD/RD</button>
+                            <button onclick="window.navigateRoute('tax')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-rose-500 transition cursor-pointer">Fiscal Bracket</button>
+                            <button onclick="window.navigateRoute('hike')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-teal-400 transition cursor-pointer">Salary Increment</button>
                         </div>
                     </div>
 
@@ -482,6 +489,7 @@
             function renderEMIPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
                             <h1 class="text-base font-black">Mortgage EMI Terminal</h1>
                         </div>
@@ -516,6 +524,7 @@
             function renderSIPPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
                             <h1 class="text-base font-black">SIP Systematic Modeler</h1>
                         </div>
@@ -550,6 +559,7 @@
             function renderGSTPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
                             <h1 class="text-base font-black">GST Tax Surcharge Grid</h1>
                         </div>
@@ -583,6 +593,7 @@
             function renderConverterPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">Forex Conversion Grid</h1>
                         <div class="glass-panel p-4 rounded-2xl space-y-3">
                             <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Volume <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
@@ -603,6 +614,7 @@
             function renderEligibilityPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">Debt FOIR Cap Capacity</h1>
                         <div class="glass-panel p-4 rounded-2xl space-y-3">
                             <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Income Base <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
@@ -620,6 +632,7 @@
             function renderFDRDPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">Annuity Term FD/RD Modeler</h1>
                         <div class="glass-panel p-4 rounded-2xl space-y-3">
                             <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Capital Deployment <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
@@ -637,6 +650,7 @@
             function renderTaxPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">Fiscal Income Bracket Auditor</h1>
                         <div class="glass-panel p-4 rounded-2xl space-y-3">
                             <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Gross Income <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
@@ -654,6 +668,7 @@
             function renderHikePanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">Salary Increment Matrix</h1>
                         <div class="glass-panel p-4 rounded-2xl space-y-3">
                             <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Base Salary <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
@@ -676,6 +691,7 @@
             function renderRetirementPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
                             <h1 class="text-base font-black">🌴 Retirement Planning Target Suite</h1>
                         </div>
@@ -701,7 +717,7 @@
                 const p = () => {
                     let exp = Number(v1.value)||0; let yrs = Number(v2.value)||0; let inf = Number(v3.value)||0;
                     let adjExp = exp * Math.pow(1 + (inf/100), yrs);
-                    let targetCorpus = adjExp * 12 * 20; // 4% safe withdrawal rule approximation framework
+                    let targetCorpus = adjExp * 12 * 20; 
                     document.getElementById('o1').textContent = formatMoney(adjExp);
                     document.getElementById('o2').textContent = formatMoney(targetCorpus);
                 };
@@ -712,7 +728,8 @@
             function renderMFPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
-                        <h1 class="text-base font-black">Index & Mutual Fund returns tracker</h1>
+                        ${injectBackButton()}
+                        <h1 class="text-base font-black">📈 Index & Mutual Fund Returns Tracker</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
                                 <div>
@@ -745,6 +762,7 @@
             function renderCryptoPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🪙 Crypto Profit Sizer Pipeline</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -778,6 +796,7 @@
             function renderStockAvgPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">📊 Cross-Lot Stock Purchase Averaging Modeler</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -816,6 +835,7 @@
             function renderCompoundPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🧬 Continuous Compound Dividend Engine</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -856,6 +876,7 @@
             function renderInflationPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🎈 Macro CPI Inflation Devaluation Sizer</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -889,6 +910,7 @@
             function renderSavingsGoalPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🎯 Capital Goal Target Architect</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -921,6 +943,7 @@
             function renderRealEstatePanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🏢 Real Estate Capital ROI Performance Analyzer</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -955,6 +978,7 @@
             function renderRentalYieldPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🔑 Rental Performance Yield Ledger</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -986,6 +1010,7 @@
             function renderBreakEvenPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🏁 Unit Level Corporate Operational Break-even Matrix</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -1019,6 +1044,7 @@
             function renderNetWorthPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">⚖️ Liquid Consolidated Net Worth Auditor</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -1054,6 +1080,7 @@
             function renderCCEMIPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">💳 Credit Card Balance EMI Rollover Structural Planner</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -1087,6 +1114,7 @@
             function renderDebtPayoffPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🛡️ Debt Avalanche & Acceleration Framework</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -1121,6 +1149,7 @@
             function renderCarLoanPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">🚗 Vehicle Asset Financing Compounding Matrix</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -1157,6 +1186,7 @@
             function renderPrepaymentPanel() {
                 let html = `
                     <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        ${injectBackButton()}
                         <h1 class="text-base font-black">⚡ Real Estate Mortgage Prepayment Compression Optimizer</h1>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -1179,7 +1209,6 @@
                 renderBaseLayout(html);
                 const p = () => {
                     let remainingPrinc = Number(v1.value)||0; let prepayAmt = Number(v2.value)||0; let rAnn = Number(v3.value)||0;
-                    // Approximated absolute lifecycle aggregate compound drag evaluation savings approximation model
                     let savings = prepayAmt * (rAnn / 100) * 10; 
                     document.getElementById('o1').textContent = formatMoney(Math.min(savings, remainingPrinc * 1.5));
                 };

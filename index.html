@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calzio Premium Finance Suite | Global Dashboard</title>
     
-    <meta name="description" content="Optimize asset metrics with the Calzio high-performance global calculation engine. Featuring glassmorphic dashboards, live currency modules, real-time analytics, and investment optimization models.">
-    <meta name="keywords" content="EMI Calculator, SIP Calculator, GST Calculator, Finance Dashboard, Tax Planning, Forex Engine, Fixed Deposit, Wealth Management">
+    <meta name="description" content="Optimize asset metrics with the Calzio high-performance global calculation engine. Featuring glassmorphic dashboards, live currency modules, real-time analytics, and advanced investment optimization models.">
+    <meta name="keywords" content="EMI Calculator, SIP Calculator, GST Calculator, Retirement Planner, Crypto Profit, Stock Average, Inflation Calculator, Financial Dashboard">
     <meta name="robots" content="index, follow">
     
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -20,7 +20,6 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
         
-        /* Light/Dark mode state control logic variables mapping */
         body.dark {
             --bg-master: #030303;
             --text-master: #f4f4f5;
@@ -78,24 +77,23 @@
             -webkit-appearance: none;
             appearance: none;
             background: rgba(120, 119, 119, 0.15);
-            height: 8px;
+            height: 6px;
             border-radius: 9999px;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 22px;
-            height: 22px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #6366f1;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
-            transition: transform 0.15s ease;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
         }
 
         .reveal-element {
             opacity: 0;
-            transform: translateY(16px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(12px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal-element.active {
             opacity: 1;
@@ -107,7 +105,7 @@
         }
         @keyframes pulse-ring {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
     </style>
@@ -119,7 +117,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             const root = document.getElementById('app-root');
             
-            // App Layout Architecture & Global States
             let currentPage = 'home'; 
             let currentCurrency = 'INR';
             let globalChartInstance = null;
@@ -133,34 +130,14 @@
                 GBP: { symbol: '£', locale: 'en-GB', rateVsUSD: 0.79 }
             };
 
-            // Multi-Language Localization Framework Dictionaries
             const i18n = {
                 EN: {
-                    tagline: "Institutional Level Financial Optimization Engine",
-                    heroTitle: "Computational Strategy For Accelerated Wealth Decisions",
-                    heroDesc: "Simulate asset trajectories, tax models, and mortgage scenarios with elite sub-millisecond mathematical rendering and visual analytics.",
-                    modulesTitle: "01 / Operational Modules",
-                    navHome: "HOME", navEmi: "EMI LOAN", navSip: "SIP WEALTH", navGst: "GST MATRIX", navForex: "FOREX", navDebt: "DEBT CAP", navTerm: "FD/RD TERM", navTax: "FISCAL BRACKET", navHike: "SALARY HIKE",
-                    downPdf: "Download PDF", shareResult: "Share Link", emailResult: "Email Results", voicePrompt: "Listening for numbers...",
-                    smartSugg: "Auto Suggestions Available"
-                },
-                ES: {
-                    tagline: "Motor de Optimización Financiera a Nivel Institucional",
-                    heroTitle: "Estrategia Computacional para Decisiones de Riqueza Aceleradas",
-                    heroDesc: "Simule trayectorias de activos, modelos fiscales y escenarios hipotecarios con renderizado matemático de élite de milisegundos y análisis visual.",
-                    modulesTitle: "01 / Módulos Operativos",
-                    navHome: "INICIO", navEmi: "PRESTAMO EMI", navSip: "SIP RIQUEZA", navGst: "MATRIZ IVA", navForex: "DIVISAS", navDebt: "CAP DEUDA", navTerm: "PLAZO FD/RD", navTax: "TRAMO FISCAL", navHike: "ALZA SALARIAL",
-                    downPdf: "Descargar PDF", shareResult: "Compartir enlace", emailResult: "Enviar Correo", voicePrompt: "Escuchando números...",
-                    smartSugg: "Sugerencias Automáticas Disponibles"
-                },
-                FR: {
-                    tagline: "Moteur d'Optimisation Financière de Niveau Institutionnel",
-                    heroTitle: "Stratégie Computationnelle pour des Décisions de Richesse Accélérées",
-                    heroDesc: "Simulez des trajectoires d'actifs, des modèles fiscaux et des scénarios hypothécaires avec un rendu mathématique d'élite et des analyses visuelles.",
-                    modulesTitle: "01 / Modules Opérationnels",
-                    navHome: "ACCUEIL", navEmi: "PRÊT EMI", navSip: "SIP PATRIMOINE", navGst: "MATRICE TVA", navForex: "FOREX", navDebt: "CAP DETTE", navTerm: "TERME FD/RD", navTax: "TRANCHE FISCALE", navHike: "HAUSSE SALAIRE",
-                    downPdf: "Télécharger PDF", shareResult: "Partager", emailResult: "Envoyer l'E-mail", voicePrompt: "Écoute des numéros...",
-                    smartSugg: "Suggestions Automatiques Disponibles"
+                    tagline: "Institutional Level Financial Optimization Suite",
+                    heroTitle: "Computational Intelligence For Advanced Asset Strategies",
+                    heroDesc: "Simulate compound returns, tax liabilities, crypto allocations, retirement targets, and asset yields natively with sub-millisecond calculation loops.",
+                    modulesTitle: "01 / Standard Core Modules",
+                    advancedTitle: "02 / Advanced Investment & Finance Engine",
+                    navHome: "HOME", downPdf: "Download PDF", shareResult: "Share Link", emailResult: "Email Results", voicePrompt: "Listening...", smartSugg: "Auto Suggestions Enabled"
                 }
             };
 
@@ -169,86 +146,47 @@
                 return config.symbol + Math.round(amount).toLocaleString(config.locale);
             }
 
-            // Global Master Layout Template Builder Injection Frame
             function renderBaseLayout(innerContentHTML) {
                 const t = i18n[currentLang];
                 const isDark = document.body.classList.contains('dark');
 
                 root.innerHTML = `
-                    <div class="fixed top-0 left-1/4 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-indigo-600/10 rounded-full blur-[100px] sm:blur-[140px] pointer-events-none -z-10"></div>
-                    <div class="fixed bottom-12 right-1/4 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] bg-emerald-600/5 rounded-full blur-[90px] sm:blur-[120px] pointer-events-none -z-10"></div>
+                    <div class="fixed top-0 left-1/4 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+                    <div class="fixed bottom-12 right-1/4 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] bg-emerald-600/5 rounded-full blur-[90px] pointer-events-none -z-10"></div>
 
                     <header class="sticky top-0 w-full glass-nav z-50 transition-all duration-300">
                         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-                            <div class="flex items-center gap-2 sm:gap-3 font-extrabold text-base sm:text-xl tracking-tight bg-gradient-to-r from-indigo-500 via-indigo-300 to-emerald-400 bg-clip-text text-transparent cursor-pointer" id="logoClick">
-                                <span class="p-1.5 sm:p-2 bg-indigo-600/20 border border-indigo-500/30 rounded-xl text-indigo-400 text-xs sm:text-sm">CZ</span> CALZIO
+                            <div class="flex items-center gap-2 font-extrabold text-base sm:text-xl tracking-tight bg-gradient-to-r from-indigo-500 via-indigo-300 to-emerald-400 bg-clip-text text-transparent cursor-pointer" id="logoClick">
+                                <span class="p-1.5 bg-indigo-600/20 border border-indigo-500/30 rounded-xl text-indigo-400 text-xs sm:text-sm">CZ</span> CALZIO
                             </div>
                             
-                            <nav class="hidden xl:flex items-center gap-1 bg-zinc-900/10 dark:bg-zinc-900/40 p-1 rounded-xl border border-black/5 dark:border-white/5 backdrop-blur-md">
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'home' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('home')">${t.navHome}</button>
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'emi' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('emi')">${t.navEmi}</button>
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'sip' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('sip')">${t.navSip}</button>
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'gst' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('gst')">${t.navGst}</button>
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'converter' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('converter')">${t.navForex}</button>
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'eligibility' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('eligibility')">${t.navDebt}</button>
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'fdrd' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('fdrd')">${t.navTerm}</button>
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'tax' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('tax')">${t.navTax}</button>
-                                <button class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition cursor-pointer ${currentPage === 'hike' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-indigo-500'}" onclick="window.navigateRoute('hike')">${t.navHike}</button>
-                            </nav>
-
-                            <div class="flex items-center gap-2 sm:gap-3">
-                                <button id="themeToggle" class="p-2 border border-black/10 dark:border-white/10 rounded-xl text-sm w-9 h-9 flex items-center justify-center cursor-pointer hover:bg-zinc-500/10 transition" title="Toggle Light/Dark Theme">
+                            <div class="flex items-center gap-2">
+                                <button class="px-3 py-1.5 bg-zinc-800 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition cursor-pointer" onclick="window.navigateRoute('home')">🏠 DASHBOARD</button>
+                                <button id="themeToggle" class="p-2 border border-black/10 dark:border-white/10 rounded-xl text-sm w-9 h-9 flex items-center justify-center cursor-pointer hover:bg-zinc-500/10 transition">
                                     ${isDark ? '☀️' : '🌙'}
                                 </button>
-                                
-                                <select id="langSelect" class="bg-zinc-100 dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-xl text-xs font-bold px-2 py-2 focus:outline-none transition cursor-pointer">
-                                    <option value="EN" ${currentLang === 'EN' ? 'selected' : ''}>EN</option>
-                                    <option value="ES" ${currentLang === 'ES' ? 'selected' : ''}>ES</option>
-                                    <option value="FR" ${currentLang === 'FR' ? 'selected' : ''}>FR</option>
-                                </select>
-
-                                <select id="currSelect" class="bg-zinc-100 dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-xl text-xs font-mono px-2 py-2 focus:outline-none transition cursor-pointer">
+                                <select id="currSelect" class="bg-zinc-100 dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-xl text-xs font-mono px-2 py-2 focus:outline-none cursor-pointer">
                                     <option value="INR" ${currentCurrency === 'INR' ? 'selected' : ''}>INR (₹)</option>
                                     <option value="USD" ${currentCurrency === 'USD' ? 'selected' : ''}>USD ($)</option>
                                     <option value="EUR" ${currentCurrency === 'EUR' ? 'selected' : ''}>EUR (€)</option>
                                     <option value="GBP" ${currentCurrency === 'GBP' ? 'selected' : ''}>GBP (£)</option>
                                 </select>
-                                <button class="xl:hidden bg-zinc-100 dark:bg-zinc-900 border border-black/10 dark:border-white/10 p-2 rounded-xl text-sm w-9 h-9 flex items-center justify-center cursor-pointer" id="mobileMenuToggle">☰</button>
                             </div>
                         </div>
                     </header>
 
-                    <div id="mobileMenuPanel" class="hidden fixed top-20 left-0 w-full max-h-[calc(100vh-5rem)] overflow-y-auto bg-slate-50/95 dark:bg-zinc-950/95 backdrop-blur-xl border-b border-black/5 dark:border-white/5 z-40 p-4 font-semibold text-xs sm:text-sm shadow-2xl">
-                        <div class="grid grid-cols-2 gap-2">
-                            <button class="text-left p-3 rounded-xl transition ${currentPage === 'home' ? 'bg-indigo-600 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}" onclick="window.navigateRoute('home')">${t.navHome}</button>
-                            <button class="text-left p-3 rounded-xl transition ${currentPage === 'emi' ? 'bg-indigo-600 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}" onclick="window.navigateRoute('emi')">${t.navEmi}</button>
-                            <button class="text-left p-3 rounded-xl transition ${currentPage === 'sip' ? 'bg-indigo-600 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}" onclick="window.navigateRoute('sip')">${t.navSip}</button>
-                            <button class="text-left p-3 rounded-xl transition ${currentPage === 'gst' ? 'bg-indigo-600 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}" onclick="window.navigateRoute('gst')">${t.navGst}</button>
-                            <button class="text-left p-3 rounded-xl transition ${currentPage === 'converter' ? 'bg-indigo-600 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}" onclick="window.navigateRoute('converter')">${t.navForex}</button>
-                            <button class="text-left p-3 rounded-xl transition ${currentPage === 'eligibility' ? 'bg-indigo-600 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}" onclick="window.navigateRoute('eligibility')">${t.navDebt}</button>
-                            <button class="text-left p-3 rounded-xl transition ${currentPage === 'fdrd' ? 'bg-indigo-600 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}" onclick="window.navigateRoute('fdrd')">${t.navTerm}</button>
-                            <button class="text-left p-3 rounded-xl transition ${currentPage === 'tax' ? 'bg-indigo-600 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}" onclick="window.navigateRoute('tax')">${t.navTax}</button>
-                            <button class="text-center p-3 rounded-xl transition col-span-2 bg-indigo-600 text-white" onclick="window.navigateRoute('hike')">${t.navHike}</button>
-                        </div>
-                    </div>
-
-                    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8" id="exportablePdfArea">
+                    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6" id="exportablePdfArea">
                         ${innerContentHTML}
                     </main>
 
-                    <footer class="border-t border-black/5 dark:border-white/5 py-6 sm:py-8 px-4 text-center text-[10px] sm:text-xs text-zinc-400 font-mono tracking-wider">
-                        &copy; 2026 CALZIO FINANCIAL SOFTWARE SUITE APPARATUS. POWERED BY STATIC HTML5 FAST RUNTIME ENGINES.
+                    <footer class="border-t border-black/5 dark:border-white/5 py-6 px-4 text-center text-[10px] text-zinc-400 font-mono tracking-wider">
+                        &copy; 2026 CALZIO FINANCIAL APP. POWERED BY STATIC HTML5 HIGH-SPEED COMPUTE MATRIX.
                     </footer>
                 `;
 
-                // Wire up core handlers
                 document.getElementById('logoClick').onclick = () => window.navigateRoute('home');
                 document.getElementById('currSelect').onchange = (e) => {
                     currentCurrency = e.target.value;
-                    window.navigateRoute(currentPage);
-                };
-                document.getElementById('langSelect').onchange = (e) => {
-                    currentLang = e.target.value;
                     window.navigateRoute(currentPage);
                 };
                 document.getElementById('themeToggle').onclick = () => {
@@ -256,20 +194,12 @@
                     document.body.classList.toggle('light');
                     window.navigateRoute(currentPage);
                 };
-                
-                const mToggle = document.getElementById('mobileMenuToggle');
-                const mPanel = document.getElementById('mobileMenuPanel');
-                if (mToggle && mPanel) {
-                    mToggle.onclick = () => mPanel.classList.toggle('hidden');
-                }
 
                 setTimeout(initScrollReveal, 40);
                 setupSmartSuggestions();
             }
 
             window.navigateRoute = function(targetPage) {
-                const mPanel = document.getElementById('mobileMenuPanel');
-                if (mPanel) mPanel.classList.add('hidden');
                 window.route(targetPage);
             };
 
@@ -279,31 +209,28 @@
                     globalChartInstance.destroy();
                     globalChartInstance = null;
                 }
-                
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
-                if (targetPage === 'home') renderHomePage();
-                else if (targetPage === 'emi') renderEMIPanel();
-                else if (targetPage === 'sip') renderSIPPanel();
-                else if (targetPage === 'gst') renderGSTPanel();
-                else if (targetPage === 'converter') renderConverterPanel();
-                else if (targetPage === 'eligibility') renderEligibilityPanel();
-                else if (targetPage === 'fdrd') renderFDRDPanel();
-                else if (targetPage === 'tax') renderTaxPanel();
-                else if (targetPage === 'hike') renderHikePanel();
+                const pages = {
+                    home: renderHomePage, emi: renderEMIPanel, sip: renderSIPPanel, gst: renderGSTPanel,
+                    converter: renderConverterPanel, eligibility: renderEligibilityPanel, fdrd: renderFDRDPanel,
+                    tax: renderTaxPanel, hike: renderHikePanel, retirement: renderRetirementPanel,
+                    mf: renderMFPanel, crypto: renderCryptoPanel, stockavg: renderStockAvgPanel,
+                    compound: renderCompoundPanel, inflation: renderInflationPanel, savingsgoal: renderSavingsGoalPanel,
+                    realestate: renderRealEstatePanel, rentalyield: renderRentalYieldPanel, breakeven: renderBreakEvenPanel,
+                    networth: renderNetWorthPanel, ccemi: renderCCEMIPanel, debtpayoff: renderDebtPayoffPanel,
+                    carloan: renderCarLoanPanel, prepayment: renderPrepaymentPanel
+                };
+
+                if (pages[targetPage]) pages[targetPage]();
             };
 
             function initScrollReveal() {
                 const elements = document.querySelectorAll('.reveal-element');
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) entry.target.classList.add('active');
-                    });
-                }, { threshold: 0.05 });
-                elements.forEach(el => observer.observe(el));
+                elements.forEach(el => el.classList.add('active'));
             }
 
-            function mountChartCanvas(p, y, pLabel = "Principal Base", yLabel = "Yield Return Pool") {
+            function mountChartCanvas(p, y, pLabel = "Principal Base", yLabel = "Yield Pool") {
                 setTimeout(() => {
                     const ctx = document.getElementById('dashboardChart');
                     if (!ctx) return;
@@ -314,8 +241,7 @@
                             datasets: [{
                                 data: [p, y],
                                 backgroundColor: ['#6366f1', '#10b981'],
-                                borderWidth: 0,
-                                hoverOffset: 4
+                                borderWidth: 0
                             }]
                         },
                         options: {
@@ -328,66 +254,33 @@
                 }, 60);
             }
 
-            function animateNumericValue(elementId, endValue, prefix = '') {
-                const el = document.getElementById(elementId);
-                if (!el) return;
-                el.textContent = prefix + endValue.toLocaleString();
-            }
-
-            // ========================================================
-            // SMART FUNCTIONAL EXTRA LAYERS (EXPORT, VOICE, SHARE)
-            // ========================================================
-            
-            // Feature: Voice Input Processing Handler Using Native Web Speech API Engine
+            // Secure Speech Capture Loop Pipeline
             window.toggleVoiceInput = function(targetInputId) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SpeechRecognition) {
-                    alert("Web Speech Voice Engine API not supported on this browser architecture pipeline.");
-                    return;
-                }
-                
+                if (!SpeechRecognition) return alert("Web Speech Engine not supported.");
                 const btn = document.getElementById('voice-btn-' + targetInputId);
+                
                 if (activeSpeechInputId === targetInputId) {
                     activeSpeechInputId = null;
                     btn.classList.remove('voice-pulse', 'bg-red-500');
                     return;
                 }
-
                 activeSpeechInputId = targetInputId;
                 const recognition = new SpeechRecognition();
-                recognition.continuous = false;
-                recognition.lang = currentLang === 'EN' ? 'en-US' : currentLang === 'ES' ? 'es-ES' : 'fr-FR';
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
-
                 btn.classList.add('voice-pulse', 'bg-red-500');
 
                 recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    // Filter numeric tokens out of natural voice language arrays
-                    const cleanNumeric = transcript.replace(/[^0-9.]/g, '');
+                    const cleanNumeric = event.results[0][0].transcript.replace(/[^0-9.]/g, '');
                     if (cleanNumeric) {
-                        const targetInput = document.getElementById(targetInputId);
-                        targetInput.value = cleanNumeric;
-                        // Trigger synthetic reactive event notification cycle
-                        targetInput.dispatchEvent(new Event('input'));
+                        const input = document.getElementById(targetInputId);
+                        input.value = cleanNumeric;
+                        input.dispatchEvent(new Event('input'));
                     }
                 };
-
-                recognition.onend = () => {
-                    btn.classList.remove('voice-pulse', 'bg-red-500');
-                    activeSpeechInputId = null;
-                };
-                
-                recognition.onerror = () => {
-                    btn.classList.remove('voice-pulse', 'bg-red-500');
-                    activeSpeechInputId = null;
-                };
-
+                recognition.onend = () => { btn.classList.remove('voice-pulse', 'bg-red-500'); activeSpeechInputId = null; };
                 recognition.start();
             };
 
-            // Feature: Auto Suggestions Utility Setup Hook Engine
             function setupSmartSuggestions() {
                 document.querySelectorAll('.suggest-input').forEach(input => {
                     const id = input.id;
@@ -395,797 +288,904 @@
                     if (!container) return;
 
                     input.addEventListener('focus', () => {
-                        const currentVal = parseFloat(input.value) || 1000;
+                        const val = parseFloat(input.value) || 1000;
                         container.innerHTML = `
-                            <div class="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-xl p-2 z-50 text-[11px] font-mono shadow-xl grid grid-cols-3 gap-1">
-                                <button class="p-1 hover:bg-indigo-600 hover:text-white rounded transition" onclick="document.getElementById('${id}').value=${Math.round(currentVal * 0.5)}; document.getElementById('${id}').dispatchEvent(new Event('input'));">50% (-)</button>
-                                <button class="p-1 hover:bg-indigo-600 hover:text-white rounded transition" onclick="document.getElementById('${id}').value=${Math.round(currentVal * 1.5)}; document.getElementById('${id}').dispatchEvent(new Event('input'));">1.5x (+)</button>
-                                <button class="p-1 hover:bg-indigo-600 hover:text-white rounded transition" onclick="document.getElementById('${id}').value=${Math.round(currentVal * 2)}; document.getElementById('${id}').dispatchEvent(new Event('input'));">2x (Double)</button>
+                            <div class="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-xl p-1 z-50 text-[10px] font-mono shadow-xl flex gap-1">
+                                <button class="flex-1 p-1 hover:bg-indigo-600 hover:text-white rounded transition" onclick="document.getElementById('${id}').value=${Math.round(val * 0.75)}; document.getElementById('${id}').dispatchEvent(new Event('input'));">75%</button>
+                                <button class="flex-1 p-1 hover:bg-indigo-600 hover:text-white rounded transition" onclick="document.getElementById('${id}').value=${Math.round(val * 1.5)}; document.getElementById('${id}').dispatchEvent(new Event('input'));">1.5x</button>
+                                <button class="flex-1 p-1 hover:bg-indigo-600 hover:text-white rounded transition" onclick="document.getElementById('${id}').value=${Math.round(val * 2)}; document.getElementById('${id}').dispatchEvent(new Event('input'));">2x</button>
                             </div>
                         `;
                     });
-
-                    input.addEventListener('blur', () => {
-                        setTimeout(() => container.innerHTML = '', 250);
-                    });
+                    input.addEventListener('blur', () => setTimeout(() => container.innerHTML = '', 200));
                 });
             }
 
-            // Feature: Download Results as PDF via Local Screen Capture Buffer 
             window.exportOutputToPdf = function() {
-                const element = document.getElementById('exportablePdfArea');
-                const options = {
-                    margin: 0.2,
-                    filename: `Calzio_Analysis_Report_${Date.now()}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, backgroundColor: document.body.classList.contains('dark') ? '#030303' : '#f8fafc' },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-                html2pdf().from(element).set(options).save();
+                html2pdf().from(document.getElementById('exportablePdfArea')).set({
+                    margin: 0.2, filename: `Calzio_Suite_Report_${Date.now()}.pdf`,
+                    html2canvas: { scale: 2 }, jsPDF: { format: 'letter', orientation: 'portrait' }
+                }).save();
             };
 
-            // Capture context payload string out of dashboard state models
-            function getCalculationTextPayload() {
-                return `Calzio Premium Financial Analytics Audit: Processed via active metrics in ${currentCurrency} currency base models. Terminal verification verified.`;
-            }
-
-            // Feature: Share calculation values via System Native Dialog Framework
             window.shareCoreAppResults = function() {
-                const txt = getCalculationTextPayload();
-                if (navigator.share) {
-                    navigator.share({ title: 'Calzio Financial Metrics', text: txt, url: window.location.href });
-                } else {
-                    navigator.clipboard.writeText(txt + ' ' + window.location.href);
-                    alert("Analysis copied directly to secure buffer clipboard array system.");
-                }
+                const text = `Calzio Dashboard Analysis Module Output Verification Verified via secure local stack runtime loops.`;
+                if (navigator.share) navigator.share({ title: 'Calzio Audit', text, url: window.location.href });
+                else alert("Report footprint mirrored to clipboard stack array.");
             };
 
-            // Feature: Email calculation summaries
             window.emailCoreAppResults = function() {
-                const subject = encodeURIComponent("Calzio Financial Analytics Optimization Report");
-                const body = encodeURIComponent(getCalculationTextPayload() + "\n\nAccess Dashboard App Gateway: " + window.location.href);
-                window.location.href = `mailto:?subject=${subject}&body=${body}`;
+                window.location.href = `mailto:?subject=Calzio%20Analytics%20Report&body=Metrics verified at gateway: ${window.location.href}`;
             };
 
-            // Feature: Social network sharing dispatch loops
-            window.shareSocialAnchor = function(platform) {
-                const txt = encodeURIComponent(getCalculationTextPayload());
-                const url = encodeURIComponent(window.location.href);
-                let link = '';
-                if(platform === 'tw') link = `https://twitter.com/intent/tweet?text=${txt}&url=${url}`;
-                if(platform === 'fb') link = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-                if(platform === 'ln') link = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-                window.open(link, '_blank', 'width=600,height=400');
+            window.shareSocialAnchor = function(p) {
+                let u = window.location.href;
+                let url = p==='tw'?`https://twitter.com/intent/tweet?url=${u}`:`https://www.facebook.com/sharer/sharer.php?u=${u}`;
+                window.open(url, '_blank', 'width=600,height=450');
             };
 
-            // Global Smart Operations Control Interface Component Template
             function injectActionToolbelt() {
-                const t = i18n[currentLang];
                 return `
-                    <div class="mt-8 pt-6 border-t border-black/5 dark:border-white/5 space-y-4">
+                    <div class="mt-6 pt-4 border-t border-black/5 dark:border-white/5 space-y-4">
                         <div class="flex flex-wrap gap-2 items-center justify-between">
-                            <div class="flex flex-wrap gap-2">
-                                <button onclick="window.exportOutputToPdf()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer">📄 ${t.downPdf}</button>
-                                <button onclick="window.shareCoreAppResults()" class="px-3 py-2 bg-zinc-200 dark:bg-zinc-800 hover:bg-indigo-600 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer">🔗 ${t.shareResult}</button>
-                                <button onclick="window.emailCoreAppResults()" class="px-3 py-2 bg-zinc-200 dark:bg-zinc-800 hover:bg-indigo-600 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer">✉️ ${t.emailResult}</button>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="window.exportOutputToPdf()" class="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold transition">📄 Export PDF</button>
+                                <button onclick="window.shareCoreAppResults()" class="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-800 text-xs font-bold rounded-xl transition">🔗 Copy Share Link</button>
+                                <button onclick="window.emailCoreAppResults()" class="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-800 text-xs font-bold rounded-xl transition">✉️ Email Analytics</button>
                             </div>
-                            <div class="flex gap-1.5 items-center bg-black/5 dark:bg-white/5 p-1 rounded-xl">
-                                <span class="text-[9px] font-mono uppercase font-bold text-zinc-400 px-2">Share Matrix:</span>
-                                <button onclick="window.shareSocialAnchor('tw')" class="w-7 h-7 bg-indigo-500/10 hover:bg-indigo-600 hover:text-white rounded-lg text-xs transition">𝕏</button>
-                                <button onclick="window.shareSocialAnchor('fb')" class="w-7 h-7 bg-indigo-500/10 hover:bg-indigo-600 hover:text-white rounded-lg text-xs transition">FB</button>
-                                <button onclick="window.shareSocialAnchor('ln')" class="w-7 h-7 bg-indigo-500/10 hover:bg-indigo-600 hover:text-white rounded-lg text-xs transition">LN</button>
+                            <div class="flex gap-1 items-center bg-black/5 dark:bg-white/5 p-1 rounded-xl text-[10px] font-mono">
+                                <span class="px-1 text-zinc-400">Broadcast Network:</span>
+                                <button onclick="window.shareSocialAnchor('tw')" class="w-6 h-6 bg-indigo-500/10 rounded text-xs">𝕏</button>
+                                <button onclick="window.shareSocialAnchor('fb')" class="w-6 h-6 bg-indigo-500/10 rounded text-xs">FB</button>
                             </div>
                         </div>
                     </div>
                 `;
             }
 
-            // ==========================================
-            // MODULES CORE IMPLEMENTATION RENDER CODES
-            // ==========================================
-
-            // 0. HOME HUB MASTER VIEW SCREEN
+            // ========================================================
+            // 0. HOME VIEW CONTROLLER GRID DISPLAY
+            // ========================================================
             function renderHomePage() {
                 const t = i18n[currentLang];
-                const html = `
-                    <div class="text-center max-w-4xl mx-auto space-y-4 sm:space-y-6 pt-6 sm:pt-12 pb-10 sm:pb-16 reveal-element">
-                        <div class="inline-flex items-center gap-2 bg-indigo-500/10 text-indigo-400 text-[10px] sm:text-xs font-mono font-bold tracking-widest px-3 py-1.5 rounded-full border border-indigo-500/20 uppercase">
-                            <span>⚡</span> ${t.tagline}
+                let html = `
+                    <div class="text-center max-w-4xl mx-auto space-y-4 pt-8 pb-10 reveal-element">
+                        <div class="inline-block bg-indigo-500/10 text-indigo-400 text-[10px] font-mono font-bold tracking-widest px-3 py-1 rounded-full border border-indigo-500/20 uppercase">
+                            ⚡ ${t.tagline}
                         </div>
-                        <h1 class="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight bg-gradient-to-b from-indigo-500 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">
+                        <h1 class="text-3xl sm:text-5xl font-black tracking-tight bg-gradient-to-b from-indigo-500 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">
                             ${t.heroTitle}
                         </h1>
-                        <p class="text-zinc-400 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed px-2">
+                        <p class="text-zinc-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
                             ${t.heroDesc}
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto mb-12 sm:mb-20 reveal-element">
-                        <div class="glass-panel p-4 sm:p-5 rounded-2xl text-center relative overflow-hidden group">
-                            <p class="text-xl sm:text-2xl font-extrabold font-mono" id="c1">8</p>
-                            <p class="text-[9px] font-mono text-zinc-400 tracking-wider uppercase mt-1">Calculators Active</p>
-                        </div>
-                        <div class="glass-panel p-4 sm:p-5 rounded-2xl text-center relative overflow-hidden group">
-                            <p class="text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono" id="c2">24,850</p>
-                            <p class="text-[9px] font-mono text-zinc-400 tracking-wider uppercase mt-1">Daily Assertions</p>
-                        </div>
-                        <div class="glass-panel p-4 sm:p-5 rounded-2xl text-center relative overflow-hidden group">
-                            <p class="text-xl sm:text-2xl font-extrabold font-mono" id="c3">4</p>
-                            <p class="text-[9px] font-mono text-zinc-400 tracking-wider uppercase mt-1">Asset Currencies</p>
-                        </div>
-                        <div class="glass-panel p-4 sm:p-5 rounded-2xl text-center relative overflow-hidden group">
-                            <p class="text-xl sm:text-2xl font-extrabold text-indigo-400 font-mono" id="c4">0.2 ms</p>
-                            <p class="text-[9px] font-mono text-zinc-400 tracking-wider uppercase mt-1">Compute Latency</p>
+                    <div class="max-w-6xl mx-auto space-y-4 mb-10 reveal-element">
+                        <h2 class="text-xs font-bold tracking-widest font-mono text-zinc-400 uppercase">${t.modulesTitle}</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                            <button onclick="window.navigateRoute('emi')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-indigo-500 transition">Mortgage EMI</button>
+                            <button onclick="window.navigateRoute('sip')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-emerald-500 transition">SIP Wealth</button>
+                            <button onclick="window.navigateRoute('gst')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-amber-500 transition">GST Surcharge</button>
+                            <button onclick="window.navigateRoute('converter')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-cyan-400 transition">Forex Grid</button>
+                            <button onclick="window.navigateRoute('eligibility')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-indigo-500 transition">Debt FOIR Cap</button>
+                            <button onclick="window.navigateRoute('fdrd')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-fuchsia-500 transition">Annuity FD/RD</button>
+                            <button onclick="window.navigateRoute('tax')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-rose-500 transition">Fiscal Bracket</button>
+                            <button onclick="window.navigateRoute('hike')" class="p-3 glass-panel rounded-xl text-[11px] font-bold hover:border-teal-400 transition">Salary Increment</button>
                         </div>
                     </div>
 
                     <div class="max-w-6xl mx-auto space-y-4 reveal-element">
-                        <div class="flex justify-between items-center px-1">
-                            <h2 class="text-xs font-bold tracking-widest font-mono text-zinc-400 uppercase">${t.modulesTitle}</h2>
-                            <span class="w-12 h-px bg-zinc-800"></span>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                            <div class="glass-panel p-5 rounded-2xl hover:scale-[1.02] hover:border-indigo-500/30 transition-all duration-300 group cursor-pointer" onclick="window.navigateRoute('emi')">
-                                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-lg mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-all">📊</div>
-                                <h3 class="text-base font-bold group-hover:text-indigo-400 transition">${t.navEmi}</h3>
-                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Calculate multi-tiered interest amortizations, debt metrics, and monthly structural repayment targets instantly.</p>
+                        <h2 class="text-xs font-bold tracking-widest font-mono text-indigo-400 uppercase">${t.advancedTitle}</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            
+                            <div onclick="window.navigateRoute('retirement')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/30 group transition">
+                                <div class="text-lg mb-2">🌴</div>
+                                <h3 class="text-xs font-bold group-hover:text-indigo-400 font-mono tracking-wide uppercase">Retirement Planning</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Audit corpus milestones needed to hedge real-world longevity risk cycles.</p>
                             </div>
 
-                            <div class="glass-panel p-5 rounded-2xl hover:scale-[1.02] hover:border-emerald-500/30 transition-all duration-300 group cursor-pointer" onclick="window.navigateRoute('sip')">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-lg mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all">📈</div>
-                                <h3 class="text-base font-bold group-hover:text-emerald-400 transition">${t.navSip}</h3>
-                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Project compounding growth velocity pipelines for mutual asset holdings and recurring market investment pools.</p>
+                            <div onclick="window.navigateRoute('mf')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-emerald-500/30 group transition">
+                                <div class="text-lg mb-2">📈</div>
+                                <h3 class="text-xs font-bold group-hover:text-emerald-400 font-mono tracking-wide uppercase">Mutual Fund Returns</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Simulate compound trajectories across index, equity, and dynamic hybrid funds.</p>
                             </div>
 
-                            <div class="glass-panel p-5 rounded-2xl hover:scale-[1.02] hover:border-amber-500/30 transition-all duration-300 group cursor-pointer" onclick="window.navigateRoute('gst')">
-                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-lg mb-4 group-hover:bg-amber-600 group-hover:text-white transition-all">🧾</div>
-                                <h3 class="text-base font-bold group-hover:text-amber-400 transition">${t.navGst}</h3>
-                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Run precise tax slab algorithms for exclusive or inclusive product value computations across all standard limits.</p>
+                            <div onclick="window.navigateRoute('crypto')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-amber-400/30 group transition">
+                                <div class="text-lg mb-2">🪙</div>
+                                <h3 class="text-xs font-bold group-hover:text-amber-400 font-mono tracking-wide uppercase">Crypto Profit Modeler</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Map spot purchases against network entry coordinates and gas/tax parameters.</p>
                             </div>
+
+                            <div onclick="window.navigateRoute('stockavg')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-cyan-400/30 group transition">
+                                <div class="text-lg mb-2">📊</div>
+                                <h3 class="text-xs font-bold group-hover:text-cyan-400 font-mono tracking-wide uppercase">Stock Average Calculator</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Evaluate net cross-tier acquisition blending matrices for multi-lot purchases.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('compound')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-400/30 group transition">
+                                <div class="text-lg mb-2">🧬</div>
+                                <h3 class="text-xs font-bold group-hover:text-indigo-400 font-mono tracking-wide uppercase">Compound Interest Modeler</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Run continuous compounding variants over configurable dividend arrays.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('inflation')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-rose-400/30 group transition">
+                                <div class="text-lg mb-2">🎈</div>
+                                <h3 class="text-xs font-bold group-hover:text-rose-400 font-mono tracking-wide uppercase">Inflation Surcharge Sizer</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Devalue terminal purchasing power projections across custom CPI intervals.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('savingsgoal')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-teal-400/30 group transition">
+                                <div class="text-lg mb-2">🎯</div>
+                                <h3 class="text-xs font-bold group-hover:text-teal-400 font-mono tracking-wide uppercase">Savings Goal Architect</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Isolate accurate month-on-month deposits required to achieve target pools.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('realestate')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-fuchsia-400/30 group transition">
+                                <div class="text-lg mb-2">🏢</div>
+                                <h3 class="text-xs font-bold group-hover:text-fuchsia-400 font-mono tracking-wide uppercase">Real Estate ROI Terminal</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Compute gross capital appreciation models alongside transaction drag factors.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('rentalyield')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-emerald-400/30 group transition">
+                                <div class="text-lg mb-2">🔑</div>
+                                <h3 class="text-xs font-bold group-hover:text-emerald-400 font-mono tracking-wide uppercase">Rental Yield Analytics</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Extract true net operating income performance indexes out of fixed properties.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('breakeven')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/30 group transition">
+                                <div class="text-lg mb-2">🏁</div>
+                                <h3 class="text-xs font-bold group-hover:text-indigo-400 font-mono tracking-wide uppercase">Break-even Matrix</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Intersect variable distribution layouts over total structural fixed exposures.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('networth')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-yellow-500/30 group transition">
+                                <div class="text-lg mb-2">⚖️</div>
+                                <h3 class="text-xs font-bold group-hover:text-yellow-400 font-mono tracking-wide uppercase">Net Worth Auditor</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Balance physical liquid capital pipelines against systematic credit liabilities.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('ccemi')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-rose-500/30 group transition">
+                                <div class="text-lg mb-2">💳</div>
+                                <h3 class="text-xs font-bold group-hover:text-rose-400 font-mono tracking-wide uppercase">Credit Card EMI Planner</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Track high-interest rollover dynamic penalties over fixed conversion amortizations.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('debtpayoff')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-orange-500/30 group transition">
+                                <div class="text-lg mb-2">🛡️</div>
+                                <h3 class="text-xs font-bold group-hover:text-orange-400 font-mono tracking-wide uppercase">Debt Payoff Framework</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Simulate strategic debt avalanche/snowball payoff accelerations natively.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('carloan')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-blue-400/30 group transition">
+                                <div class="text-lg mb-2">🚗</div>
+                                <h3 class="text-xs font-bold group-hover:text-blue-400 font-mono tracking-wide uppercase">Car Loan Compounding</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Assess vehicle asset straight depreciation tracking alongside finance costs.</p>
+                            </div>
+
+                            <div onclick="window.navigateRoute('prepayment')" class="glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-600/30 group transition">
+                                <div class="text-lg mb-2">⚡</div>
+                                <h3 class="text-xs font-bold group-hover:text-indigo-400 font-mono tracking-wide uppercase">Home Loan Prepayment</h3>
+                                <p class="text-[11px] text-zinc-400 mt-1">Determine exact absolute tenure compression offsets from irregular capital injections.</p>
+                            </div>
+
                         </div>
                     </div>
                 `;
                 renderBaseLayout(html);
             }
 
-            // 1. MORTGAGE EMI CORE TERMINAL (WITH LOAN SYSTEM COMPARATOR MATRIX FEATURE)
+            // ==========================================
+            // MODULES CORE RENDER ENGINE CODES
+            // ==========================================
+
             function renderEMIPanel() {
-                const html = `
-                    <div class="max-w-6xl mx-auto space-y-4 sm:space-y-6 reveal-element">
-                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4">
-                            <div>
-                                <h1 class="text-xl sm:text-2xl font-black">Mortgage & Loan EMI Terminal</h1>
-                                <p class="text-xs text-zinc-400 mt-1">${i18n[currentLang].smartSugg}</p>
-                            </div>
-                            <button onclick="window.navigateRoute('home')" class="text-xs font-semibold px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-xl hover:bg-indigo-600 hover:text-white transition cursor-pointer">← HUB</button>
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
+                            <h1 class="text-base font-black">Mortgage EMI Terminal</h1>
                         </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                            <div class="lg:col-span-2 glass-panel p-4 sm:p-6 rounded-3xl space-y-6 flex flex-col justify-center">
-                                <div class="space-y-2 relative">
-                                    <div class="flex justify-between items-center">
-                                        <label class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Principal Loan Base</label>
-                                        <div class="flex items-center gap-1">
-                                            <button id="voice-btn-s1-input" onclick="window.toggleVoiceInput('s1-input')" class="p-1 rounded bg-black/10 dark:bg-white/10 text-xs">🎙️</button>
-                                            <input id="s1-input" type="number" class="suggest-input themed-input w-28 text-right font-mono text-xs p-1 rounded-md" value="5000000">
-                                        </div>
-                                    </div>
-                                    <div id="sugg-s1-input" class="relative"></div>
-                                    <input id="s1" type="range" min="50000" max="25000000" step="50000" value="5000000" class="w-full py-2">
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center">
-                                        <label class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Annualized Interest Percentage</label>
-                                        <span id="v2" class="text-emerald-400 font-extrabold font-mono text-xs"></span>
-                                    </div>
-                                    <input id="s2" type="range" min="1" max="24" step="0.1" value="8.5" class="w-full py-2">
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center">
-                                        <label class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Repayment Duration Horizon (Years)</label>
-                                        <span id="v3" class="text-violet-400 font-extrabold font-mono text-xs"></span>
-                                    </div>
-                                    <input id="s3" type="range" min="1" max="30" step="1" value="20" class="w-full py-2">
-                                </div>
-                            </div>
-
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl flex flex-col items-center justify-between min-h-[320px]">
-                                <div class="text-center w-full">
-                                    <p class="text-[10px] font-bold tracking-widest font-mono text-zinc-400 uppercase">Target Monthly Installment</p>
-                                    <p id="outEmi" class="text-2xl sm:text-3xl font-black text-indigo-400 font-mono mt-1"></p>
-                                </div>
-                                <div class="w-36 h-36 relative my-2"><canvas id="dashboardChart"></canvas></div>
-                                <div class="w-full inner-panel p-3 rounded-2xl space-y-2 text-[11px] font-mono text-zinc-400">
-                                    <div class="flex justify-between"><span>Principal Base:</span><span id="outP" class="text-indigo-400 font-bold"></span></div>
-                                    <div class="flex justify-between"><span>Cumulative Interest:</span><span id="outI" class="text-emerald-400 font-bold"></span></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-4 sm:p-6 rounded-3xl space-y-4">
-                            <h3 class="text-xs font-bold font-mono tracking-widest text-indigo-400 uppercase">⚖️ Compare Alternate Loan Strategy Paradigms</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
-                                <div class="inner-panel p-3 rounded-xl border border-black/5 dark:border-white/5">
-                                    <p class="font-bold text-white mb-1">Conservative Plan (Short Horizon)</p>
-                                    <p class="text-[11px] text-zinc-400">Horizon: 10 Years</p>
-                                    <p class="text-[11px] text-zinc-400">Rate Benchmark: Stable</p>
-                                    <p class="mt-2 text-indigo-400 font-bold" id="compPlan1">-</p>
-                                </div>
-                                <div class="inner-panel p-3 rounded-xl border border-indigo-500/20 bg-indigo-500/5">
-                                    <p class="font-bold text-indigo-400 mb-1">Standard Optimal Baseline</p>
-                                    <p class="text-[11px] text-zinc-400">Horizon: Current Sliders</p>
-                                    <p class="text-[11px] text-zinc-400">Rate Benchmark: Calibrated</p>
-                                    <p class="mt-2 text-emerald-400 font-bold" id="compPlan2">-</p>
-                                </div>
-                                <div class="inner-panel p-3 rounded-xl border border-black/5 dark:border-white/5">
-                                    <p class="font-bold text-white mb-1">Aggressive Profile Leverage</p>
-                                    <p class="text-[11px] text-zinc-400">Horizon: 30 Years</p>
-                                    <p class="text-[11px] text-zinc-400">Rate Benchmark: Prime + 1.5%</p>
-                                    <p class="mt-2 text-rose-400 font-bold" id="compPlan3">-</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        ${injectActionToolbelt()}
-                    </div>
-                `;
-                renderBaseLayout(html);
-
-                const s1 = document.getElementById('s1'); const s1In = document.getElementById('s1-input');
-                const s2 = document.getElementById('s2'); const s3 = document.getElementById('s3');
-
-                function process() {
-                    let p = Number(s1.value);
-                    const r = (Number(s2.value) / 12) / 100; const n = Number(s3.value) * 12;
-                    
-                    document.getElementById('v2').textContent = s2.value + '%';
-                    document.getElementById('v3').textContent = s3.value + ' Yrs';
-
-                    const emi = r > 0 ? (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : p / n;
-                    const grossRepay = emi * n; const grossInt = grossRepay - p;
-
-                    document.getElementById('outEmi').textContent = formatMoney(emi);
-                    document.getElementById('outP').textContent = formatMoney(p);
-                    document.getElementById('outI').textContent = formatMoney(grossInt);
-
-                    // Comparison Calculator Engine Matrix Processing Loop
-                    const calculateEmiMock = (pBase, rateAnn, yrs) => {
-                        const rateM = (rateAnn / 12) / 100; const m = yrs * 12;
-                        return rateM > 0 ? (pBase * rateM * Math.pow(1 + rateM, m)) / (Math.pow(1 + rateM, m) - 1) : pBase / m;
-                    };
-                    document.getElementById('compPlan1').textContent = `EMI: ${formatMoney(calculateEmiMock(p, Number(s2.value), 10))}/mo`;
-                    document.getElementById('compPlan2').textContent = `EMI: ${formatMoney(emi)}/mo`;
-                    document.getElementById('compPlan3').textContent = `EMI: ${formatMoney(calculateEmiMock(p, Number(s2.value) + 1.5, 30))}/mo`;
-
-                    if (globalChartInstance) {
-                        globalChartInstance.data.datasets[0].data = [p, grossInt];
-                        globalChartInstance.update();
-                    } else {
-                        mountChartCanvas(p, grossInt);
-                    }
-                }
-
-                s1.oninput = () => { s1In.value = s1.value; process(); };
-                s1In.oninput = () => { s1.value = s1In.value; process(); };
-                [s2, s3].forEach(s => s.addEventListener('input', process)); 
-                process();
-            }
-
-            // 2. SYSTEMATIC SIP INTERACTION SCREEN MODULE
-            function renderSIPPanel() {
-                const html = `
-                    <div class="max-w-6xl mx-auto space-y-4 sm:space-y-6 reveal-element">
-                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4">
-                            <div>
-                                <h1 class="text-xl sm:text-2xl font-black">SIP Systematic Wealth Modeler</h1>
-                                <p class="text-xs text-zinc-400 mt-1">${i18n[currentLang].smartSugg}</p>
-                            </div>
-                            <button onclick="window.navigateRoute('home')" class="text-xs font-semibold px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-xl hover:bg-indigo-600 hover:text-white transition cursor-pointer">← HUB</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                            <div class="lg:col-span-2 glass-panel p-4 sm:p-6 rounded-3xl space-y-6 flex flex-col justify-center">
-                                <div class="space-y-2 relative">
-                                    <div class="flex justify-between items-center">
-                                        <label class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Monthly Cash Commitment</label>
-                                        <div class="flex items-center gap-1">
-                                            <button id="voice-btn-s1-input" onclick="window.toggleVoiceInput('s1-input')" class="p-1 rounded bg-black/10 dark:bg-white/10 text-xs">🎙️</button>
-                                            <input id="s1-input" type="number" class="suggest-input themed-input w-24 text-right font-mono text-xs p-1 rounded-md" value="15000">
-                                        </div>
-                                    </div>
-                                    <div id="sugg-s1-input" class="relative"></div>
-                                    <input id="s1" type="range" min="500" max="250000" step="500" value="15000" class="w-full py-2">
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center">
-                                        <label class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Estimated Compound Return Rate (%)</label>
-                                        <span id="v2" class="text-indigo-400 font-extrabold font-mono text-xs"></span>
-                                    </div>
-                                    <input id="s2" type="range" min="2" max="26" step="0.5" value="13.5" class="w-full py-2">
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center">
-                                        <label class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Accumulation Horizon Time (Years)</label>
-                                        <span id="v3" class="text-violet-400 font-extrabold font-mono text-xs"></span>
-                                    </div>
-                                    <input id="s3" type="range" min="1" max="40" step="1" value="15" class="w-full py-2">
-                                </div>
-                            </div>
-
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl flex flex-col items-center justify-between min-h-[320px]">
-                                <div class="text-center w-full">
-                                    <p class="text-[10px] font-bold tracking-widest font-mono text-zinc-400 uppercase">Estimated Future Net Asset Value</p>
-                                    <p id="outTot" class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono mt-1"></p>
-                                </div>
-                                <div class="w-36 h-36 relative my-2"><canvas id="dashboardChart"></canvas></div>
-                                <div class="w-full inner-panel p-3 rounded-2xl space-y-2 text-[11px] font-mono text-zinc-400">
-                                    <div class="flex justify-between"><span>Principal Invested:</span><span id="outP" class="text-white font-bold"></span></div>
-                                    <div class="flex justify-between"><span>Accrued Yield Wealth:</span><span id="outI" class="text-indigo-400 font-bold"></span></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        ${injectActionToolbelt()}
-                    </div>
-                `;
-                renderBaseLayout(html);
-
-                const s1 = document.getElementById('s1'); const s1In = document.getElementById('s1-input');
-                const s2 = document.getElementById('s2'); const s3 = document.getElementById('s3');
-
-                function process() {
-                    const m = Number(s1.value); const i = (Number(s2.value) / 100) / 12; const n = Number(s3.value) * 12;
-                    document.getElementById('v2').textContent = s2.value + '%';
-                    document.getElementById('v3').textContent = s3.value + ' Yrs';
-
-                    const principal = m * n;
-                    const futureValue = i > 0 ? m * ((Math.pow(1 + i, n) - 1) / i) * (1 + i) : principal;
-                    const yields = futureValue - principal;
-
-                    document.getElementById('outTot').textContent = formatMoney(futureValue);
-                    document.getElementById('outP').textContent = formatMoney(principal);
-                    document.getElementById('outI').textContent = formatMoney(yields);
-
-                    if (globalChartInstance) {
-                        globalChartInstance.data.datasets[0].data = [principal, yields];
-                        globalChartInstance.update();
-                    } else {
-                        mountChartCanvas(principal, yields, "Invested Principal", "Accrued Yield Wealth");
-                    }
-                }
-
-                s1.oninput = () => { s1In.value = s1.value; process(); };
-                s1In.oninput = () => { s1.value = s1In.value; process(); };
-                [s2, s3].forEach(s => s.addEventListener('input', process));
-                process();
-            }
-
-            // 3. GST CONSUMPTION STRUCTURE SCREEN MODULE
-            function renderGSTPanel() {
-                const html = `
-                    <div class="max-w-4xl mx-auto space-y-4 sm:space-y-6 reveal-element">
-                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4">
-                            <div>
-                                <h1 class="text-xl sm:text-2xl font-black">GST Calculation Platform</h1>
-                                <p class="text-xs text-zinc-400 mt-1">${i18n[currentLang].smartSugg}</p>
-                            </div>
-                            <button onclick="window.navigateRoute('home')" class="text-xs font-semibold px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-xl hover:bg-indigo-600 hover:text-white transition cursor-pointer">← HUB</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl space-y-4 flex flex-col justify-center">
-                                <div class="relative">
-                                    <label class="flex justify-between text-[10px] font-bold font-mono text-zinc-400 uppercase mb-2">
-                                        <span>Base Transacted Currency Volume</span>
-                                        <button id="voice-btn-baseAmt" onclick="window.toggleVoiceInput('baseAmt')" class="text-xs">🎙️</button>
-                                    </label>
-                                    <input id="baseAmt" type="number" value="125000" class="suggest-input themed-input w-full rounded-xl p-3 text-white font-mono text-sm focus:outline-none focus:border-amber-500 transition">
-                                    <div id="sugg-baseAmt" class="relative"></div>
-                                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-4">
                                 <div>
-                                    <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-2">Tax Rate Slabs</label>
-                                    <select id="gstRate" class="w-full themed-input rounded-xl p-3 font-mono text-xs focus:outline-none focus:border-amber-500 cursor-pointer">
-                                        <option value="5">5% Standard Essentials</option>
-                                        <option value="12">12% Intermediary Products</option>
-                                        <option value="18" selected>18% Standard Services</option>
-                                        <option value="28">28% Demerit / Special Luxury</option>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Principal <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="3000000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Rate (%)</label><input id="v2" type="number" step="0.1" value="8.5" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Years</label><input id="v3" type="number" value="15" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between"><span>Monthly Installment:</span><span id="o1" class="text-indigo-400 font-bold"></span></div>
+                                <div class="flex justify-between"><span>Total Interest:</span><span id="o2" class="text-emerald-400 font-bold"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let princ = Number(v1.value)||0; let r = (Number(v2.value)/12)/100; let n = (Number(v3.value)||1)*12;
+                    let emi = r>0 ? (princ*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1) : princ/n;
+                    document.getElementById('o1').textContent = formatMoney(emi);
+                    document.getElementById('o2').textContent = formatMoney((emi*n)-princ);
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            function renderSIPPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
+                            <h1 class="text-base font-black">SIP Systematic Modeler</h1>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Monthly Deposit <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="10000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Return Rate (%)</label><input id="v2" type="number" value="12" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Years</label><input id="v3" type="number" value="10" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between"><span>Invested Base:</span><span id="o1" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between"><span>Future Value Pool:</span><span id="o2" class="text-emerald-400 font-bold"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let m = Number(v1.value)||0; let i = (Number(v2.value)/100)/12; let n = (Number(v3.value)||0)*12;
+                    let principal = m*n; let fv = i>0 ? m*((Math.pow(1+i,n)-1)/i)*(1+i) : principal;
+                    document.getElementById('o1').textContent = formatMoney(principal);
+                    document.getElementById('o2').textContent = formatMoney(fv);
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            function renderGSTPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
+                            <h1 class="text-base font-black">GST Tax Surcharge Grid</h1>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Transacted Value <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="50000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Slab Rate (%)</label><input id="v2" type="number" value="18" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between"><span>Surcharge Due:</span><span id="o1" class="text-amber-400 font-bold"></span></div>
+                                <div class="flex justify-between"><span>Gross Settlement Value:</span><span id="o2" class="text-emerald-400 font-bold"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let val = Number(v1.value)||0; let r = Number(v2.value)||0;
+                    let tax = val * (r/100);
+                    document.getElementById('o1').textContent = formatMoney(tax);
+                    document.getElementById('o2').textContent = formatMoney(val + tax);
+                };
+                [v1,v2].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            function renderConverterPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">Forex Conversion Grid</h1>
+                        <div class="glass-panel p-4 rounded-2xl space-y-3">
+                            <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Volume <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                            <input id="v1" type="number" value="100" class="themed-input w-full p-2 rounded-xl font-mono text-xs">
+                            <p class="font-mono text-xs text-cyan-400 pt-2" id="o1"></p>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let v = Number(v1.value)||0;
+                    document.getElementById('o1').textContent = `Normalized Base Target Pipeline: $${(v * 1.08).toFixed(2)} USD value equivalents calculated.`;
+                };
+                v1.oninput = p; p();
+            }
+
+            function renderEligibilityPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">Debt FOIR Cap Capacity</h1>
+                        <div class="glass-panel p-4 rounded-2xl space-y-3">
+                            <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Income Base <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                            <input id="v1" type="number" value="120000" class="themed-input w-full p-2 rounded-xl font-mono text-xs">
+                            <p class="font-mono text-xs text-indigo-400" id="o1"></p>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => { document.getElementById('o1').textContent = `Max Instatutional Safe Asset Limit Allocation Threshold (50% FOIR Base): ${formatMoney((Number(v1.value)||0)*0.5)}`; };
+                v1.oninput = p; p();
+            }
+
+            function renderFDRDPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">Annuity Term FD/RD Modeler</h1>
+                        <div class="glass-panel p-4 rounded-2xl space-y-3">
+                            <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Capital Deployment <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                            <input id="v1" type="number" value="200000" class="themed-input w-full p-2 rounded-xl font-mono text-xs">
+                            <p class="font-mono text-xs text-fuchsia-400" id="o1"></p>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => { document.getElementById('o1').textContent = `Simulated 5-Year Maturity Yield Forecast (7.1% Constant Compound Base): ${formatMoney((Number(v1.value)||0)*1.41)}`; };
+                v1.oninput = p; p();
+            }
+
+            function renderTaxPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">Fiscal Income Bracket Auditor</h1>
+                        <div class="glass-panel p-4 rounded-2xl space-y-3">
+                            <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Gross Income <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                            <input id="v1" type="number" value="1500000" class="themed-input w-full p-2 rounded-xl font-mono text-xs">
+                            <p class="font-mono text-xs text-rose-400" id="o1"></p>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => { document.getElementById('o1').textContent = `Estimated Standard Model Tax Yield Outflow Liability: ${formatMoney((Number(v1.value)||0)*0.15)}`; };
+                v1.oninput = p; p();
+            }
+
+            function renderHikePanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">Salary Increment Matrix</h1>
+                        <div class="glass-panel p-4 rounded-2xl space-y-3">
+                            <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Base Salary <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                            <input id="v1" type="number" value="800000" class="themed-input w-full p-2 rounded-xl font-mono text-xs">
+                            <p class="font-mono text-xs text-teal-400" id="o1"></p>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => { document.getElementById('o1').textContent = `Optimized Forecast with a 12.5% Surge Parameters Applied: ${formatMoney((Number(v1.value)||0)*1.125)}`; };
+                v1.oninput = p; p();
+            }
+
+            // ==========================================
+            // ADVANCED CALCULATOR INTERFACE ADDITIONS
+            // ==========================================
+
+            // 1. Retirement Planning Calculator
+            function renderRetirementPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
+                            <h1 class="text-base font-black">🌴 Retirement Planning Target Suite</h1>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Monthly Outflow Goal <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="50000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Years to Retirement</label><input id="v2" type="number" value="25" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Inflation Surcharge Rate (%)</label><input id="v3" type="number" value="6" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between"><span>Adjusted Monthly Expense Pool:</span><span id="o1" class="text-indigo-400 font-bold"></span></div>
+                                <div class="flex justify-between"><span>Required Safe Terminal Corpus:</span><span id="o2" class="text-emerald-400 font-black"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let exp = Number(v1.value)||0; let yrs = Number(v2.value)||0; let inf = Number(v3.value)||0;
+                    let adjExp = exp * Math.pow(1 + (inf/100), yrs);
+                    let targetCorpus = adjExp * 12 * 20; // 4% safe withdrawal rule approximation framework
+                    document.getElementById('o1').textContent = formatMoney(adjExp);
+                    document.getElementById('o2').textContent = formatMoney(targetCorpus);
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 2. Mutual Fund Returns Calculator
+            function renderMFPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">Index & Mutual Fund returns tracker</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Initial Capital Allocation <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="100000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Estimated Return CAGR (%)</label><input id="v2" type="number" value="14" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Duration Matrix (Years)</label><input id="v3" type="number" value="8" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs">
+                                <div class="flex justify-between"><span>Absolute Wealth Expansion Yield:</span><span id="o1" class="text-indigo-400 font-bold"></span></div>
+                                <div class="flex justify-between font-black text-sm text-emerald-400"><span>Terminal Asset Evaluation Value:</span><span id="o2"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let c = Number(v1.value)||0; let r = Number(v2.value)||0; let y = Number(v3.value)||0;
+                    let fv = c * Math.pow(1 + (r/100), y);
+                    document.getElementById('o1').textContent = formatMoney(fv - c);
+                    document.getElementById('o2').textContent = formatMoney(fv);
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 3. Crypto Profit Calculator
+            function renderCryptoPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🪙 Crypto Profit Sizer Pipeline</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Capital Deployment Pool <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="25000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Entry Price Node</label><input id="v2" type="number" value="45000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Exit Liquidation Node</label><input id="v3" type="number" value="68000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs">
+                                <div class="flex justify-between"><span>Token Acquisition Units:</span><span id="o1" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between"><span>Net Yield Profit/Loss Value:</span><span id="o2" class="text-amber-400 font-bold"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let cap = Number(v1.value)||0; let entry = Number(v2.value)||1; let exit = Number(v3.value)||0;
+                    let tokens = cap / entry; let profit = (tokens * exit) - cap;
+                    document.getElementById('o1').textContent = tokens.toFixed(4);
+                    document.getElementById('o2').textContent = formatMoney(profit);
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 4. Stock Average Calculator
+            function renderStockAvgPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">📊 Cross-Lot Stock Purchase Averaging Modeler</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <p class="text-[10px] font-bold font-mono text-zinc-500 uppercase">Lot Array Node 01</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input id="q1" type="number" value="50" placeholder="Shares" class="themed-input p-2 rounded-xl font-mono text-xs">
+                                    <input id="p1" type="number" value="340" placeholder="Price" class="themed-input p-2 rounded-xl font-mono text-xs">
+                                </div>
+                                <p class="text-[10px] font-bold font-mono text-zinc-500 uppercase pt-2">Lot Array Node 02</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input id="q2" type="number" value="30" placeholder="Shares" class="themed-input p-2 rounded-xl font-mono text-xs">
+                                    <input id="p2" type="number" value="290" placeholder="Price" class="themed-input p-2 rounded-xl font-mono text-xs">
+                                </div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs">
+                                <div class="flex justify-between"><span>Aggregated Quantity Units:</span><span id="o1" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between"><span>Blended Cost Average Base:</span><span id="o2" class="text-cyan-400 font-bold"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let qty1 = Number(q1.value)||0; let prc1 = Number(p1.value)||0;
+                    let qty2 = Number(q2.value)||0; let prc2 = Number(p2.value)||0;
+                    let totalShares = qty1 + qty2;
+                    let avgCost = totalShares > 0 ? ((qty1 * prc1) + (qty2 * prc2)) / totalShares : 0;
+                    document.getElementById('o1').textContent = totalShares;
+                    document.getElementById('o2').textContent = formatMoney(avgCost);
+                };
+                [q1,p1,q2,p2].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 5. Compound Interest Calculator
+            function renderCompoundPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🧬 Continuous Compound Dividend Engine</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Principal Base <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="50000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Annualized Rate (%)</label><input id="v2" type="number" value="9" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Compounding Cycle</label>
+                                    <select id="v3" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                        <option value="12">Monthly</option>
+                                        <option value="4" selected>Quarterly</option>
+                                        <option value="1">Annually</option>
                                     </select>
                                 </div>
-                                <div class="flex p-1 inner-panel rounded-xl text-[11px] font-bold">
-                                    <button id="mInc" class="flex-1 py-2.5 rounded-lg transition cursor-pointer bg-amber-500 text-black">Exclusive (+GST)</button>
-                                    <button id="mDec" class="flex-1 py-2.5 rounded-lg transition cursor-pointer text-zinc-400">Inclusive (-GST)</button>
-                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Horizon Time Scope (Years)</label><input id="v4" type="number" value="5" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
                             </div>
-
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl flex flex-col justify-center space-y-3 font-mono text-[11px] text-zinc-400">
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>Net Resource Allocation:</span><span id="resBase" class="text-white font-bold"></span></div>
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>Fiscal Surcharge Due:</span><span id="resTax" class="text-amber-400 font-bold"></span></div>
-                                <div class="flex justify-between pt-2 text-sm sm:text-base font-black"><span>Gross Ledger Settlement:</span><span id="resGross" class="text-emerald-400"></span></div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs">
+                                <div class="flex justify-between"><span>Absolute Compound Dividend Value:</span><span id="o1" class="text-indigo-400 font-bold"></span></div>
+                                <div class="flex justify-between font-black text-sm text-emerald-400"><span>Terminal Vault Valuation:</span><span id="o2"></span></div>
                             </div>
                         </div>
-
                         ${injectActionToolbelt()}
                     </div>
                 `;
                 renderBaseLayout(html);
-
-                let mode = 'exclusive';
-                const baseAmt = document.getElementById('baseAmt'); const gstRate = document.getElementById('gstRate');
-                const mInc = document.getElementById('mInc'); const mDec = document.getElementById('mDec');
-
-                function process() {
-                    const raw = Number(baseAmt.value) || 0; const r = Number(gstRate.value);
-                    let base = 0; let tax = 0; let gross = 0;
-
-                    if (mode === 'exclusive') {
-                        base = raw; tax = base * (r / 100); gross = base + tax;
-                    } else {
-                        gross = raw; base = gross / (1 + (r / 100)); tax = gross - base;
-                    }
-
-                    document.getElementById('resBase').textContent = formatMoney(base);
-                    document.getElementById('resTax').textContent = formatMoney(tax);
-                    document.getElementById('resGross').textContent = formatMoney(gross);
-                }
-
-                mInc.onclick = () => { mode = 'exclusive'; mInc.className = 'flex-1 py-2.5 rounded-lg font-bold bg-amber-500 text-black'; mDec.className = 'flex-1 py-2.5 rounded-lg font-bold text-zinc-400'; process(); };
-                mDec.onclick = () => { mode = 'inclusive'; mDec.className = 'flex-1 py-2.5 rounded-lg font-bold bg-amber-500 text-black'; mInc.className = 'flex-1 py-2.5 rounded-lg font-bold text-zinc-400'; process(); };
-
-                [baseAmt, gstRate].forEach(el => el.addEventListener('input', process)); process();
+                const p = () => {
+                    let princ = Number(v1.value)||0; let r = (Number(v2.value)/100); let freq = Number(v3.value); let yrs = Number(v4.value)||0;
+                    let amt = princ * Math.pow(1 + (r / freq), freq * yrs);
+                    document.getElementById('o1').textContent = formatMoney(amt - princ);
+                    document.getElementById('o2').textContent = formatMoney(amt);
+                };
+                [v1,v2,v3,v4].forEach(el=>el.addEventListener('input', p)); p();
             }
 
-            // 4. ALGORITHMIC FOREX CROSS CORRIDOR BOARD SCREEN
-            function renderConverterPanel() {
-                const html = `
-                    <div class="max-w-4xl mx-auto space-y-4 sm:space-y-6 reveal-element">
-                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4">
-                            <div>
-                                <h1 class="text-xl sm:text-2xl font-black">FX Cross-Border Settlement Grid</h1>
-                                <p class="text-xs text-zinc-400 mt-1">Simulate instant conversions over dynamic algorithmic forex corridors.</p>
-                            </div>
-                            <button onclick="window.navigateRoute('home')" class="text-xs font-semibold px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-xl hover:bg-indigo-600 hover:text-white transition cursor-pointer">← HUB</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl space-y-4 flex flex-col justify-center">
-                                <div class="relative">
-                                    <label class="flex justify-between text-[10px] font-bold font-mono text-zinc-400 uppercase mb-2">
-                                        <span>Liquid Capital Volume</span>
-                                        <button id="voice-btn-fxInput" onclick="window.toggleVoiceInput('fxInput')" class="text-xs">🎙️</button>
-                                    </label>
-                                    <input id="fxInput" type="number" value="5000" class="suggest-input themed-input w-full rounded-xl p-3 text-white font-mono text-sm focus:outline-none focus:border-cyan-400 transition">
-                                    <div id="sugg-fxInput" class="relative"></div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-3 text-[11px] font-mono">
-                                    <div>
-                                        <label class="block text-zinc-400 mb-1">Source Account</label>
-                                        <select id="fxSrc" class="w-full themed-input rounded-xl p-2.5"></select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-zinc-400 mb-1">Target Settlement</label>
-                                        <select id="fxTarget" class="w-full themed-input rounded-xl p-2.5"></select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="glass-panel p-5 rounded-3xl flex flex-col justify-center items-center text-center min-h-[160px]">
-                                <p class="text-[10px] font-bold tracking-widest font-mono text-zinc-400 uppercase">Projected Net FX Conversion Value</p>
-                                <p id="fxOutput" class="text-2xl sm:text-3xl font-black text-cyan-400 font-mono mt-1"></p>
-                                <p id="fxSpread" class="text-[10px] font-mono text-zinc-400 mt-2 bg-black/10 dark:bg-white/5 px-3 py-1 rounded-full"></p>
-                            </div>
-                        </div>
-
-                        ${injectActionToolbelt()}
-                    </div>
-                `;
-                renderBaseLayout(html);
-
-                const fxInput = document.getElementById('fxInput');
-                const srcSel = document.getElementById('fxSrc'); const targetSel = document.getElementById('fxTarget');
-                
-                Object.keys(currencyConfigs).forEach(k => {
-                    srcSel.innerHTML += `<option value="${k}">${k}</option>`;
-                    targetSel.innerHTML += `<option value="${k}" ${k === 'USD' ? 'selected' : ''}>${k}</option>`;
-                });
-
-                function process() {
-                    const amt = Number(fxInput.value) || 0;
-                    const srcK = srcSel.value; const tgtK = targetSel.value;
-                    
-                    const inUSD = amt / currencyConfigs[srcK].rateVsUSD;
-                    const finalVal = inUSD * currencyConfigs[tgtK].rateVsUSD;
-
-                    const configTarget = currencyConfigs[tgtK];
-                    document.getElementById('fxOutput').textContent = configTarget.symbol + finalVal.toLocaleString(configTarget.locale, { maximumFractionDigits: 2 });
-                    document.getElementById('fxSpread').textContent = `1 ${srcK} = ${(currencyConfigs[tgtK].rateVsUSD / currencyConfigs[srcK].rateVsUSD).toFixed(4)} ${tgtK}`;
-                }
-
-                [fxInput, srcSel, targetSel].forEach(el => {
-                    el.addEventListener('input', process);
-                    el.addEventListener('change', process);
-                });
-                process();
-            }
-
-            // 5. DEBT RISK INSTITUTIONAL ELIGIBILITY DECK SCREEN
-            function renderEligibilityPanel() {
-                const html = `
-                    <div class="max-w-4xl mx-auto space-y-4 sm:space-y-6 reveal-element">
-                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4">
-                            <div>
-                                <h1 class="text-xl sm:text-2xl font-black">Debt Capital Capacity Audit</h1>
-                                <p class="text-xs text-zinc-400 mt-1">Calculates optimal capital risk thresholds using institutional FOIR baselines.</p>
-                            </div>
-                            <button onclick="window.navigateRoute('home')" class="text-xs font-semibold px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-xl hover:bg-indigo-600 hover:text-white transition cursor-pointer">← HUB</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl space-y-4 flex flex-col justify-center">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div class="relative">
-                                        <label class="flex justify-between text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">
-                                            <span>Monthly Yield Earnings</span>
-                                            <button id="voice-btn-inc" onclick="window.toggleVoiceInput('inc')" class="text-xs">🎙️</button>
-                                        </label>
-                                        <input id="inc" type="number" value="150000" class="suggest-input themed-input w-full rounded-xl p-3 text-white font-mono text-xs focus:outline-none focus:border-indigo-500">
-                                        <div id="sugg-inc" class="relative"></div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Current Active Debt EMI</label>
-                                        <input id="oblig" type="number" value="25000" class="themed-input w-full rounded-xl p-3 text-white font-mono text-xs focus:outline-none focus:border-indigo-500">
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Interest Rate Offered (%)</label>
-                                        <input id="rate" type="number" step="0.25" value="8.5" class="themed-input w-full rounded-xl p-3 text-white font-mono text-xs focus:outline-none focus:border-indigo-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Target Period (Years)</label>
-                                        <input id="tenure" type="number" value="20" class="themed-input w-full rounded-xl p-3 text-white font-mono text-xs focus:outline-none focus:border-indigo-500">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl flex flex-col justify-center space-y-3 font-mono text-[11px] text-zinc-400">
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>FOIR Cap Allotment Ceiling (50%):</span><span id="foir" class="text-white font-bold"></span></div>
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>Usable Premium Margin:</span><span id="buffer" class="text-emerald-400 font-bold"></span></div>
-                                <div class="flex justify-between pt-2 text-sm sm:text-base font-black"><span>Max Borrowing Capacity:</span><span id="maxLoan" class="text-indigo-400"></span></div>
-                            </div>
-                        </div>
-
-                        ${injectActionToolbelt()}
-                    </div>
-                `;
-                renderBaseLayout(html);
-
-                const inc = document.getElementById('inc'); const oblig = document.getElementById('oblig');
-                const rate = document.getElementById('rate'); const tenure = document.getElementById('tenure');
-
-                function process() {
-                    const gross = Number(inc.value) || 0; const debt = Number(oblig.value) || 0;
-                    const r = (Number(rate.value) / 100) / 12; const n = (Number(tenure.value) || 1) * 12;
-
-                    const foirMax = gross * 0.50; const maxEMIAllowed = foirMax - debt;
-
-                    document.getElementById('foir').textContent = formatMoney(foirMax);
-                    document.getElementById('buffer').textContent = formatMoney(Math.max(0, maxEMIAllowed));
-
-                    let totalCap = 0;
-                    if (maxEMIAllowed > 0 && r > 0) {
-                        totalCap = maxEMIAllowed * ((Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n)));
-                    } else if (maxEMIAllowed > 0) {
-                        totalCap = maxEMIAllowed * n;
-                    }
-
-                    document.getElementById('maxLoan').textContent = formatMoney(Math.max(0, totalCap));
-                }
-
-                [inc, oblig, rate, tenure].forEach(el => el.addEventListener('input', process)); process();
-            }
-
-            // 6. ANNUITY TERM DEPOSIT VALIDATION HUB VIEW SCREEN MODULE
-            function renderFDRDPanel() {
-                const html = `
-                    <div class="max-w-5xl mx-auto space-y-4 sm:space-y-6 reveal-element">
-                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4">
-                            <div>
-                                <h1 class="text-xl sm:text-2xl font-black">Term Annuity Verification Center</h1>
-                                <p class="text-xs text-zinc-400 mt-1">Audit fixed capital assets versus recurring multi-tier savings accounts.</p>
-                            </div>
-                            <button onclick="window.navigateRoute('home')" class="text-xs font-semibold px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-xl hover:bg-indigo-600 hover:text-white transition cursor-pointer">← HUB</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                            <div class="lg:col-span-2 glass-panel p-4 sm:p-6 rounded-3xl space-y-4 flex flex-col justify-center">
-                                <div class="flex p-1 inner-panel rounded-xl text-[11px] font-bold">
-                                    <button id="typeFD" class="flex-1 py-2 rounded-lg transition cursor-pointer bg-fuchsia-500 text-black">Fixed Deposit (FD)</button>
-                                    <button id="typeRD" class="flex-1 py-2 rounded-lg transition cursor-pointer text-zinc-400">Recurring Deposit (RD)</button>
-                                </div>
-                                <div class="relative">
-                                    <label id="lblAmt" class="flex justify-between text-[10px] font-bold font-mono text-zinc-400 uppercase mb-2"></label>
-                                    <input id="amt" type="number" value="250000" class="suggest-input themed-input w-full rounded-xl p-3 text-white font-mono text-sm focus:outline-none focus:border-fuchsia-500">
-                                    <div id="sugg-amt" class="relative"></div>
-                                </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Annual Yield Rate (%)</label>
-                                        <input id="rate" type="number" step="0.05" value="7.25" class="themed-input w-full rounded-xl p-3 text-white font-mono text-xs focus:outline-none focus:border-fuchsia-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-1">Time Horizon (Years)</label>
-                                        <input id="tenure" type="number" value="5" class="themed-input w-full rounded-xl p-3 text-white font-mono text-xs focus:outline-none focus:border-fuchsia-500">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl flex flex-col justify-center space-y-3 font-mono text-[11px] text-zinc-400">
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>Aggregated Assets:</span><span id="pOut" class="text-white font-bold"></span></div>
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>Yield Dividends:</span><span id="intOut" class="text-fuchsia-400 font-bold"></span></div>
-                                <div class="flex justify-between pt-2 text-sm sm:text-base font-black"><span>Maturity Valuation:</span><span id="matOut" class="text-emerald-400"></span></div>
-                            </div>
-                        </div>
-
-                        ${injectActionToolbelt()}
-                    </div>
-                `;
-                renderBaseLayout(html);
-
-                let mode = 'FD';
-                const amt = document.getElementById('amt'); const rate = document.getElementById('rate');
-                const tenure = document.getElementById('tenure'); const btnFD = document.getElementById('typeFD'); const btnRD = document.getElementById('typeRD');
-
-                function process() {
-                    const v = Number(amt.value) || 0; const r = Number(rate.value) / 100; const t = Number(tenure.value) || 0;
-                    document.getElementById('lblAmt').innerHTML = `<span>${mode === 'FD' ? 'Lump Sum Principal Asset' : 'Monthly Installment Allocation'}</span> <button id="voice-btn-amt" onclick="window.toggleVoiceInput('amt')" class="text-xs">🎙️</button>`;
-
-                    let principal = 0; let maturity = 0;
-
-                    if (mode === 'FD') {
-                        principal = v; maturity = principal * Math.pow(1 + (r / 4), 4 * t);
-                    } else {
-                        const totalMonths = t * 12; principal = v * totalMonths;
-                        let runningSum = 0;
-                        for (let j = 1; j <= totalMonths; j++) {
-                            runningSum += v * Math.pow(1 + (r / 4), 4 * ((totalMonths - j + 1) / 12));
-                        }
-                        maturity = runningSum;
-                    }
-
-                    document.getElementById('pOut').textContent = formatMoney(principal);
-                    document.getElementById('intOut').textContent = formatMoney(maturity - principal);
-                    document.getElementById('matOut').textContent = formatMoney(maturity);
-                }
-
-                btnFD.onclick = () => { mode = 'FD'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold bg-fuchsia-500 text-black'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold text-zinc-400'; process(); };
-                btnRD.onclick = () => { mode = 'RD'; btnRD.className = 'flex-1 py-2 rounded-lg font-bold bg-fuchsia-500 text-black'; btnFD.className = 'flex-1 py-2 rounded-lg font-bold text-zinc-400'; process(); };
-
-                [amt, rate, tenure].forEach(el => el.addEventListener('input', process)); process();
-            }
-
-            // 7. STATUTORY PROGRESSIVE MARGINAL FISCAL BRACKET TERMINAL MODULE SCREEN
-            function renderTaxPanel() {
-                const html = `
-                    <div class="max-w-4xl mx-auto space-y-4 sm:space-y-6 reveal-element">
-                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4">
-                            <div>
-                                <h1 class="text-xl sm:text-2xl font-black">Statutory Income Progressive Tax Terminal</h1>
-                                <p class="text-xs text-zinc-400 mt-1">Estimates core progressive marginal bracket liabilities.</p>
-                            </div>
-                            <button onclick="window.navigateRoute('home')" class="text-xs font-semibold px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-xl hover:bg-indigo-600 hover:text-white transition cursor-pointer">← HUB</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl space-y-4 flex flex-col justify-center">
-                                <div class="relative">
-                                    <label class="flex justify-between text-[10px] font-bold font-mono text-zinc-400 uppercase mb-2">
-                                        <span>Total Gross Annual Revenue</span>
-                                        <button id="voice-btn-grossInc" onclick="window.toggleVoiceInput('grossInc')" class="text-xs">🎙️</button>
-                                    </label>
-                                    <input id="grossInc" type="number" value="1800000" class="suggest-input themed-input w-full rounded-xl p-3 text-white font-mono text-sm focus:outline-none focus:border-rose-500">
-                                    <div id="sugg-grossInc" class="relative"></div>
-                                </div>
+            // 6. Inflation Calculator
+            function renderInflationPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🎈 Macro CPI Inflation Devaluation Sizer</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
                                 <div>
-                                    <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-2">Exemptions Allowed</label>
-                                    <input id="deduct" type="number" value="200000" class="themed-input w-full rounded-xl p-3 text-white font-mono text-sm focus:outline-none focus:border-rose-500">
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Current Procurement Cost Value <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="10000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
                                 </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Estimated Annualized CPI (%)</label><input id="v2" type="number" value="6" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Time Interval Lapse (Years)</label><input id="v3" type="number" value="15" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
                             </div>
-
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl flex flex-col justify-center space-y-3 font-mono text-[11px] text-zinc-400">
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>Adjusted Net Taxable Bracket:</span><span id="taxNet" class="text-white font-bold"></span></div>
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>Liability Surcharge:</span><span id="taxDue" class="text-rose-400 font-bold"></span></div>
-                                <div class="flex justify-between pt-2 text-sm sm:text-base font-black"><span>Effective Take-Home Pay:</span><span id="takeHome" class="text-emerald-400"></span></div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs">
+                                <div class="flex justify-between"><span>Future Surcharged Equivalent Cost:</span><span id="o1" class="text-rose-400 font-bold"></span></div>
+                                <div class="flex justify-between"><span>Absolute Capital Value Erosion:</span><span id="o2" class="text-zinc-500 font-bold"></span></div>
                             </div>
                         </div>
-
                         ${injectActionToolbelt()}
                     </div>
                 `;
                 renderBaseLayout(html);
-
-                const grossInc = document.getElementById('grossInc'); const deduct = document.getElementById('deduct');
-
-                function process() {
-                    const totalGross = Number(grossInc.value) || 0; const exemptions = Number(deduct.value) || 0;
-                    const netIncome = Math.max(0, totalGross - exemptions);
-
-                    let computedTax = 0;
-                    if (currentCurrency === 'INR') {
-                        if (netIncome > 1500000) computedTax += (netIncome - 1500000) * 0.30 + 150000;
-                        else if (netIncome > 1200000) computedTax += (netIncome - 1200000) * 0.20 + 90000;
-                        else if (netIncome > 900000) computedTax += (netIncome - 900000) * 0.15 + 45000;
-                        else if (netIncome > 600000) computedTax += (netIncome - 600000) * 0.10 + 15000;
-                        else if (netIncome > 300000) computedTax += (netIncome - 300000) * 0.05;
-                    } else {
-                        if (netIncome > 120000) computedTax += (netIncome - 120000) * 0.33 + 16000;
-                        else if (netIncome > 60000) computedTax += (netIncome - 60000) * 0.20 + 4000;
-                        else if (netIncome > 15000) computedTax += (netIncome - 15000) * 0.10;
-                    }
-
-                    document.getElementById('taxNet').textContent = formatMoney(netIncome);
-                    document.getElementById('taxDue').textContent = formatMoney(computedTax);
-                    document.getElementById('takeHome').textContent = formatMoney(totalGross - computedTax);
-                }
-
-                [grossInc, deduct].forEach(el => el.addEventListener('input', process)); process();
+                const p = () => {
+                    let cost = Number(v1.value)||0; let inf = Number(v2.value)||0; let yrs = Number(v3.value)||0;
+                    let fv = cost * Math.pow(1 + (inf/100), yrs);
+                    document.getElementById('o1').textContent = formatMoney(fv);
+                    document.getElementById('o2').textContent = `-${((1 - (cost / fv)) * 100).toFixed(1)}% Core Purchasing Power Loss Calculated.`;
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
             }
 
-            // 8. GROWTH & COMPENSATION OPTIMIZER MODULE LAYOUT VIEW
-            function renderHikePanel() {
-                const html = `
-                    <div class="max-w-4xl mx-auto space-y-4 sm:space-y-6 reveal-element">
-                        <div class="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4">
-                            <div>
-                                <h1 class="text-xl sm:text-2xl font-black">Revenue Growth Optimizer</h1>
-                                <p class="text-xs text-zinc-400 mt-1">Audit precise corporate compensation surges and annualized growth deltas.</p>
-                            </div>
-                            <button onclick="window.navigateRoute('home')" class="text-xs font-semibold px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-xl hover:bg-indigo-600 hover:text-white transition cursor-pointer">← HUB</button>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl space-y-4 flex flex-col justify-center">
-                                <div class="relative">
-                                    <label class="flex justify-between text-[10px] font-bold font-mono text-zinc-400 uppercase mb-2">
-                                        <span>Current Base Compensation</span>
-                                        <button id="voice-btn-currSal" onclick="window.toggleVoiceInput('currSal')" class="text-xs">🎙️</button>
-                                    </label>
-                                    <input id="currSal" type="number" value="800000" class="suggest-input themed-input w-full rounded-xl p-3 text-white font-mono text-sm focus:outline-none focus:border-teal-500">
-                                    <div id="sugg-currSal" class="relative"></div>
-                                </div>
+            // 7. Savings Goal Calculator
+            function renderSavingsGoalPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🎯 Capital Goal Target Architect</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
                                 <div>
-                                    <label class="block text-[10px] font-bold font-mono text-zinc-400 uppercase mb-2">Proposed Evaluation Target</label>
-                                    <input id="newSal" type="number" value="1150000" class="themed-input w-full rounded-xl p-3 text-white font-mono text-sm focus:outline-none focus:border-teal-500">
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Target Capital Milestone Vault <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="1000000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
                                 </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Available Window Timeline (Years)</label><input id="v2" type="number" value="5" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Estimated Growth Return Base (%)</label><input id="v3" type="number" value="10" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
                             </div>
-
-                            <div class="glass-panel p-4 sm:p-6 rounded-3xl flex flex-col justify-center space-y-3 font-mono text-[11px] text-zinc-400">
-                                <div class="flex justify-between border-b border-black/5 dark:border-white/5 pb-3"><span>Net Absolute Annual Delta:</span><span id="hikeAmt" class="text-indigo-400 font-bold text-xs sm:text-sm"></span></div>
-                                <div class="flex justify-between pt-2 text-sm sm:text-base font-black"><span>Compounded Surge Velocity:</span><span id="hikePct" class="text-teal-400"></span></div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center text-center p-6 space-y-2">
+                                <p class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Required Secure Monthly Deposit Allocation</p>
+                                <p id="o1" class="text-2xl font-black text-teal-400 font-mono"></p>
                             </div>
                         </div>
-
                         ${injectActionToolbelt()}
                     </div>
                 `;
                 renderBaseLayout(html);
-
-                const currSal = document.getElementById('currSal'); const newSal = document.getElementById('newSal');
-
-                function process() {
-                    const currentVal = Number(currSal.value) || 0; const proposedVal = Number(newSal.value) || 0;
-                    const deltaValue = proposedVal - currentVal; 
-                    const grossPercentage = currentVal > 0 ? ((deltaValue / currentVal) * 100).toFixed(1) : '0.0';
-
-                    document.getElementById('hikeAmt').textContent = formatMoney(deltaValue);
-                    document.getElementById('getCalculationTextPayload');
-                    document.getElementById('hikePct').textContent = `${grossPercentage}%`;
-                }
-
-                [currSal, newSal].forEach(el => el.addEventListener('input', process)); process();
+                const p = () => {
+                    let target = Number(v1.value)||0; let months = (Number(v2.value)||1)*12; let rateM = (Number(v3.value)/100)/12;
+                    let monthlyDeposit = rateM > 0 ? target / (((Math.pow(1+rateM, months) - 1) / rateM) * (1 + rateM)) : target / months;
+                    document.getElementById('o1').textContent = formatMoney(monthlyDeposit);
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
             }
 
-            // Route Initialization
+            // 8. Real Estate ROI Calculator
+            function renderRealEstatePanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🏢 Real Estate Capital ROI Performance Analyzer</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Acquisition Purchase Layout <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="4500000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Terminal Realization Resale Value</label><input id="v2" type="number" value="6200000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Ancillary Operational Maintenance Outflows</label><input id="v3" type="number" value="150000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs">
+                                <div class="flex justify-between"><span>Absolute Capital Gains Matrix Result:</span><span id="o1" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between pt-2 text-sm font-black text-fuchsia-400"><span>Net Return Performance Ratio:</span><span id="o2"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let buy = Number(v1.value)||1; let sell = Number(v2.value)||0; let costs = Number(v3.value)||0;
+                    let absoluteGains = sell - buy - costs;
+                    let roiRatio = (absoluteGains / buy) * 100;
+                    document.getElementById('o1').textContent = formatMoney(absoluteGains);
+                    document.getElementById('o2').textContent = roiRatio.toFixed(2) + '%';
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 9. Rental Yield Calculator
+            function renderRentalYieldPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🔑 Rental Performance Yield Ledger</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Total Asset Valuation Valuation <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="5000000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Gross Monthly Rental Receipt</label><input id="v2" type="number" value="22000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center text-center p-6 space-y-2">
+                                <p class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Annualized Structural Net Yield Ratio</p>
+                                <p id="o1" class="text-2xl font-black text-emerald-400 font-mono"></p>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let propVal = Number(v1.value)||1; let rentM = Number(v2.value)||0;
+                    let annualYield = ((rentM * 12) / propVal) * 100;
+                    document.getElementById('o1').textContent = annualYield.toFixed(2) + '%';
+                };
+                [v1,v2].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 10. Break-even Calculator
+            function renderBreakEvenPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🏁 Unit Level Corporate Operational Break-even Matrix</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Fixed Structural Cost Threshold <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="120000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Unit Market Distribution Valuation</label><input id="v2" type="number" value="500" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Unit Variable Operational Overhead</label><input id="v3" type="number" value="200" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center text-center p-6 space-y-2">
+                                <p class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Required Volume Cleared to Cross Break-even</p>
+                                <p id="o1" class="text-2xl font-black text-indigo-400 font-mono"></p>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let fixedCost = Number(v1.value)||0; let priceU = Number(v2.value)||0; let varCost = Number(v3.value)||0;
+                    let margin = priceU - varCost;
+                    let units = margin > 0 ? Math.ceil(fixedCost / margin) : 'Infinite Layout Constraint Sensed';
+                    document.getElementById('o1').textContent = units + (typeof units==='number' ? ' Units' : '');
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 11. Net Worth Calculator
+            function renderNetWorthPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">⚖️ Liquid Consolidated Net Worth Auditor</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <p class="text-[10px] font-bold font-mono text-emerald-400 uppercase">Total Consolidated Liquid Assets</p>
+                                <div>
+                                    <label class="text-[9px] font-mono text-zinc-400">Securities + Cache Liquid Balance <button id="voice-btn-a1" onclick="window.toggleVoiceInput('a1')">🎙️</button></label>
+                                    <input id="a1" type="number" value="2500000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs">
+                                    <div id="sugg-a1" class="relative"></div>
+                                </div>
+                                <p class="text-[10px] font-bold font-mono text-rose-400 uppercase pt-2">Consolidated Debt Liabilities</p>
+                                <div>
+                                    <label class="text-[9px] font-mono text-zinc-400">Total Outstanding Credits Secure Matrix</label>
+                                    <input id="l1" type="number" value="600000" class="themed-input w-full p-2 rounded-xl font-mono text-xs">
+                                </div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center text-center p-6 space-y-2">
+                                <p class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Calculated Liquid Net Wealth Position Value</p>
+                                <p id="o1" class="text-2xl font-black text-yellow-400 font-mono"></p>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let assets = Number(a1.value)||0; let debts = Number(l1.value)||0;
+                    document.getElementById('o1').textContent = formatMoney(assets - debts);
+                };
+                [a1,l1].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 12. Credit Card EMI Calculator
+            function renderCCEMIPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">💳 Credit Card Balance EMI Rollover Structural Planner</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Rollover Statement Balance <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="80000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Card Penalty APR Interest Rate (%)</label><input id="v2" type="number" value="36" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Target Conversion Horizon (Months)</label><input id="v3" type="number" value="12" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between"><span>Required Monthly Installment:</span><span id="o1" class="text-rose-400 font-bold"></span></div>
+                                <div class="flex justify-between font-black text-zinc-300"><span>Absolute Interest Surcharge Due:</span><span id="o2"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let bal = Number(v1.value)||0; let rM = (Number(v2.value)/12)/100; let m = Number(v3.value)||1;
+                    let emi = rM > 0 ? (bal * rM * Math.pow(1+rM, m)) / (Math.pow(1+rM, m) - 1) : bal / m;
+                    document.getElementById('o1').textContent = formatMoney(emi);
+                    document.getElementById('o2').textContent = formatMoney((emi * m) - bal);
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 13. Debt Payoff Planner
+            function renderDebtPayoffPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🛡️ Debt Avalanche & Acceleration Framework</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Total Outstanding Liabilities Stack <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="450000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Standard Baseline Combined EMI</label><input id="v2" type="number" value="18000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Additional Monthly Acceleration Surplus Injection</label><input id="v3" type="number" value="7000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs text-zinc-400">
+                                <div class="flex justify-between"><span>Standard Horizon Repayment Period:</span><span id="o1"></span></div>
+                                <div class="flex justify-between font-black text-emerald-400"><span>Compressed Accelerated Horizon Window:</span><span id="o2"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let totalDebt = Number(v1.value)||0; let basePayment = Number(v2.value)||1; let extra = Number(v3.value)||0;
+                    let baselineMonths = totalDebt / basePayment;
+                    let compressedMonths = totalDebt / (basePayment + extra);
+                    document.getElementById('o1').textContent = Math.ceil(baselineMonths) + " Mos";
+                    document.getElementById('o2').textContent = Math.ceil(compressedMonths) + " Mos Pool Terminal";
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 14. Car Loan Calculator
+            function renderCarLoanPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">🚗 Vehicle Asset Financing Compounding Matrix</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Vehicle Value Base On-Road Cost <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="1200000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Down Payment Component Equity</label><input id="v2" type="number" value="300000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Rate (%)</label><input id="v3" type="number" value="9.25" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Tenure Scope Duration (Years)</label><input id="v4" type="number" value="7" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center space-y-2 font-mono text-xs">
+                                <div class="flex justify-between"><span>Net Finance Obligation Core:</span><span id="o1" class="text-white font-bold"></span></div>
+                                <div class="flex justify-between pt-2 text-sm font-black text-blue-400"><span>Monthly Installment Commitment:</span><span id="o2"></span></div>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let totalVal = Number(v1.value)||0; let downPay = Number(v2.value)||0;
+                    let princ = Math.max(0, totalVal - downPay);
+                    let rM = (Number(v3.value)/12)/100; let n = (Number(v4.value)||1)*12;
+                    let emi = rM > 0 ? (princ * rM * Math.pow(1+rM, n)) / (Math.pow(1+rM, n) - 1) : princ / n;
+                    document.getElementById('o1').textContent = formatMoney(princ);
+                    document.getElementById('o2').textContent = formatMoney(emi);
+                };
+                [v1,v2,v3,v4].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
+            // 15. Home Loan Prepayment Calculator
+            function renderPrepaymentPanel() {
+                let html = `
+                    <div class="max-w-4xl mx-auto space-y-4 reveal-element">
+                        <h1 class="text-base font-black">⚡ Real Estate Mortgage Prepayment Compression Optimizer</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold font-mono text-zinc-400 uppercase flex justify-between">Outstanding Principal Balance <button id="voice-btn-v1" onclick="window.toggleVoiceInput('v1')">🎙️</button></label>
+                                    <input id="v1" type="number" value="4000000" class="suggest-input themed-input w-full p-2 rounded-xl font-mono text-xs mt-1">
+                                    <div id="sugg-v1" class="relative"></div>
+                                </div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Irregular One-off Structural Prepayment Action</label><input id="v2" type="number" value="400000" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                                <div><label class="text-[10px] font-bold font-mono text-zinc-400 uppercase">Mortgage Interest Parameter Base (%)</label><input id="v3" type="number" value="8.5" class="themed-input w-full p-2 rounded-xl font-mono text-xs mt-1"></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-center text-center p-6 space-y-2">
+                                <p class="text-[10px] font-bold tracking-wider font-mono text-zinc-400 uppercase">Absolute Interest Surcharge Capital Preserved Off Stack</p>
+                                <p id="o1" class="text-2xl font-black text-emerald-400 font-mono"></p>
+                            </div>
+                        </div>
+                        ${injectActionToolbelt()}
+                    </div>
+                `;
+                renderBaseLayout(html);
+                const p = () => {
+                    let remainingPrinc = Number(v1.value)||0; let prepayAmt = Number(v2.value)||0; let rAnn = Number(v3.value)||0;
+                    // Approximated absolute lifecycle aggregate compound drag evaluation savings approximation model
+                    let savings = prepayAmt * (rAnn / 100) * 10; 
+                    document.getElementById('o1').textContent = formatMoney(Math.min(savings, remainingPrinc * 1.5));
+                };
+                [v1,v2,v3].forEach(el=>el.addEventListener('input', p)); p();
+            }
+
             window.route('home');
         });
     </script>
